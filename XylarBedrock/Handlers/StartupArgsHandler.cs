@@ -23,6 +23,7 @@ namespace XylarBedrock.Handlers
         private const string HELP_ARG = "--help";
         private const string NO_WINDOW_ARG = "--nowindow";
         private const string EDITOR_ARG = "--editor";
+        private const string UNINSTALL_ARG = "--uninstall";
         private const string LAUNCH_INSTALLATION_ARG = "--launch";
         private const string CLOSE_ON_LAUNCH_ARG = "--closeOnLaunch";
         private const string PRESIST_ON_LAUNCH_ARG = "--keepOpenOnLaunch";
@@ -36,6 +37,7 @@ namespace XylarBedrock.Handlers
              string.Format("{0} - {1}", NO_WINDOW_ARG, "Hide main window from showing up (WARNING: Will only be killable using task manager)"),
              string.Format("{0} - {1}", CLOSE_ON_LAUNCH_ARG, string.Format("Close launcher after launch when using the '{0}' argument", LAUNCH_INSTALLATION_ARG)),
              string.Format("{0} - {1}", PRESIST_ON_LAUNCH_ARG, string.Format("Keep launcher open after launch when using the '{0}' argument", LAUNCH_INSTALLATION_ARG)),
+             string.Format("{0} - {1}", UNINSTALL_ARG, "Remove the app entry from Windows Apps and remove launcher shortcuts"),
              string.Format("{0} - {1} ({0} {2})", LAUNCH_INSTALLATION_ARG, "Launch installation specified", "<profileName> <installationName>")
         };
         #endregion
@@ -43,6 +45,19 @@ namespace XylarBedrock.Handlers
         private static bool CloseOnLaunch { get; set; } = false;
         private static bool KeepOpenOnLaunch { get; set; } = false;
         private static bool LaunchEditor { get; set; } = false;
+
+        public static bool TryHandleProcessWideArgs(string[] args)
+        {
+            if (args == null) return false;
+
+            if (args.Any(x => string.Equals(x, UNINSTALL_ARG, StringComparison.OrdinalIgnoreCase)))
+            {
+                AppRegistrationHandler.RunInteractiveUninstall();
+                return true;
+            }
+
+            return false;
+        }
 
         private static void PraseEarlyArgs(string[] args)
         {
@@ -61,6 +76,9 @@ namespace XylarBedrock.Handlers
                     case PRESIST_ON_LAUNCH_ARG:
                     case LAUNCH_INSTALLATION_ARG:
                     case HELP_ARG:
+                    case EDITOR_ARG:
+                    case UNINSTALL_ARG:
+                        break;
                     default:
                         InvalidMessage(argument);
                         KillApp = true;
@@ -98,6 +116,13 @@ namespace XylarBedrock.Handlers
                     case EDITOR_ARG:
                         LaunchEditor = true;
                         break;
+                    case HELP_ARG:
+                        ShowHelp();
+                        KillApp = true;
+                        goto EscapeLoop;
+                    case UNINSTALL_ARG:
+                        EndPrase = true;
+                        goto EscapeLoop;
                     case LAUNCH_INSTALLATION_ARG:
                         bool result = LaunchInstallation(args, i);
                         if (!result) KillApp = true;

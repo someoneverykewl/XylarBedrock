@@ -31,6 +31,13 @@ namespace XylarBedrock
         [STAThread]
         public static void Main()
         {
+            string[] startupArgs = Environment.GetCommandLineArgs().Skip(1).ToArray();
+            StartupArgsHandler.SetStartupArgs(startupArgs);
+            if (StartupArgsHandler.TryHandleProcessWideArgs(startupArgs))
+            {
+                return;
+            }
+
             Directory.SetCurrentDirectory(AppContext.BaseDirectory);
             RuntimeHandler.ConfigureRenderingCompatibility();
             ShowStartupNotice();
@@ -66,6 +73,7 @@ namespace XylarBedrock
             await MainViewModel.Default.ShowWaitingDialog(async () =>
             {
                 Trace.WriteLine("Preparing Application...");
+                SafeRun("App registration", AppRegistrationHandler.EnsureRegistered);
                 SafeRun("Language init", LanguageManager.Init);
                 SafeRun("Load config", MainDataModel.Default.LoadConfig);
                 SafeRun("Play button refresh", () =>
