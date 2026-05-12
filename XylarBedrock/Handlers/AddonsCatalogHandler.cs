@@ -49,8 +49,6 @@ namespace XylarBedrock.Handlers
         public static string EnsureCustomAddonPackagePath()
         {
             string packagePath = GetCustomAddonPackagePath();
-            if (File.Exists(packagePath)) return packagePath;
-
             Directory.CreateDirectory(Path.GetDirectoryName(packagePath)!);
 
             using Stream embeddedStream = Assembly.GetExecutingAssembly()

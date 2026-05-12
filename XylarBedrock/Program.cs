@@ -40,7 +40,6 @@ namespace XylarBedrock
 
             Directory.SetCurrentDirectory(AppContext.BaseDirectory);
             RuntimeHandler.ConfigureRenderingCompatibility();
-            ShowStartupNotice();
 
             RuntimeHandler.StartLogging();
             RuntimeHandler.LogStartupInformation();
@@ -50,15 +49,6 @@ namespace XylarBedrock
             application.Startup += OnApplicationInitalizing;
             application.InitializeComponent();
             application.Run();
-        }
-
-        private static void ShowStartupNotice()
-        {
-            System.Windows.Forms.MessageBox.Show(
-                App.StartupNotice,
-                App.DisplayName,
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Warning);
         }
 
         public static void OnApplicationInitalizing(object sender, StartupEventArgs e)

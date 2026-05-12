@@ -16,6 +16,8 @@ using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
+using Windows.Storage;
+using Windows.System;
 using XylarBedrock.Classes;
 using XylarBedrock.Handlers;
 using XylarBedrock.Localization.Language;
@@ -32,6 +34,7 @@ namespace XylarBedrock.Pages.Addons
         private static readonly TimeSpan ShelfAnimationDuration = TimeSpan.FromMilliseconds(260);
         private static readonly TimeSpan AddonsOverlayDuration = TimeSpan.FromSeconds(2.5);
         private const int MaxDomWaitAttempts = 8;
+        private static readonly string[] AllowedBrowserSchemes = { "http", "https", "about", "data", "file" };
         private const string CurseForgeExtractionScript = """
 (() => {
   const clean = (value) => (value || '').replace(/\s+/g, ' ').trim();
@@ -610,6 +613,8 @@ namespace XylarBedrock.Pages.Addons
                 ScraperBrowser.CoreWebView2.Settings.AreDefaultScriptDialogsEnabled = false;
                 ScraperBrowser.CoreWebView2.Settings.IsZoomControlEnabled = false;
                 ScraperBrowser.CoreWebView2.NewWindowRequested += ScraperBrowser_NewWindowRequested;
+                ScraperBrowser.CoreWebView2.NavigationStarting += HiddenBrowser_NavigationStarting;
+                ScraperBrowser.CoreWebView2.LaunchingExternalUriScheme += HiddenBrowser_LaunchingExternalUriScheme;
                 hiddenBrowserInitialized = true;
                 return true;
             }
@@ -636,6 +641,8 @@ namespace XylarBedrock.Pages.Addons
                 DownloadBrowser.CoreWebView2.Settings.IsZoomControlEnabled = false;
                 DownloadBrowser.CoreWebView2.NewWindowRequested += DownloadBrowser_NewWindowRequested;
                 DownloadBrowser.CoreWebView2.DownloadStarting += DownloadBrowser_DownloadStarting;
+                DownloadBrowser.CoreWebView2.NavigationStarting += HiddenBrowser_NavigationStarting;
+                DownloadBrowser.CoreWebView2.LaunchingExternalUriScheme += HiddenBrowser_LaunchingExternalUriScheme;
                 downloadBrowserInitialized = true;
                 return true;
             }
@@ -692,12 +699,83 @@ namespace XylarBedrock.Pages.Addons
 
         private void ScraperBrowser_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
         {
+            TryHandleHiddenBrowserPopup(sender, e);
             e.Handled = true;
         }
 
         private void DownloadBrowser_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
         {
+            TryHandleHiddenBrowserPopup(sender, e);
             e.Handled = true;
+        }
+
+        private void HiddenBrowser_LaunchingExternalUriScheme(object sender, CoreWebView2LaunchingExternalUriSchemeEventArgs e)
+        {
+            e.Cancel = true;
+            Debug.WriteLine($"Blocked external addon browser launch: {e.Uri}");
+
+            if (pendingDownloadTaskSource != null)
+            {
+                pendingDownloadTaskSource.TrySetException(
+                    new InvalidOperationException(
+                        T("AddonsPage_UnsupportedProtocol", "This addon page tried to open an unsupported external protocol instead of giving a normal addon file.")));
+            }
+        }
+
+        private void HiddenBrowser_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(e.Uri)) return;
+
+            if (!TryGetUriScheme(e.Uri, out string scheme)) return;
+            if (AllowedBrowserSchemes.Contains(scheme, StringComparer.OrdinalIgnoreCase)) return;
+
+            e.Cancel = true;
+            Debug.WriteLine($"Blocked external addon browser protocol: {e.Uri}");
+
+            if (pendingDownloadTaskSource != null)
+            {
+                pendingDownloadTaskSource.TrySetException(
+                    new InvalidOperationException(
+                        T("AddonsPage_UnsupportedProtocol", "This addon page tried to open an unsupported external protocol instead of giving a normal addon file.")));
+            }
+        }
+
+        private void TryHandleHiddenBrowserPopup(object sender, CoreWebView2NewWindowRequestedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(e.Uri)) return;
+
+            if (!TryGetUriScheme(e.Uri, out string scheme)) return;
+
+            if (scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
+                scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    if (ReferenceEquals(sender, DownloadBrowser.CoreWebView2))
+                    {
+                        DownloadBrowser.Source = new Uri(e.Uri);
+                    }
+                    else if (ReferenceEquals(sender, ScraperBrowser.CoreWebView2))
+                    {
+                        ScraperBrowser.Source = new Uri(e.Uri);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+
+                return;
+            }
+
+            Debug.WriteLine($"Blocked hidden browser popup protocol: {e.Uri}");
+
+            if (pendingDownloadTaskSource != null)
+            {
+                pendingDownloadTaskSource.TrySetException(
+                    new InvalidOperationException(
+                        T("AddonsPage_UnsupportedProtocol", "This addon page tried to open an unsupported external protocol instead of giving a normal addon file.")));
+            }
         }
 
         private void DownloadBrowser_DownloadStarting(object sender, CoreWebView2DownloadStartingEventArgs e)
@@ -963,7 +1041,7 @@ namespace XylarBedrock.Pages.Addons
             return false;
         }
 
-        private static Task OpenAddonFileAsync(string addonPath)
+        private static async Task OpenAddonFileAsync(string addonPath)
         {
             if (!File.Exists(addonPath))
             {
@@ -972,7 +1050,25 @@ namespace XylarBedrock.Pages.Addons
                     App.DisplayName,
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
-                return Task.CompletedTask;
+                return;
+            }
+
+            try
+            {
+                bool opened = await Application.Current.Dispatcher.InvokeAsync(async () =>
+                {
+                    StorageFile addonFile = await StorageFile.GetFileFromPathAsync(addonPath);
+                    return await Launcher.LaunchFileAsync(addonFile);
+                }).Task.Unwrap();
+
+                if (opened)
+                {
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
             }
 
             try
@@ -991,8 +1087,19 @@ namespace XylarBedrock.Pages.Addons
                     MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
+        }
 
-            return Task.CompletedTask;
+        private static bool TryGetUriScheme(string rawUri, out string scheme)
+        {
+            scheme = string.Empty;
+
+            if (!Uri.TryCreate(rawUri, UriKind.Absolute, out Uri parsedUri))
+            {
+                return false;
+            }
+
+            scheme = parsedUri.Scheme;
+            return true;
         }
 
         private static string T(string key, string fallback)

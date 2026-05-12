@@ -16,7 +16,7 @@
 		<UpdateRequired>false</UpdateRequired>
 		<MapFileExtensions>true</MapFileExtensions>
 		<ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>0.0.0.3</ApplicationVersion>
+    <ApplicationVersion>0.0.0.4</ApplicationVersion>
 		<UseApplicationTrust>false</UseApplicationTrust>
 		<BootstrapperEnabled>true</BootstrapperEnabled>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -29,14 +29,14 @@
 		<SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
 		<IsPublishable>True</IsPublishable>
 		<Company>Xylar Inc.</Company>
-    <Product>XylarBedrock v0.0.0.3</Product>
+    <Product>XylarBedrock v0.0.0.4</Product>
 		<PackageId>XylarBedrock</PackageId>
 		<Authors>Xylar Inc. and Mrmariix</Authors>
 		<Copyright>Copyright (c) Xylar Inc. and Mrmariix</Copyright>
-    <Version>0.0.0.3</Version>
-    <FileVersion>0.0.0.3</FileVersion>
-    <AssemblyVersion>0.0.0.3</AssemblyVersion>
-    <InformationalVersion>0.0.0.3</InformationalVersion>
+    <Version>0.0.0.4</Version>
+    <FileVersion>0.0.0.4</FileVersion>
+    <AssemblyVersion>0.0.0.4</AssemblyVersion>
+    <InformationalVersion>0.0.0.4</InformationalVersion>
 		<AnalysisLevel>latest</AnalysisLevel>
 		<SelfContained>false</SelfContained>
 	</PropertyGroup>
