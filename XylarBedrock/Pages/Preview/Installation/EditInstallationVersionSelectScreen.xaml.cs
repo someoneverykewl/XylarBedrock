@@ -1,18 +1,15 @@
-﻿using XylarBedrock.Classes;
 using JemExtensions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using XylarBedrock.Classes;
+using XylarBedrock.Handlers;
+using XylarBedrock.UpdateProcessor.Extensions;
+using XylarBedrock.ViewModels;
 
 namespace XylarBedrock.Pages.Preview.Installation
 {
@@ -21,14 +18,22 @@ namespace XylarBedrock.Pages.Preview.Installation
     /// </summary>
     public partial class EditInstallationVersionSelectScreen : Page
     {
-        private ViewModels.EditInstallationVersionSelectViewModel MainContext => (ViewModels.EditInstallationVersionSelectViewModel)this.DataContext;
+        private EditInstallationVersionSelectViewModel MainContext => (EditInstallationVersionSelectViewModel)DataContext;
 
-        private bool IsDone = false;
+        private readonly TaskCompletionSource<string> selectionCompletion = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+        private readonly string CurrentSelectedVersionUUID;
+        private bool IsDone;
         private string SelectedVersionUUID = string.Empty;
-        public EditInstallationVersionSelectScreen()
+
+        public EditInstallationVersionSelectScreen(string currentSelectedVersionUuid = "")
         {
-            this.DataContext = new ViewModels.EditInstallationVersionSelectViewModel();
-            InitializeComponent();       
+            CurrentSelectedVersionUUID = currentSelectedVersionUuid ?? string.Empty;
+            DataContext = new EditInstallationVersionSelectViewModel
+            {
+                SelectedVersionUUID = CurrentSelectedVersionUUID
+            };
+
+            InitializeComponent();
         }
 
         private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
@@ -38,58 +43,95 @@ namespace XylarBedrock.Pages.Preview.Installation
 
         private bool Filter(object obj)
         {
-            MCVersion v = obj as MCVersion;
-            if (v == null) return false;
-
-
-            if (!MainContext.ShowImported && v.IsCustom) return false;
-
-            if (!v.IsCustom)
+            MCVersion version = obj as MCVersion;
+            if (version == null)
             {
-                if (!MainContext.ShowPreview && v.IsPreview) return false;
-                else if (!MainContext.ShowBeta && v.IsBeta) return false;
-                else if (!MainContext.ShowRelease && v.IsRelease) return false;
+                return false;
             }
 
-            if (!MainContext.ShowX64 && v.Architecture == "x64") return false;
-            else if (!MainContext.ShowX86 && v.Architecture == "x86") return false;
-            else if (!MainContext.ShowARM && v.Architecture == "arm") return false;
+            MainContext.Update();
 
+            if (!VersionChooserPolicy.IsVisibleInChooser(version, CurrentSelectedVersionUUID))
+            {
+                return false;
+            }
 
+            bool matchesArchitecture = VersionDbExtensions.DoesVerionArchMatch(Constants.CurrentArchitecture, version.Architecture);
+            bool isCurrentSelection = string.Equals(version.UUID, CurrentSelectedVersionUUID, StringComparison.OrdinalIgnoreCase);
+            if (!matchesArchitecture && !isCurrentSelection)
+            {
+                return false;
+            }
 
-            else if (!v.DisplayName.Contains(MainContext.FilterString)) return false;
-            else return true;
+            string filter = MainContext.FilterString ?? string.Empty;
+            string displayName = version.DisplayName ?? version.Name ?? string.Empty;
+            return displayName.Contains(filter, StringComparison.OrdinalIgnoreCase);
         }
 
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (this.IsInitialized && this.IsLoaded) Refresh();
+            if (IsInitialized && IsLoaded)
+            {
+                Refresh();
+            }
         }
 
         private void Refresh()
         {
             Dispatcher.Invoke(() =>
             {
-                Handlers.FilterSortingHandler.Refresh(VersionsList.ItemsSource);
+                FilterSortingHandler.Refresh(VersionsList.ItemsSource);
+                RestoreSelectionIfPossible();
             });
+        }
+
+        private void RestoreSelectionIfPossible()
+        {
+            MCVersion targetVersion = null;
+
+            if (!string.IsNullOrWhiteSpace(MainContext.SelectedVersionUUID))
+            {
+                targetVersion = MainDataModel.Default.Versions.FirstOrDefault(version =>
+                    string.Equals(version.UUID, MainContext.SelectedVersionUUID, StringComparison.OrdinalIgnoreCase) &&
+                    Filter(version));
+            }
+
+            if (targetVersion == null)
+            {
+                targetVersion = MainDataModel.Default.Versions.FirstOrDefault(Filter);
+            }
+
+            VersionsList.SelectedItem = targetVersion;
+
+            if (targetVersion != null)
+            {
+                MainContext.SelectedVersion = targetVersion;
+                MainContext.SelectedVersionUUID = targetVersion.UUID ?? string.Empty;
+                VersionsList.ScrollIntoView(targetVersion);
+            }
+            else
+            {
+                MainContext.SelectedVersion = null;
+                MainContext.SelectedVersionUUID = string.Empty;
+            }
         }
 
         private void Finish(bool update = false)
         {
+            if (IsDone)
+            {
+                return;
+            }
+
             if (update)
             {
-                var o = (VersionsList.SelectedItem as MCVersion);
-
-                if (o == null) SelectedVersionUUID = string.Empty;
-                else SelectedVersionUUID = o.UUID;
+                MCVersion selectedVersion = VersionsList.SelectedItem as MCVersion ?? MainContext.SelectedVersion;
+                SelectedVersionUUID = selectedVersion?.UUID ?? string.Empty;
             }
-            IsDone = true;
-            ViewModels.MainViewModel.Default.SetDialogFrame(null);
-        }
 
-        private void CheckBox_Checked(object sender, RoutedEventArgs e)
-        {
-            if (this.IsInitialized && this.IsLoaded) Refresh();
+            IsDone = true;
+            selectionCompletion.TrySetResult(update ? SelectedVersionUUID : string.Empty);
+            MainViewModel.Default.SetDialogFrame(null);
         }
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
@@ -107,14 +149,58 @@ namespace XylarBedrock.Pages.Preview.Installation
             Finish();
         }
 
-        public async Task<string> GetVersionUUID()
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            return await Task.Run(() =>
+            await EnsureChooserVersionsLoadedAsync();
+            Refresh();
+        }
+
+        private async Task EnsureChooserVersionsLoadedAsync()
+        {
+            if (MainDataModel.Default.Versions.Count == 0)
             {
-                while (!IsDone) { }
-                return SelectedVersionUUID;
-            });
+                await MainDataModel.Default.LoadVersions();
+            }
+
+            bool hasVisibleVersion = MainDataModel.Default.Versions.Any(Filter);
+            if (!hasVisibleVersion)
+            {
+                await MainDataModel.Default.LoadVersions(forceStoreCheck: true);
+            }
+        }
+
+        private void VersionsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            MCVersion selectedVersion = VersionsList.SelectedItem as MCVersion;
+            MainContext.SelectedVersion = selectedVersion;
+            MainContext.SelectedVersionUUID = selectedVersion?.UUID ?? string.Empty;
+        }
+
+        private void VersionsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (VersionsList.SelectedItem is MCVersion)
+            {
+                Finish(true);
+            }
+        }
+
+        private void VersionsList_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && VersionsList.SelectedItem is MCVersion)
+            {
+                e.Handled = true;
+                Finish(true);
+            }
+            else if (e.Key == Key.Escape)
+            {
+                e.Handled = true;
+                Finish();
+            }
+        }
+
+        public Task<string> GetVersionUUID()
+        {
+            return selectionCompletion.Task;
         }
     }
 }
-

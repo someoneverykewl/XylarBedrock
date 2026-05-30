@@ -126,11 +126,11 @@ namespace XylarBedrock.Pages.Play.Installations.Components
             UpdateButtonVisibility();
         }
 
-        private void InstallInstallationButton_Click(object sender, RoutedEventArgs e)
+        private async void InstallInstallationButton_Click(object sender, RoutedEventArgs e)
         {
             MenuItem button = sender as MenuItem;
             var installation = button.DataContext as BLInstallation;
-            MainDataModel.Default.Install(MainDataModel.Default.Config.CurrentProfile, installation);
+            await MainDataModel.Default.Install(MainDataModel.Default.Config.CurrentProfile, installation);
         }
     }
 }

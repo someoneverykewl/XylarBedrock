@@ -27,6 +27,7 @@ namespace XylarBedrock.Handlers
         private const string LAUNCH_INSTALLATION_ARG = "--launch";
         private const string CLOSE_ON_LAUNCH_ARG = "--closeOnLaunch";
         private const string PRESIST_ON_LAUNCH_ARG = "--keepOpenOnLaunch";
+        private const string TEST_UPDATE_PROMPT_ARG = "--test-update-popup";
 
         private const string WRONG_ARGUMENT_MESSAGE = "Wrong argument, try --help, argument given:";
 
@@ -37,6 +38,7 @@ namespace XylarBedrock.Handlers
              string.Format("{0} - {1}", NO_WINDOW_ARG, "Hide main window from showing up (WARNING: Will only be killable using task manager)"),
              string.Format("{0} - {1}", CLOSE_ON_LAUNCH_ARG, string.Format("Close launcher after launch when using the '{0}' argument", LAUNCH_INSTALLATION_ARG)),
              string.Format("{0} - {1}", PRESIST_ON_LAUNCH_ARG, string.Format("Keep launcher open after launch when using the '{0}' argument", LAUNCH_INSTALLATION_ARG)),
+             string.Format("{0} - {1}", TEST_UPDATE_PROMPT_ARG, "Show the update popup for testing"),
              string.Format("{0} - {1}", UNINSTALL_ARG, "Remove the app entry from Windows Apps and remove launcher shortcuts"),
              string.Format("{0} - {1} ({0} {2})", LAUNCH_INSTALLATION_ARG, "Launch installation specified", "<profileName> <installationName>")
         };
@@ -45,6 +47,7 @@ namespace XylarBedrock.Handlers
         private static bool CloseOnLaunch { get; set; } = false;
         private static bool KeepOpenOnLaunch { get; set; } = false;
         private static bool LaunchEditor { get; set; } = false;
+        public static bool IsUpdatePromptTestRequested => StartupArgs.Any(x => string.Equals(x, TEST_UPDATE_PROMPT_ARG, StringComparison.OrdinalIgnoreCase));
 
         public static bool TryHandleProcessWideArgs(string[] args)
         {
@@ -78,6 +81,7 @@ namespace XylarBedrock.Handlers
                     case HELP_ARG:
                     case EDITOR_ARG:
                     case UNINSTALL_ARG:
+                    case TEST_UPDATE_PROMPT_ARG:
                         break;
                     default:
                         InvalidMessage(argument);
@@ -123,6 +127,8 @@ namespace XylarBedrock.Handlers
                     case UNINSTALL_ARG:
                         EndPrase = true;
                         goto EscapeLoop;
+                    case TEST_UPDATE_PROMPT_ARG:
+                        break;
                     case LAUNCH_INSTALLATION_ARG:
                         bool result = LaunchInstallation(args, i);
                         if (!result) KillApp = true;

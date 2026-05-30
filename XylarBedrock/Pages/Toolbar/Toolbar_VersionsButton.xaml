@@ -1,0 +1,15 @@
+<controls:Toolbar_ButtonBase x:Class="XylarBedrock.Pages.Toolbar.Toolbar_VersionsButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:XylarBedrock.Pages.Toolbar"
+             mc:Ignorable="d" Height="59" Margin="1,0,0,0" VerticalAlignment="Top">
+    <ToggleButton x:Name="Button" Click="SideBarButton_Click" Style="{StaticResource SideBarButtonStyle}">
+        <ToggleButton.ToolTip>
+            <ToolTip Content="{DynamicResource ToolbarButtons_VersionsButton_Text}"/>
+        </ToggleButton.ToolTip>
+        <TextBlock Text="{DynamicResource ToolbarButtons_VersionsButton_Text}" LineStackingStrategy="BlockLineHeight" Block.LineHeight="17" VerticalAlignment="Top" HorizontalAlignment="Left" TextWrapping="Wrap" Padding="1,0,0,3"/>
+    </ToggleButton>
+    <Image Style="{StaticResource SideBarButtonIcon}" Source="/XylarBedrock;component/Resources/images/icons/versions_icon.png"/>
+</controls:Toolbar_ButtonBase>

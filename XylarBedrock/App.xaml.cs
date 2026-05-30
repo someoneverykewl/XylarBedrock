@@ -6,7 +6,7 @@ namespace XylarBedrock
 {
     public partial class App : Application
     {
-        public static string Version => "0.0.0.4";
+        public static string Version => "0.0.0.5";
         public static string DisplayName => $"XylarBedrock v{Version}";
 
         public App() : base()

@@ -13,11 +13,17 @@
         <conv:InverseBooleanConverter x:Key="InvertBoolean"/>
         <conv:BooleanAndConverter x:Key="BooleanAndConverter"/>
     </UserControl.Resources>
-    <Grid x:Name="InstallationEntry" Margin="0,8,0,8">
+    <Border Margin="0,8,0,8"
+            Padding="10,8"
+            Background="{DynamicResource Background.Secondary}"
+            BorderBrush="{DynamicResource Seperator.Background}"
+            BorderThickness="1"
+            CornerRadius="10">
+    <Grid x:Name="InstallationEntry">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="400"></ColumnDefinition>
+            <ColumnDefinition Width="420"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="240"></ColumnDefinition>
+            <ColumnDefinition Width="160"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid HorizontalAlignment="Left">
             <Grid.ColumnDefinitions>
@@ -32,9 +38,16 @@
             <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
                 <TextBlock FontSize="16" Foreground="{DynamicResource PrimaryText.Foreground}" FontWeight="DemiBold" Padding="0,0,0,0" Text="{Binding DisplayName}"/>
                 <TextBlock FontSize="11" Foreground="{DynamicResource SecondaryText.Foreground}" Visibility="Visible" FontWeight="SemiBold" Padding="0,0,0,0" Text="{Binding InstallationSize}"/>
-                <TextBlock FontSize="9" Foreground="{DynamicResource TertiaryText.Foreground}" Visibility="Visible" FontWeight="SemiBold" Padding="0,0,0,0" Text="{Binding UUID}"/>
             </StackPanel>
         </Grid>
+        <TextBlock Grid.Column="2"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Right"
+                   Foreground="{DynamicResource TertiaryText.Foreground}"
+                   FontSize="11"
+                   FontWeight="SemiBold"
+                   Text="{Binding Architecture}"/>
     </Grid>
+    </Border>
 </UserControl>
 

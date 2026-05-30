@@ -12,56 +12,224 @@
     <UserControl.Resources>
         <conv:InverseBooleanConverter x:Key="InvertBoolean"/>
         <conv:BooleanAndConverter x:Key="BooleanAndConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <Style x:Key="SmallVersionActionButton" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{DynamicResource BlankFocusVisual}"/>
+            <Setter Property="Width" Value="136"/>
+            <Setter Property="Height" Value="42"/>
+            <Setter Property="Padding" Value="0,-2,0,0"/>
+            <Setter Property="FontSize" Value="17"/>
+            <Setter Property="FontFamily" Value="/XylarBedrock;component/Resources/fonts/#Minecraft Ten"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#552108"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border"
+                                Background="#D9671D"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </Border.RenderTransform>
+                            <TextBlock Text="{TemplateBinding Content}"
+                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                       FontFamily="{TemplateBinding FontFamily}"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       TextAlignment="Center"
+                                       TextTrimming="CharacterEllipsis"
+                                       Margin="0,-3,0,0">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="0" Direction="270" ShadowDepth="2" RenderingBias="Quality" Opacity="0.43"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <DataTrigger Binding="{Binding MatchesOfficialStoreRelease}" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="{DynamicResource PlayButton.Static.Background}"/>
+                                <Setter Property="BorderBrush" Value="{x:Null}"/>
+                            </DataTrigger>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1.035" Duration="0:0:0.12">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1.035" Duration="0:0:0.12">
+                                            <DoubleAnimation.EasingFunction>
+                                                <CubicEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.16">
+                                            <DoubleAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                        <DoubleAnimation Storyboard.TargetName="border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.16">
+                                            <DoubleAnimation.EasingFunction>
+                                                <QuadraticEase EasingMode="EaseOut"/>
+                                            </DoubleAnimation.EasingFunction>
+                                        </DoubleAnimation>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Setter TargetName="border" Property="Background" Value="#F07C2C"/>
+                            </Trigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding MatchesOfficialStoreRelease}" Value="True"/>
+                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource TemplatedParent}}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="border" Property="Background" Value="#5FBE3F"/>
+                            </MultiDataTrigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#A94813"/>
+                            </Trigger>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding MatchesOfficialStoreRelease}" Value="True"/>
+                                    <Condition Binding="{Binding IsPressed, RelativeSource={RelativeSource TemplatedParent}}" Value="True"/>
+                                </MultiDataTrigger.Conditions>
+                                <Setter TargetName="border" Property="Background" Value="#2F7B1E"/>
+                            </MultiDataTrigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.55"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="0" Direction="270" Opacity="0.35" ShadowDepth="3"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
-    <Grid x:Name="InstallationEntry" Margin="0,8,0,8">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="540"></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="240"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid HorizontalAlignment="Left">
+    <Border x:Name="InstallationEntry"
+            Margin="4,4"
+            Padding="14"
+            BorderThickness="1"
+            MinHeight="78">
+        <Border.Style>
+            <Style TargetType="Border">
+                <Setter Property="Background" Value="#333333"/>
+                <Setter Property="BorderBrush" Value="#5A5A5A"/>
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding MatchesOfficialStoreRelease}" Value="True">
+                        <Setter Property="BorderBrush" Value="#7DFF65"/>
+                        <Setter Property="Background" Value="#263A24"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="6"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Image RenderOptions.BitmapScalingMode="HighQuality" Source="{Binding IconPath}" Grid.Column="0" HorizontalAlignment="Left" Width="40" Height="40" Margin="0,0,0,0">
-                <Image.OpacityMask>
-                    <ImageBrush ImageSource="{Binding IconPath}"/>
-                </Image.OpacityMask>
-            </Image>
-            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0,0,0">
-                <TextBlock FontSize="16" Foreground="{DynamicResource PrimaryText.Foreground}" FontWeight="DemiBold" Padding="0,0,0,0" Text="{Binding DisplayName}"/>
-                <TextBlock FontSize="11" Foreground="{DynamicResource SecondaryText.Foreground}" Visibility="Visible" FontWeight="SemiBold" Padding="0,0,0,0" Text="{Binding InstallationSize}"/>
-                <TextBlock FontSize="9" Foreground="{DynamicResource TertiaryText.Foreground}" Visibility="Visible" FontWeight="SemiBold" Padding="0,0,0,0" Text="{Binding UUID}"/>
+            <Border Width="6"
+                    HorizontalAlignment="Stretch"
+                    Margin="-16,-16,14,-16">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Background" Value="#666666"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding MatchesOfficialStoreRelease}" Value="True">
+                                <Setter Property="Background" Value="#57C53A"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+            </Border>
+            <Grid Grid.Column="1" HorizontalAlignment="Left">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Width="52"
+                        Height="52"
+                        Background="#242424"
+                        BorderBrush="#555555"
+                        BorderThickness="1"
+                        VerticalAlignment="Center">
+                    <Image RenderOptions.BitmapScalingMode="HighQuality"
+                           Source="{Binding VersionListIconPath}"
+                           Width="34"
+                           Height="34"
+                           Stretch="Uniform"/>
+                </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="14,0,0,0">
+                    <TextBlock FontSize="17"
+                               Foreground="{DynamicResource PrimaryText.Foreground}"
+                               FontWeight="Bold"
+                               Text="{Binding DisplayName}"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                        <Border Background="#1F1F1F"
+                                BorderBrush="#505050"
+                                BorderThickness="1"
+                                Padding="8,4">
+                            <TextBlock FontSize="12"
+                                       Foreground="#D4D4D4"
+                                       FontWeight="SemiBold"
+                                       Text="{Binding InstallationSize}"/>
+                        </Border>
+                        <Border Margin="8,0,0,0"
+                                Background="#21441F"
+                                BorderBrush="#7DFF65"
+                                BorderThickness="1"
+                                Padding="8,4">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding MatchesOfficialStoreRelease}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock FontSize="12"
+                                       Foreground="#CFFFC1"
+                                       FontWeight="Bold"
+                                       Text="ACTIVE"/>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+            <StackPanel HorizontalAlignment="Right"
+                        Orientation="Horizontal"
+                        Grid.Column="2"
+                        x:Name="ButtonPanel"
+                        VerticalAlignment="Center"
+                        Visibility="Visible">
+                <Button x:Name="Repair" Click="Repair_Click" Content="{Binding PrimaryActionText}" Style="{StaticResource SmallVersionActionButton}">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource BooleanAndConverter}">
+                            <Binding Source="{x:Static viewModels:MainDataModel.Default}" Path="ProgressBarState.AllowEditing" Mode="OneWay"/>
+                            <Binding Path="CanManageFromVersionsPage" Mode="OneWay"/>
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
             </StackPanel>
         </Grid>
-        <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="2" x:Name="ButtonPanel" Visibility="Collapsed">
-            <Button x:Name="Repair" Click="Repair_Click" Content="{DynamicResource GeneralText_Repair}" Style="{DynamicResource DialogButton_Orange}">
-                <Button.IsEnabled>
-                    <MultiBinding Converter="{StaticResource BooleanAndConverter}">
-                        <Binding Source="{x:Static viewModels:MainDataModel.Default}" Path="ProgressBarState.AllowEditing" Mode="OneWay"/>
-                        <Binding Path="IsCustom" Converter="{StaticResource InvertBoolean}" Mode="OneWay"  />
-                    </MultiBinding>
-                </Button.IsEnabled>
-            </Button>
-            <Button x:Name="Folder" Click="Folder_Click" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" FontWeight="Bold" Style="{DynamicResource DialogButton}">
-                <Button.Content>
-                    <Grid Width="16" Height="16">
-                        <Path Stretch="Uniform" Fill="{DynamicResource OveralElements.Background}" StrokeThickness="0" Data="{DynamicResource FolderIcon}"/>
-                    </Grid>
-                </Button.Content>
-            </Button>
-            <Button x:Name="More" FontWeight="Bold" Style="{DynamicResource DialogButton}" Click="More_Click">
-                <Button.Content>
-                    <Image Width="16" Height="16" Source="{DynamicResource Expandable}" Stretch="None"/>
-                </Button.Content>
-                <Button.ContextMenu>
-                    <ContextMenu Closed="ContextMenu_Closed" Style="{DynamicResource NoCheckboxContextMenu}">
-                        <MenuItem Header="{DynamicResource GeneralText_Remove}" IsEnabled="{Binding Source={x:Static viewModels:MainDataModel.Default}, Path=ProgressBarState.AllowEditing, Mode=OneWay}" Name="Remove" Click="Delete_Click"></MenuItem>
-                    </ContextMenu>
-                </Button.ContextMenu>
-            </Button>
-        </StackPanel>
-    </Grid>
+    </Border>
 </UserControl>
 

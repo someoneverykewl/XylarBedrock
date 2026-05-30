@@ -24,21 +24,24 @@
                             <ToolTip Content="{DynamicResource GameTab_PlayButton_Text}"/>
                         </ToggleButton.ToolTip>
                     </ToggleButton>
-                    <ToggleButton x:Name="InstallationsButton" Width="Auto" Click="ButtonManager2" Content="{DynamicResource ResourceKey=GameTab_InstallationsButton_Text}"  Style="{DynamicResource ToolbarButton}">
-                        <ToggleButton.ToolTip>
-                            <ToolTip Content="{DynamicResource GameTab_InstallationsButton_Text}"/>
-                        </ToggleButton.ToolTip>
-                    </ToggleButton>
                     <ToggleButton x:Name="FaqButton" Width="Auto" Click="ButtonManager2" Content="{DynamicResource ResourceKey=GameTab_FAQButton_Text}" Style="{DynamicResource ToolbarButton}">
                         <ToggleButton.ToolTip>
                             <ToolTip Content="{DynamicResource GameTab_FAQButton_Text}"/>
                         </ToggleButton.ToolTip>
                     </ToggleButton>
-                    <ToggleButton x:Name="PatchNotesButton" Width="Auto" Click="ButtonManager2" Content="{DynamicResource ResourceKey=GameTab_PatchNotesButton_Text}" Style="{DynamicResource ToolbarButton}">
-                        <ToggleButton.ToolTip>
-                            <ToolTip Content="{DynamicResource GameTab_PatchNotesButton_Text}"/>
-                        </ToggleButton.ToolTip>
-                    </ToggleButton>
+                    <Button x:Name="CatEasterEggButton"
+                            Width="34"
+                            Height="34"
+                            Margin="6,0,0,0"
+                            Padding="4"
+                            Background="Transparent"
+                            BorderBrush="Transparent"
+                            Cursor="Hand"
+                            Click="CatEasterEggButton_Click">
+                        <Image Source="/XylarBedrock;component/resources/images/icons/cateasteregg.png"
+                               RenderOptions.BitmapScalingMode="HighQuality"
+                               Stretch="Uniform"/>
+                    </Button>
                 </StackPanel>
             </Grid>
         </Border>

@@ -1,0 +1,389 @@
+<Page x:Class="XylarBedrock.Pages.Skins.SkinsPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      mc:Ignorable="d"
+      d:DesignHeight="608" d:DesignWidth="828"
+      Title="SkinsPage"
+      UseLayoutRounding="True"
+      SnapsToDevicePixels="True"
+      Loaded="Page_Loaded">
+    <Page.Resources>
+        <Style x:Key="SkinTileButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{DynamicResource BlankFocusVisual}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SkinCardStyle" TargetType="{x:Type Border}">
+            <Setter Property="Width" Value="118"/>
+            <Setter Property="Height" Value="166"/>
+            <Setter Property="Margin" Value="6"/>
+            <Setter Property="Background" Value="#E3171717"/>
+            <Setter Property="BorderBrush" Value="#4F4A3B"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="4"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="16" ShadowDepth="5" Direction="270" Opacity="0.42"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                    <Setter Property="Background" Value="#F228251B"/>
+                    <Setter Property="BorderBrush" Value="#FFD83D"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect Color="#FFD83D" BlurRadius="20" ShadowDepth="0" Opacity="0.58"/>
+                        </Setter.Value>
+                    </Setter>
+                </DataTrigger>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1.045" Duration="0:0:0.14">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1.045" Duration="0:0:0.14">
+                                <DoubleAnimation.EasingFunction>
+                                    <CubicEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.18">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                            <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.18">
+                                <DoubleAnimation.EasingFunction>
+                                    <QuadraticEase EasingMode="EaseOut"/>
+                                </DoubleAnimation.EasingFunction>
+                            </DoubleAnimation>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F12A2A28"/>
+                    <Setter Property="BorderBrush" Value="#BFAF7B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SkinNavButton" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{DynamicResource BlankFocusVisual}"/>
+            <Setter Property="Width" Value="138"/>
+            <Setter Property="Height" Value="48"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontFamily" Value="/XylarBedrock;component/Resources/fonts/#Minecraft Ten"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#161616"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border"
+                                Background="#565656"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="2"
+                                RenderTransformOrigin="0.5,0.5">
+                            <Border.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1"/>
+                            </Border.RenderTransform>
+                            <TextBlock Text="{TemplateBinding Content}"
+                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                       FontFamily="{TemplateBinding FontFamily}"
+                                       FontSize="{TemplateBinding FontSize}"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       Margin="0,-4,0,0">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="0" Direction="270" ShadowDepth="2" Opacity="0.45"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="MouseEnter">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1.03" Duration="0:0:0.12"/>
+                                        <DoubleAnimation Storyboard.TargetName="border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1.03" Duration="0:0:0.12"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <EventTrigger RoutedEvent="MouseLeave">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.16"/>
+                                        <DoubleAnimation Storyboard.TargetName="border" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.16"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Cursor" Value="Hand"/>
+                                <Setter TargetName="border" Property="Background" Value="#6E6E6E"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#3F3F3F"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="0" Direction="270" Opacity="0.35" ShadowDepth="4"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid ClipToBounds="True">
+        <Grid.Background>
+            <ImageBrush ImageSource="/XylarBedrock;component/resources/images/bg/play_screen/bedrock_standard.jpg"
+                        Stretch="UniformToFill"
+                        RenderOptions.BitmapScalingMode="Fant"/>
+        </Grid.Background>
+        <Rectangle>
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#E5000000" Offset="0"/>
+                    <GradientStop Color="#BA10100C" Offset="0.45"/>
+                    <GradientStop Color="#E7000000" Offset="1"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <Grid Margin="28,20,28,18">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Border HorizontalAlignment="Center"
+                    Padding="18,12"
+                    CornerRadius="8"
+                    BorderBrush="#4CFFFFFF"
+                    BorderThickness="1">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#D91A1A1A" Offset="0"/>
+                        <GradientStop Color="#CC26210F" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Width="72"
+                            Height="72"
+                            Background="#99101010"
+                            BorderBrush="#60FFD83D"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="8">
+                        <Image Source="/XylarBedrock;component/Resources/images/icons/skins_icon.png"
+                               Stretch="Uniform"
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Border>
+
+                    <StackPanel Grid.Column="1"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center">
+                        <TextBlock Text="{DynamicResource SkinsPage_Title}"
+                                   FontFamily="/XylarBedrock;component/Resources/fonts/#Minecraft Ten"
+                                   FontSize="34"
+                                   Foreground="White"
+                                   TextOptions.TextFormattingMode="Display"/>
+                        <TextBlock Text="{DynamicResource SkinsPage_Credits}"
+                                   Margin="0,3,0,0"
+                                   FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
+                                   FontSize="12"
+                                   Foreground="#FFE9C86A"/>
+                        <TextBlock x:Name="SkinCounterText"
+                                   Margin="0,5,0,0"
+                                   FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
+                                   FontSize="12"
+                                   Foreground="#D8D8D8"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Border Grid.Row="1"
+                    Margin="0,16,0,12"
+                    Padding="14"
+                    CornerRadius="8"
+                    BorderBrush="#4E4E4E"
+                    BorderThickness="1">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#CC1E1E1E" Offset="0"/>
+                        <GradientStop Color="#E6111111" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  CanContentScroll="False"
+                                  PanningMode="VerticalOnly">
+                        <ItemsControl x:Name="SkinsItems"
+                                      ItemsSource="{Binding VisibleSkins}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel HorizontalAlignment="Center"
+                                               VerticalAlignment="Top"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource SkinTileButtonStyle}"
+                                            Click="SkinCard_Click"
+                                            Tag="{Binding}">
+                                        <Border Style="{StaticResource SkinCardStyle}">
+                                            <Grid ClipToBounds="True">
+                                                <Rectangle RadiusX="3"
+                                                           RadiusY="3">
+                                                    <Rectangle.Fill>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                            <GradientStop Color="#442B2519" Offset="0"/>
+                                                            <GradientStop Color="#22000000" Offset="1"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <Rectangle Height="38"
+                                                           VerticalAlignment="Top"
+                                                           Opacity="0.22">
+                                                    <Rectangle.Fill>
+                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                            <GradientStop Color="#FFFFFFFF" Offset="0"/>
+                                                            <GradientStop Color="#00FFFFFF" Offset="0.72"/>
+                                                        </LinearGradientBrush>
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <Ellipse Width="70"
+                                                         Height="14"
+                                                         Fill="#75000000"
+                                                         HorizontalAlignment="Center"
+                                                         VerticalAlignment="Bottom"
+                                                         Margin="0,0,0,13"/>
+                                                <Image Source="{Binding PreviewImage}"
+                                                       Width="108"
+                                                       Height="150"
+                                                       Stretch="Uniform"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       Margin="0,-4,0,0"
+                                                       UseLayoutRounding="True"
+                                                       SnapsToDevicePixels="True"
+                                                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                                            </Grid>
+                                        </Border>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <TextBlock x:Name="EmptySkinsText"
+                               Text="{DynamicResource SkinsPage_NoSkinsFound}"
+                               Visibility="Collapsed"
+                               Foreground="White"
+                               FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
+                               FontSize="18"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="BackButton"
+                        Content="{DynamicResource SkinsPage_BackButton}"
+                        Style="{StaticResource SkinNavButton}"
+                        HorizontalAlignment="Left"
+                        Click="BackButton_Click"/>
+
+                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                    <Border Margin="0,0,0,7"
+                            Padding="14,5"
+                            Background="#99111111"
+                            BorderBrush="#3DFFFFFF"
+                            BorderThickness="1"
+                            CornerRadius="12">
+                        <TextBlock x:Name="DownloadStatusText"
+                                   Text="{DynamicResource SkinsPage_SelectSkinHelp}"
+                                   FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
+                                   FontSize="12"
+                                   Foreground="#EAEAEA"
+                                   HorizontalAlignment="Center"/>
+                    </Border>
+                    <Button x:Name="DownloadButton"
+                            Width="238"
+                            Height="52"
+                            Padding="0"
+                            IsEnabled="False"
+                            Style="{DynamicResource BigGreenButton}"
+                            Click="DownloadButton_Click">
+                        <TextBlock Text="{DynamicResource SkinsPage_DownloadButton}"
+                                   FontSize="23"
+                                   Style="{DynamicResource BigGreenButton_Text}"/>
+                    </Button>
+                </StackPanel>
+
+                <Button Grid.Column="2"
+                        x:Name="NextButton"
+                        Content="{DynamicResource SkinsPage_NextButton}"
+                        Style="{StaticResource SkinNavButton}"
+                        HorizontalAlignment="Right"
+                        Click="NextButton_Click"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Page>

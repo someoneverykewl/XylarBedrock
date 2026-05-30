@@ -36,6 +36,7 @@ namespace XylarBedrock
         public static readonly string MODS_FOLDER_NAME = "mods";
         public static readonly string BUNDLED_MODS_DIRECTORY_NAME = "dll";
         public static readonly string BUNDLED_MOD_DLL_NAME = "XylarBedrock.dll";
+        public static readonly string BUNDLED_TOOLS_DLL_NAME = "XylarTools.dll";
 
         public static readonly string EXTRA_DLL_DIRECTORY_NAME = "dll";
         public static readonly string EXTRA_DLL_NAME = "vcruntime140_1.dll";

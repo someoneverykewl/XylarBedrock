@@ -10,22 +10,17 @@ using System.Windows.Data;
 using System.Windows.Media.Animation;
 using XylarBedrock.Classes;
 using XylarBedrock.Downloaders;
+using XylarBedrock.Pages.General;
 using XylarBedrock.Pages.Play.FAQ;
 using XylarBedrock.Pages.Play.Home;
-using XylarBedrock.Pages.Play.Installations;
-using XylarBedrock.Pages.Play.PatchNotes;
 using XylarBedrock.UI.Components;
 
 namespace XylarBedrock.Pages.Play
 {
     public partial class GameTabs : Page
     {
-        private static ChangelogDownloader PatchNotesDownloader = new ChangelogDownloader();
-
         public PlayScreenPage playScreenPage = new PlayScreenPage();
-        public InstallationsScreen installationsScreen = new InstallationsScreen();
         public FaqPage faqPage = new FaqPage();
-        public PatchNotesPage patchNotesPage = new PatchNotesPage(PatchNotesDownloader);
 
         private Navigator Navigator { get; set; } = new Navigator();
 
@@ -42,9 +37,7 @@ namespace XylarBedrock.Pages.Play
             {
                 ToggleButton[] toggleButtons = new ToggleButton[] {
                 PlayButton,
-                InstallationsButton,
-                FaqButton,
-                PatchNotesButton
+                FaqButton
             };
 
                 foreach (ToggleButton button in toggleButtons)
@@ -72,9 +65,7 @@ namespace XylarBedrock.Pages.Play
                 ResetButtonManager(senderName);
 
                 if (senderName == PlayButton.Name) NavigateToPlayScreen();
-                else if (senderName == InstallationsButton.Name) NavigateToInstallationsPage();
                 else if (senderName == FaqButton.Name) NavigateToFaqPage();
-                else if (senderName == PatchNotesButton.Name) NavigateToPatchNotes();
             });
         }
 
@@ -84,28 +75,26 @@ namespace XylarBedrock.Pages.Play
             Task.Run(() => Navigator.Navigate(MainPageFrame, playScreenPage));
 
         }
-        public void NavigateToInstallationsPage()
-        {
-            Navigator.UpdatePageIndex(1);
-            Task.Run(() => Navigator.Navigate(MainPageFrame, installationsScreen));
-        }
 
         public void NavigateToFaqPage()
         {
-            Navigator.UpdatePageIndex(2);
+            Navigator.UpdatePageIndex(1);
             Task.Run(() => Navigator.Navigate(MainPageFrame, faqPage));
-        }
-
-        public void NavigateToPatchNotes()
-        {
-            Navigator.UpdatePageIndex(3);
-            Task.Run(() => Navigator.Navigate(MainPageFrame, patchNotesPage));
         }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             ResetButtonManager(null);
             ButtonManager_Base(PlayButton.Name);
+        }
+
+        private void CatEasterEggButton_Click(object sender, RoutedEventArgs e)
+        {
+            CatEasterEggWindow popup = new CatEasterEggWindow
+            {
+                Owner = Window.GetWindow(this)
+            };
+            popup.ShowDialog();
         }
     }
 }

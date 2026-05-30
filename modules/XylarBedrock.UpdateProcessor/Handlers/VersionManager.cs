@@ -121,6 +121,30 @@ namespace XylarBedrock.UpdateProcessor.Handlers
                 task.Start();
             }
         }
+
+        public async Task<bool> CanResolveDownloadAsync(VersionInfoJson version)
+        {
+            if (version.GetUUID() == Guid.Empty)
+            {
+                return false;
+            }
+
+            try
+            {
+                string link = await StoreNetwork.getDownloadLink(
+                    version.GetUUID().ToString(),
+                    version.GetRevisionNumber(),
+                    version.GetVersionType());
+
+                return !string.IsNullOrWhiteSpace(link);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Version download resolution failed for '{version.GetVersion()}' ({version.GetUUID()}): {ex}");
+                return false;
+            }
+        }
+
         public async Task LoadVersions(bool getNewVersions, bool checkMicrosoftStore)
         {
             Versions.Clear();
@@ -192,7 +216,7 @@ namespace XylarBedrock.UpdateProcessor.Handlers
                 var config = await StoreNetwork.fetchConfigLastChanged();
                 var cookie = await StoreNetwork.fetchCookie(config, type);
 
-                List<string> knownVersions = JsonDb.GetVersions().ConvertAll(x => x.GetUUID().ToString());
+                List<string> knownVersions = JsonDb.list.ConvertAll(x => x.GetIdentityKey());
                 List<UpdateInfo> result = await StoreManager.CheckForGDKVersions(StoreNetwork, type, cookie, knownVersions);
                 JsonDb.AddVersion(result, type);
             }
@@ -230,8 +254,23 @@ namespace XylarBedrock.UpdateProcessor.Handlers
             foreach (VersionInfoJson version in db.list)
             {
                 if (!MinecraftVersion.TryParse(version.GetVersion(), out MinecraftVersion ver)) continue;
-                if (Versions.Exists(x => x.GetUUID() == version.GetUUID())) continue;
-                if (Versions.Exists(x => x.GetVersion() == version.GetVersion() && x.GetArchitecture() == version.GetArchitecture())) continue;
+
+                if (Versions.Exists(x => x.GetIdentityKey() == version.GetIdentityKey())) continue;
+
+                int sameVersionIndex = Versions.FindIndex(x =>
+                    x.GetVersion() == version.GetVersion() &&
+                    x.GetArchitecture() == version.GetArchitecture() &&
+                    x.GetVersionType() == version.GetVersionType());
+
+                if (sameVersionIndex >= 0)
+                {
+                    if (Versions[sameVersionIndex].GetRevisionNumber() < version.GetRevisionNumber())
+                    {
+                        Versions[sameVersionIndex] = version;
+                    }
+                    continue;
+                }
+
                 Versions.Add(version);
             }
         }

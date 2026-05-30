@@ -13,9 +13,6 @@
       Loaded="Page_Loaded"
       x:Name="Host"
       Title="AddInstallationScreen" Width="Auto" Height="Auto" Foreground="{x:Null}" Background="{DynamicResource Background.Dialog}" SnapsToDevicePixels="True">
-    <Page.Resources>
-        <CollectionViewSource x:Key="Versions" Source="{Binding Versions, Source={x:Static viewModels:MainDataModel.Default}}" Filter="CollectionViewSource_Filter"/>
-    </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"></RowDefinition>
@@ -42,22 +39,30 @@
                         <TextBlock Margin="0,28,0,5" Text="{DynamicResource EditInstallationScreen_NameSubtitle}" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource HeaderTextblock}"/>
                         <TextBox Text="{Binding InstallationName, Mode=TwoWay}" Height="32" Tag="{DynamicResource EditInstallationScreen_NameHintText}" Width="330" x:Name="InstallationNameField" AcceptsReturn="False" SpellCheck.IsEnabled="False"  VerticalContentAlignment="Center" HorizontalContentAlignment="Left"></TextBox>
                         <TextBlock Margin="0,28,0,5" Text="{DynamicResource EditInstallationScreen_VersionSubtitle}" VerticalAlignment="Center" HorizontalAlignment="Left" Style="{DynamicResource HeaderTextblock}"/>
-                        <ContentControl Style="{DynamicResource TextboxLikeFrame}" Height="32" Background="{DynamicResource TextBox.Static.Background}">
-                            <Grid>
+                        <ContentControl Style="{DynamicResource TextboxLikeFrame}" Height="38" Background="{DynamicResource TextBox.Static.Background}">
+                            <Grid x:Name="VersionChooserHost" Cursor="Hand" PreviewMouseLeftButtonUp="VersionChooserHost_PreviewMouseLeftButtonUp">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition></ColumnDefinition>
                                     <ColumnDefinition Width="Auto"></ColumnDefinition>
                                 </Grid.ColumnDefinitions>
-                                <ComboBox Height="32" x:Name="InstallationVersionSelect" ItemsSource="{Binding Source={StaticResource Versions}, IsAsync=True}" SelectedValue="{Binding SelectedVersionUUID, Mode=TwoWay}" SelectedValuePath="UUID" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" Style="{DynamicResource GenericComboBoxStyle}" Foreground="White" Padding="13,0,0,0" SelectedIndex="1" FontSize="14">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate DataType="{x:Type classes:MCVersion}">
-                                            <TextBlock Style="{DynamicResource CommonTextblock}" Text="{Binding DisplayName}"></TextBlock>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
-                                <Button Grid.Column="1" Content="•••" x:Name="MoreVersionsButton" Click="MoreVersionsButton_Click" HorizontalAlignment="Center" Margin="5" Style="{StaticResource TextBoxButton}"></Button>
+                                <StackPanel VerticalAlignment="Center" Margin="13,0,10,0">
+                                    <TextBlock Text="{Binding SelectedVersionDisplayName}"
+                                               Foreground="White"
+                                               FontSize="14"
+                                               FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
+                                               FontWeight="SemiBold"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+                                <Button Grid.Column="1" Content="Choose" x:Name="MoreVersionsButton" Click="MoreVersionsButton_Click" HorizontalAlignment="Center" Margin="5" MinWidth="88" Style="{StaticResource TextBoxButton}" Visibility="Visible"></Button>
                             </Grid>
                         </ContentControl>
+                        <TextBlock Margin="0,8,0,0"
+                                   Text="Click Choose to open the full version chooser."
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Foreground="{DynamicResource SecondaryText.Foreground}"
+                                   FontSize="12"
+                                   FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"/>
 
 
 

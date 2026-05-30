@@ -7,6 +7,7 @@ namespace XylarBedrock.Classes.Launcher
     {
         public string ExecutableDirectoryPath { get; set; } = string.Empty;
         public string DllDirectoryPath { get; set; } = string.Empty;
+        public string ModDllName { get; set; } = string.Empty;
         public string ModDllPath { get; set; } = string.Empty;
         public string RuntimeDllPath { get; set; } = string.Empty;
 

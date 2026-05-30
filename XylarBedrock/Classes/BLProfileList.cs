@@ -14,6 +14,7 @@ using System.ComponentModel;
 using XylarBedrock.ViewModels;
 using XylarBedrock.Handlers;
 using Windows.Networking.NetworkOperators;
+using XylarBedrock.UpdateProcessor.Extensions;
 
 namespace XylarBedrock.Classes
 {
@@ -21,6 +22,37 @@ namespace XylarBedrock.Classes
     [AddINotifyPropertyChangedInterface]    //224 Lines
     public class BLProfileList : JemExtensions.WPF.NotifyPropertyChangedBase
     {
+        private const string ManagedVersionInstallationPrefix = "catalog_version:";
+        private static readonly string[] ManagedVersionIconPool = new[]
+        {
+            "Acacia_Leaves.png",
+            "Ancient_Debris.png",
+            "Bookshelf.png",
+            "Bricks.png",
+            "Cake.png",
+            "Command_Block.png",
+            "Copper_Block.png",
+            "Crafting_Table.png",
+            "Deepslate.png",
+            "Diamond_Ore.png",
+            "Enchanting_Table.png",
+            "End_Stone.png",
+            "Glowstone.png",
+            "Grass_Block.png",
+            "Grass_Path.png",
+            "Honey_Block.png",
+            "Mangrove_Planks.png",
+            "Mycelium.png",
+            "Nether_Bricks.png",
+            "Observer.png",
+            "Obsidian.png",
+            "Pumpkin.png",
+            "Redstone_Ore.png",
+            "Slime_Block.png",
+            "Snowy_Grass_Block.png",
+            "TNT.png",
+            "Warped_Planks.png"
+        };
         public int Version = 2;
 
 
@@ -173,9 +205,13 @@ namespace XylarBedrock.Classes
                 {
                     CurrentInstallationUUID = savedInstallationUuid;
                 }
-                else if (CurrentInstallations.Any(x => x.InstallationUUID == Constants.LATEST_RELEASE_UUID))
+                else if (CurrentInstallations.Any(IsOfficialInstallation))
                 {
                     CurrentInstallationUUID = Constants.LATEST_RELEASE_UUID;
+                }
+                else if (CurrentInstallations.FirstOrDefault(IsManagedVersionInstallation) is BLInstallation preferredManagedInstallation)
+                {
+                    CurrentInstallationUUID = preferredManagedInstallation.InstallationUUID;
                 }
                 else if (CurrentInstallations.Count != 0)
                 {
@@ -199,21 +235,82 @@ namespace XylarBedrock.Classes
             foreach (var profile in profiles.Values)
             {
                 profile.Installations ??= new ObservableCollection<BLInstallation>();
-
-                var lastPlayed = profile.Installations
-                    .OrderByDescending(x => x.LastPlayed)
-                    .FirstOrDefault(x => x.VersionUUID == Constants.LATEST_RELEASE_UUID)?.LastPlayed ?? default;
-
-                profile.Installations.Clear();
-                profile.Installations.Add(CreateOfficialInstallation(lastPlayed));
+                EnsureOfficialInstallation(profile);
             }
 
             Properties.LauncherSettings.Default.ShowReleases = true;
             Properties.LauncherSettings.Default.ShowBetas = false;
             Properties.LauncherSettings.Default.ShowPreviews = false;
-            Properties.LauncherSettings.Default.CurrentInstallationUUID = Constants.LATEST_RELEASE_UUID;
+
+            EnsureCurrentInstallationSelection();
             Properties.LauncherSettings.Default.Save();
             Save();
+        }
+
+        public bool SyncVisibleInstallationsFromVersions()
+        {
+            if (MainDataModel.Default.Versions == null || MainDataModel.Default.Versions.Count == 0)
+            {
+                return false;
+            }
+
+            bool changed = false;
+            List<MCVersion> visibleVersions = MainDataModel.Default.Versions
+                .Where(version =>
+                    !version.IsCustom &&
+                    !string.Equals(version.UUID, Constants.LATEST_RELEASE_UUID, StringComparison.OrdinalIgnoreCase) &&
+                    VersionChooserPolicy.IsVisibleInChooser(version) &&
+                    VersionDbExtensions.DoesVerionArchMatch(Constants.CurrentArchitecture, version.Architecture))
+                .ToList();
+
+            foreach (BLProfile profile in profiles.Values)
+            {
+                profile.Installations ??= new ObservableCollection<BLInstallation>();
+                BLInstallation officialInstallation = EnsureOfficialInstallation(profile);
+
+                List<BLInstallation> existingInstallations = profile.Installations.ToList();
+                List<BLInstallation> userInstallations = existingInstallations
+                    .Where(installation => !IsManagedVersionInstallation(installation) && !IsOfficialInstallation(installation))
+                    .ToList();
+
+                ObservableCollection<BLInstallation> rebuiltInstallations = new ObservableCollection<BLInstallation>();
+                rebuiltInstallations.Add(officialInstallation);
+
+                foreach (MCVersion version in visibleVersions)
+                {
+                    BLInstallation existingManagedInstallation = existingInstallations
+                        .FirstOrDefault(installation =>
+                            IsManagedVersionInstallation(installation) &&
+                            string.Equals(installation.VersionUUID, version.UUID, StringComparison.OrdinalIgnoreCase));
+
+                    rebuiltInstallations.Add(existingManagedInstallation == null
+                        ? CreateManagedVersionInstallation(version)
+                        : UpdateManagedVersionInstallation(existingManagedInstallation, version));
+                }
+
+                foreach (BLInstallation installation in userInstallations)
+                {
+                    rebuiltInstallations.Add(installation);
+                }
+
+                if (!InstallationOrderMatches(profile.Installations, rebuiltInstallations))
+                {
+                    profile.Installations = rebuiltInstallations;
+                    changed = true;
+                }
+            }
+
+            if (!EnsureCurrentInstallationSelection() && !changed)
+            {
+                return false;
+            }
+
+            Properties.LauncherSettings.Default.Save();
+            Save();
+            OnPropertyChanged(nameof(CurrentProfile));
+            OnPropertyChanged(nameof(CurrentInstallations));
+            OnPropertyChanged(nameof(CurrentInstallation));
+            return true;
         }
 
         private void EnsureDefaultProfileExists()
@@ -246,6 +343,191 @@ namespace XylarBedrock.Classes
                 InstallationUUID = Constants.LATEST_RELEASE_UUID,
                 LastPlayed = lastPlayed
             };
+        }
+
+        private static bool IsOfficialInstallation(BLInstallation installation)
+        {
+            return installation != null &&
+                   string.Equals(installation.InstallationUUID, Constants.LATEST_RELEASE_UUID, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsManagedVersionInstallation(BLInstallation installation)
+        {
+            return installation != null &&
+                   installation.InstallationUUID != null &&
+                   installation.InstallationUUID.StartsWith(ManagedVersionInstallationPrefix, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string GetManagedInstallationUUID(MCVersion version)
+        {
+            return ManagedVersionInstallationPrefix + version.UUID;
+        }
+
+        private static string GetManagedDisplayName(MCVersion version)
+        {
+            return $"Minecraft for Windows ({version.Name})";
+        }
+
+        private BLInstallation CreateManagedVersionInstallation(MCVersion version)
+        {
+            string installationName = GetManagedDisplayName(version);
+            return new BLInstallation()
+            {
+                DisplayName = installationName,
+                DirectoryName = ValidatePathName(installationName),
+                VersionUUID = version.UUID,
+                VersioningMode = VersioningMode.None,
+                IconPath = GetDefaultInstallationIconPath(version),
+                IsCustomIcon = false,
+                ReadOnly = true,
+                InstallationUUID = GetManagedInstallationUUID(version)
+            };
+        }
+
+        private BLInstallation UpdateManagedVersionInstallation(BLInstallation installation, MCVersion version)
+        {
+            string installationName = GetManagedDisplayName(version);
+            installation.DisplayName = installationName;
+            installation.DirectoryName = ValidatePathName(installationName);
+            installation.VersionUUID = version.UUID;
+            installation.VersioningMode = VersioningMode.None;
+            installation.IconPath = GetDefaultInstallationIconPath(version);
+            installation.IsCustomIcon = false;
+            installation.ReadOnly = true;
+            installation.InstallationUUID = GetManagedInstallationUUID(version);
+            return installation;
+        }
+
+        private static string GetDefaultInstallationIconPath(MCVersion version)
+        {
+            if (version == null)
+            {
+                return Constants.INSTALLATIONS_LATEST_RELEASE_ICONPATH;
+            }
+
+            if (version.IsCustom)
+            {
+                return string.IsNullOrWhiteSpace(version.IconPath)
+                    ? Constants.INSTALLATIONS_FALLBACK_ICONPATH
+                    : Path.GetFileName(version.IconPath);
+            }
+
+            return GetManagedVersionIconPath(version);
+        }
+
+        private static string GetManagedVersionIconPath(MCVersion version)
+        {
+            if (ManagedVersionIconPool.Length == 0)
+            {
+                return Constants.INSTALLATIONS_LATEST_RELEASE_ICONPATH;
+            }
+
+            string key = $"{version.UUID}|{version.Name}|{version.Architecture}";
+            uint hash = 2166136261;
+
+            foreach (char character in key)
+            {
+                hash ^= character;
+                hash *= 16777619;
+            }
+
+            int iconIndex = (int)(hash % ManagedVersionIconPool.Length);
+            return ManagedVersionIconPool[iconIndex];
+        }
+
+        private BLInstallation EnsureOfficialInstallation(BLProfile profile)
+        {
+            List<BLInstallation> officialInstallations = profile.Installations
+                .Where(IsOfficialInstallation)
+                .ToList();
+
+            BLInstallation officialInstallation = officialInstallations.FirstOrDefault();
+            if (officialInstallation == null)
+            {
+                DateTime lastPlayed = profile.Installations
+                    .OrderByDescending(x => x.LastPlayed)
+                    .FirstOrDefault(x => x.VersionUUID == Constants.LATEST_RELEASE_UUID)?.LastPlayed ?? default;
+
+                officialInstallation = CreateOfficialInstallation(lastPlayed);
+                profile.Installations.Insert(0, officialInstallation);
+            }
+            else
+            {
+                officialInstallation.DisplayName = "Minecraft for Windows";
+                officialInstallation.DirectoryName = "Minecraft for Windows";
+                officialInstallation.VersionUUID = Constants.LATEST_RELEASE_UUID;
+                officialInstallation.VersioningMode = VersioningMode.LatestRelease;
+                officialInstallation.IconPath = Constants.INSTALLATIONS_LATEST_RELEASE_ICONPATH;
+                officialInstallation.IsCustomIcon = false;
+                officialInstallation.ReadOnly = true;
+                officialInstallation.InstallationUUID = Constants.LATEST_RELEASE_UUID;
+
+                foreach (BLInstallation duplicate in officialInstallations.Skip(1).ToList())
+                {
+                    profile.Installations.Remove(duplicate);
+                }
+
+                int currentIndex = profile.Installations.IndexOf(officialInstallation);
+                if (currentIndex > 0)
+                {
+                    profile.Installations.Move(currentIndex, 0);
+                }
+            }
+
+            return officialInstallation;
+        }
+
+        private bool EnsureCurrentInstallationSelection()
+        {
+            if (CurrentProfile == null || CurrentInstallations == null || CurrentInstallations.Count == 0)
+            {
+                return false;
+            }
+
+            if (CurrentInstallations.Any(x => x.InstallationUUID == CurrentInstallationUUID))
+            {
+                return false;
+            }
+
+            if (CurrentInstallations.Any(IsOfficialInstallation))
+            {
+                CurrentInstallationUUID = Constants.LATEST_RELEASE_UUID;
+                return true;
+            }
+
+            BLInstallation preferredManagedInstallation = CurrentInstallations
+                .FirstOrDefault(IsManagedVersionInstallation);
+            if (preferredManagedInstallation != null)
+            {
+                CurrentInstallationUUID = preferredManagedInstallation.InstallationUUID;
+                return true;
+            }
+
+            CurrentInstallationUUID = CurrentInstallations.First().InstallationUUID;
+            return true;
+        }
+
+        private static bool InstallationOrderMatches(IList<BLInstallation> current, IList<BLInstallation> updated)
+        {
+            if (ReferenceEquals(current, updated))
+            {
+                return true;
+            }
+
+            if (current == null || updated == null || current.Count != updated.Count)
+            {
+                return false;
+            }
+
+            for (int index = 0; index < current.Count; index++)
+            {
+                if (!string.Equals(current[index].InstallationUUID, updated[index].InstallationUUID, StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private void GenerateProfileImage(string img, string uuid)
@@ -377,7 +659,7 @@ namespace XylarBedrock.Classes
         {
             if (CurrentProfile == null) return;
             if (CurrentInstallations == null) return;
-            if (installation == null || installation.ReadOnly) return;
+            if (installation == null) return;
             if (CurrentInstallations.Any(x => x.InstallationUUID == installation.InstallationUUID))
             {
                 string newName = installation.DisplayName;
@@ -396,11 +678,59 @@ namespace XylarBedrock.Classes
         }
         public void Installation_Create(string name, MCVersion version, string directory, string iconPath = null, bool isCustom = false)
         {
-            return;
+            if (CurrentProfile == null || CurrentInstallations == null || version == null) return;
+
+            GetVersionParams(version, out VersioningMode versioningMode, out string versionUUID);
+
+            string displayName = string.IsNullOrWhiteSpace(name) ? version.DisplayName : name.Trim();
+            string directoryName = ValidatePathName(string.IsNullOrWhiteSpace(directory) ? displayName : directory.Trim());
+
+            BLInstallation installation = new BLInstallation()
+            {
+                DisplayName = displayName,
+                VersionUUID = versionUUID,
+                IconPath = string.IsNullOrWhiteSpace(iconPath) ? GetDefaultInstallationIconPath(version) : iconPath,
+                IsCustomIcon = isCustom,
+                DirectoryName = directoryName,
+                ReadOnly = false,
+                VersioningMode = versioningMode
+            };
+
+            Installation_Add(installation);
         }
         public void Installation_Edit(string uuid, string name, MCVersion version, string directory, string iconPath = null, bool isCustom = false)
         {
-            return;
+            if (CurrentProfile == null || CurrentInstallations == null || version == null || string.IsNullOrWhiteSpace(uuid)) return;
+
+            BLInstallation installation = CurrentInstallations.FirstOrDefault(x => x.InstallationUUID == uuid);
+            if (installation == null || installation.ReadOnly) return;
+
+            GetVersionParams(version, out VersioningMode versioningMode, out string versionUUID);
+
+            string previousDirectoryPath = MainDataModel.Default.FilePaths.GetInstallationPath(CurrentProfile.UUID, installation.DirectoryName_Full);
+            string displayName = string.IsNullOrWhiteSpace(name) ? version.DisplayName : name.Trim();
+            string directoryName = ValidatePathName(string.IsNullOrWhiteSpace(directory) ? displayName : directory.Trim());
+
+            installation.DisplayName = displayName;
+            installation.DirectoryName = directoryName;
+            installation.VersionUUID = versionUUID;
+            installation.VersioningMode = versioningMode;
+            installation.IconPath = string.IsNullOrWhiteSpace(iconPath) ? GetDefaultInstallationIconPath(version) : iconPath;
+            installation.IsCustomIcon = isCustom;
+
+            string newDirectoryPath = MainDataModel.Default.FilePaths.GetInstallationPath(CurrentProfile.UUID, installation.DirectoryName_Full);
+            if (!string.IsNullOrWhiteSpace(previousDirectoryPath) &&
+                !string.IsNullOrWhiteSpace(newDirectoryPath) &&
+                !string.Equals(previousDirectoryPath, newDirectoryPath, StringComparison.OrdinalIgnoreCase) &&
+                Directory.Exists(previousDirectoryPath) &&
+                !Directory.Exists(newDirectoryPath))
+            {
+                Directory.Move(previousDirectoryPath, newDirectoryPath);
+            }
+
+            Save();
+            OnPropertyChanged(nameof(CurrentInstallations));
+            OnPropertyChanged(nameof(CurrentInstallation));
         }
         public void Installation_Delete(BLInstallation installation, bool deleteData = true)
         {
@@ -420,6 +750,31 @@ namespace XylarBedrock.Classes
             if (installation == null) return;
             installation.LastPlayed = DateTime.Now;
             Save();
+        }
+
+        public BLInstallation SelectInstallationForVersion(MCVersion version)
+        {
+            if (CurrentProfile == null || CurrentInstallations == null || version == null)
+            {
+                return null;
+            }
+
+            BLInstallation installation = CurrentInstallations
+                .FirstOrDefault(x => string.Equals(x.VersionUUID, version.UUID, StringComparison.OrdinalIgnoreCase) &&
+                                     (IsManagedVersionInstallation(x) || IsOfficialInstallation(x)));
+
+            if (installation == null)
+            {
+                installation = CreateManagedVersionInstallation(version);
+                int insertIndex = CurrentInstallations.Any(IsOfficialInstallation) ? 1 : 0;
+                CurrentInstallations.Insert(insertIndex, installation);
+                Save();
+                OnPropertyChanged(nameof(CurrentInstallations));
+            }
+
+            CurrentInstallationUUID = installation.InstallationUUID;
+            OnPropertyChanged(nameof(CurrentInstallation));
+            return installation;
         }
 
         #endregion

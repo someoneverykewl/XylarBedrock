@@ -66,23 +66,22 @@ namespace XylarBedrock.Handlers
                     return;
                 }
 
-                StartTask();
+                MainDataModel.Default.ProgressBarState.ResetProgressBarProgress();
+                MainDataModel.Default.ProgressBarState.SetProgressBarText("Opening the game...");
                 MainDataModel.Default.ProgressBarState.SetProgressBarState(LauncherState.isLaunching);
-                bool launchRequested = await TryLaunchMinecraftAsync(v.Type, LaunchEditor);
+                MainDataModel.Default.ProgressBarState.SetProgressBarVisibility(true);
+                bool launchRequested = await TryLaunchMinecraftAsync(v, LaunchEditor);
 
                 if (launchRequested)
                 {
                     Trace.WriteLine("App launch finished!");
 
+                    await GetGameHandle(GetKnownMinecraftProcessNames(v.Type));
                     EndTask();
 
                     if (!KeepLauncherOpen)
                     {
                         await Application.Current.Dispatcher.InvokeAsync(() => Application.Current.MainWindow.Close());
-                    }
-                    else
-                    {
-                        _ = GetGameHandle(GetKnownMinecraftProcessNames(v.Type));
                     }
                 }
                 else
@@ -90,7 +89,7 @@ namespace XylarBedrock.Handlers
                     EndTask();
                     string message = LaunchEditor
                         ? $"XylarBedrock could not open the Minecraft Editor through the {Constants.GetUri(v.Type)} protocol."
-                        : "Minecraft for Windows could not be started. Make sure the official Microsoft Store release is installed, then try Play again.";
+                        : "Minecraft for Windows could not be started from the selected version. Reinstall that version once, then press PLAY again.";
                     Trace.WriteLine(message);
                     ShowLauncherMessage(App.DisplayName, message, MessageBoxImage.Warning);
                 }
@@ -101,7 +100,7 @@ namespace XylarBedrock.Handlers
                 Trace.WriteLine($"LaunchPackage failed: {e}");
                 ShowLauncherMessage(
                     App.DisplayName,
-                    "Minecraft for Windows could not be started this time. Close the launcher once, reopen it, and try Play again.",
+                    "The selected Minecraft version could not be started this time. Close the launcher once, reopen it, and try again.",
                     MessageBoxImage.Warning);
             }
         }
@@ -128,11 +127,19 @@ namespace XylarBedrock.Handlers
 
         public IReadOnlyList<string> GetInstalledMinecraftDirectories(VersionType type)
         {
-            return GetInstalledMinecraftPackages(type)
-                .Select(GetInstalledLocationPath)
-                .Where(path => !string.IsNullOrWhiteSpace(path))
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .ToList();
+            HashSet<string> directories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (Package package in GetInstalledMinecraftPackages(type))
+            {
+                AddMinecraftDirectory(directories, GetInstalledLocationPath(package));
+            }
+
+            if (type == VersionType.Release)
+            {
+                AddMinecraftDirectory(directories, @"C:\XboxGames\Minecraft for Windows\Content");
+            }
+
+            return directories.ToList();
         }
 
         public IReadOnlyList<string> GetPreviewOrLocalMinecraftDirectories()
@@ -226,7 +233,12 @@ namespace XylarBedrock.Handlers
 
         public string GetBundledModSourcePath()
         {
-            return Path.Combine(GetBundledDllDirectoryPath(), Constants.BUNDLED_MOD_DLL_NAME);
+            return GetBundledModSourcePath(GetDetectedMinecraftVersionForDllSelection());
+        }
+
+        public string GetBundledModSourcePath(MCVersion version)
+        {
+            return Path.Combine(GetBundledDllDirectoryPath(), GetBundledModDllNameForVersion(version));
         }
 
         public string GetBundledExtraDllSourcePath()
@@ -236,7 +248,12 @@ namespace XylarBedrock.Handlers
 
         public string GetInstalledModPath()
         {
-            return Path.Combine(GetModsDirectoryPath(), Constants.BUNDLED_MOD_DLL_NAME);
+            return GetInstalledModPath(GetDetectedMinecraftVersionForDllSelection());
+        }
+
+        public string GetInstalledModPath(MCVersion version)
+        {
+            return Path.Combine(GetModsDirectoryPath(), GetBundledModDllNameForVersion(version));
         }
 
         public string GetInstalledExtraDllPath()
@@ -246,8 +263,14 @@ namespace XylarBedrock.Handlers
 
         public bool IsBundledModInstalled()
         {
-            return IsBundledFileInstalled(GetBundledModSourcePath(), GetInstalledModPath())
-                && IsBundledFileInstalled(GetBundledExtraDllSourcePath(), GetInstalledExtraDllPath());
+            return IsBundledModInstalled(GetDetectedMinecraftVersionForDllSelection());
+        }
+
+        public bool IsBundledModInstalled(MCVersion version)
+        {
+            return IsBundledFileInstalled(GetBundledModSourcePath(version), GetInstalledModPath(version))
+                && IsBundledFileInstalled(GetBundledExtraDllSourcePath(), GetInstalledExtraDllPath())
+                && !GetInactiveInstalledModPaths(version).Any(File.Exists);
         }
 
         public bool HasBundledModSource()
@@ -257,9 +280,15 @@ namespace XylarBedrock.Handlers
 
         public BundledDllPackDiagnostics GetBundledDllPackDiagnostics()
         {
+            return GetBundledDllPackDiagnostics(GetDetectedMinecraftVersionForDllSelection());
+        }
+
+        public BundledDllPackDiagnostics GetBundledDllPackDiagnostics(MCVersion version)
+        {
             string executableDirectoryPath = MainDataModel.Default.FilePaths.ExecutableDirectory;
             string dllDirectoryPath = GetBundledDllDirectoryPath();
-            string modDllPath = GetBundledModSourcePath();
+            string modDllName = GetBundledModDllNameForVersion(version);
+            string modDllPath = GetBundledModSourcePath(version);
             string runtimeDllPath = GetBundledExtraDllSourcePath();
 
             bool dllDirectoryExists = Directory.Exists(dllDirectoryPath);
@@ -272,6 +301,7 @@ namespace XylarBedrock.Handlers
             {
                 ExecutableDirectoryPath = executableDirectoryPath,
                 DllDirectoryPath = dllDirectoryPath,
+                ModDllName = modDllName,
                 ModDllPath = modDllPath,
                 RuntimeDllPath = runtimeDllPath,
                 DllDirectoryExists = dllDirectoryExists,
@@ -289,7 +319,12 @@ namespace XylarBedrock.Handlers
 
         public async Task<bool> InstallBundledModAsync()
         {
-            return await InstallBundledModInternalAsync(showMessage: true, forceInstall: true);
+            return await InstallBundledModAsync(GetDetectedMinecraftVersionForDllSelection());
+        }
+
+        public async Task<bool> InstallBundledModAsync(MCVersion version)
+        {
+            return await InstallBundledModInternalAsync(showMessage: true, forceInstall: true, version: version);
         }
 
         public async Task<bool> AutoRefreshBundledModAsync()
@@ -298,15 +333,18 @@ namespace XylarBedrock.Handlers
             bool versionChanged = !string.IsNullOrWhiteSpace(currentMinecraftVersion) &&
                                   !string.Equals(Properties.LauncherSettings.Default.LastPatchedMinecraftVersion, currentMinecraftVersion, StringComparison.OrdinalIgnoreCase);
 
-            return await InstallBundledModInternalAsync(showMessage: false, forceInstall: versionChanged);
+            return await InstallBundledModInternalAsync(
+                showMessage: false,
+                forceInstall: versionChanged,
+                version: CreateDllSelectionVersion(currentMinecraftVersion));
         }
 
-        private async Task<bool> InstallBundledModInternalAsync(bool showMessage, bool forceInstall)
+        private async Task<bool> InstallBundledModInternalAsync(bool showMessage, bool forceInstall, MCVersion version)
         {
-            BundledDllPackDiagnostics dllPack = GetBundledDllPackDiagnostics();
+            BundledDllPackDiagnostics dllPack = GetBundledDllPackDiagnostics(version);
             string sourcePath = dllPack.ModDllPath;
             string extraDllSourcePath = dllPack.RuntimeDllPath;
-            string installedPath = GetInstalledModPath();
+            string installedPath = GetInstalledModPath(version);
             string installedExtraDllPath = GetInstalledExtraDllPath();
 
             if (!dllPack.IsReady)
@@ -319,13 +357,14 @@ namespace XylarBedrock.Handlers
                 return false;
             }
 
-            if (!forceInstall && IsBundledModInstalled()) return true;
+            if (!forceInstall && IsBundledModInstalled(version)) return true;
 
             await Task.Run(() =>
             {
                 Directory.CreateDirectory(GetModsDirectoryPath());
                 File.Copy(sourcePath, installedPath, true);
                 File.Copy(extraDllSourcePath, installedExtraDllPath, true);
+                RemoveInactiveInstalledModFiles(version);
 
                 // finally here its to make minecraft crack work, finally...
                 var uwpDirs = GetInstalledMinecraftDirectories(VersionType.Release);
@@ -336,7 +375,7 @@ namespace XylarBedrock.Handlers
                 }
             });
 
-            bool installed = IsBundledModInstalled();
+            bool installed = IsBundledModInstalled(version);
             string currentMinecraftVersion = GetOfficialStorePackageVersionString();
             if (installed && !string.IsNullOrWhiteSpace(currentMinecraftVersion))
             {
@@ -360,18 +399,19 @@ namespace XylarBedrock.Handlers
             return installed;
         }
 
-        public async Task InstallPackage(MCVersion v, string dirPath)
+        public async Task<bool> InstallPackage(MCVersion v, string dirPath)
         {
             try
             {
                 StartTask();
+                bool useInstalledStoreRelease = ShouldUseInstalledStoreRelease(v);
+                bool installedStorePackageFromCatalog = false;
 
-                if (!v.IsInstalled)
+                if (!v.IsInstalled && !useInstalledStoreRelease)
                 {
-                    List<VersionInfoJson> versions = VersionManager.Singleton.GetVersions();
-                    if (versions.Any(ver => v.UUID.CompareTo(ver.uuid.ToString()) == 0))
+                    if (VersionDownloader.CanDownload(v))
                     {
-                        await DownloadAndExtractPackage(v);
+                        installedStorePackageFromCatalog = await DownloadAndExtractPackage(v);
                     }
                     else
                     {
@@ -379,22 +419,32 @@ namespace XylarBedrock.Handlers
                     }
                 }
 
+                if (installedStorePackageFromCatalog || ShouldUseInstalledStoreRelease(v))
+                {
+                    await RedirectSaveData(dirPath, v.Type);
+                    Trace.WriteLine($"Using installed Microsoft Store release for version '{v.Name}' without local re-registration.");
+                    return true;
+                }
+
                 await UnregisterPackage(v, true);
                 await RegisterPackage(v);
-
                 await RedirectSaveData(dirPath, v.Type);
+                return true;
             }
             catch (PackageManagerException e)
             {
                 SetException(e);
+                return false;
             }
             catch (NoVersionAccessibleException e)
             {
                 SetException(e);
+                return false;
             }
             catch (Exception e)
             {
                 SetException(new AppInstallFailedException(e));
+                return false;
             }
             finally
             {
@@ -483,20 +533,33 @@ namespace XylarBedrock.Handlers
             }
         }
 
-        public async Task DownloadPackage(MCVersion v)
+        public async Task<bool> DownloadPackage(MCVersion v)
         {
             try
             {
+                if (!VersionDownloader.CanDownload(v))
+                {
+                    ShowLauncherMessage(
+                        App.DisplayName,
+                        "This Minecraft version does not have a downloadable package available right now.",
+                        MessageBoxImage.Warning);
+                    return false;
+                }
+
                 StartTask();
                 await DownloadAndExtractPackage(v);
+                await MainDataModel.Default.LoadVersions(forceStoreCheck: true);
+                return true;
             }
             catch (PackageManagerException e)
             {
                 SetException(e);
+                return false;
             }
             catch (Exception e)
             {
                 SetException(new PackageDownloadAndExtractFailedException(e));
+                return false;
             }
             finally
             {
@@ -513,8 +576,28 @@ namespace XylarBedrock.Handlers
 
         #region Private Throwable Methods
 
-        private async Task<bool> TryLaunchMinecraftAsync(VersionType type, bool launchEditor)
+        private async Task<bool> TryLaunchMinecraftAsync(MCVersion version, bool launchEditor)
         {
+            VersionType type = version?.Type ?? VersionType.Release;
+            bool forceSelectedVersion = ShouldForceSelectedVersionLaunch(version, launchEditor);
+
+            if (forceSelectedVersion)
+            {
+                Trace.WriteLine($"Forcing launch of selected Minecraft version from '{version.GameDirectory}'.");
+                if (await TryLaunchSpecificRegisteredVersionAsync(version))
+                {
+                    return true;
+                }
+
+                if (TryLaunchLocalVersionExecutable(version))
+                {
+                    return true;
+                }
+
+                Trace.WriteLine("Forced launch for selected version failed. Refusing to fall back to a different installed package.");
+                return false;
+            }
+
             bool preferPackagedLaunch = !launchEditor &&
                                        type == VersionType.Release &&
                                        IsOfficialStoreReleaseInstalled();
@@ -544,6 +627,86 @@ namespace XylarBedrock.Handlers
             return await TryLaunchInstalledMinecraftAsync(type);
         }
 
+        private bool ShouldForceSelectedVersionLaunch(MCVersion version, bool launchEditor)
+        {
+            if (launchEditor || version == null)
+            {
+                return false;
+            }
+
+            if (ShouldUseInstalledStoreRelease(version))
+            {
+                return false;
+            }
+
+            if (!string.IsNullOrWhiteSpace(version.DirectDownloadUrl))
+            {
+                return true;
+            }
+
+            if (!string.IsNullOrWhiteSpace(version.GameDirectory) &&
+                Directory.Exists(version.GameDirectory) &&
+                File.Exists(version.ManifestPath))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private async Task<bool> TryLaunchSpecificRegisteredVersionAsync(MCVersion version)
+        {
+            if (version == null || string.IsNullOrWhiteSpace(version.GameDirectory))
+            {
+                return false;
+            }
+
+            string targetPath = Path.GetFullPath(version.GameDirectory)
+                .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+            List<Package> matchingPackages = GetInstalledMinecraftPackages(version.Type)
+                .Where(package =>
+                {
+                    string packagePath = GetInstalledLocationPath(package)
+                        .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                    return string.Equals(packagePath, targetPath, StringComparison.OrdinalIgnoreCase);
+                })
+                .ToList();
+
+            foreach (Package package in matchingPackages)
+            {
+                if (await TryLaunchPackageEntriesAsync(package, version.Type))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool TryLaunchLocalVersionExecutable(MCVersion version)
+        {
+            if (version == null || string.IsNullOrWhiteSpace(version.GameDirectory))
+            {
+                return false;
+            }
+
+            foreach (string executablePath in GetExecutablePathsFromManifest(version.GameDirectory))
+            {
+                if (!IsLaunchableMinecraftExecutable(executablePath))
+                {
+                    continue;
+                }
+
+                if (TryLaunchExecutablePath(executablePath, Path.GetDirectoryName(executablePath) ?? version.GameDirectory))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private async Task<bool> TryLaunchMinecraftByUriAsync(VersionType type, bool launchEditor)
         {
             try
@@ -563,6 +726,11 @@ namespace XylarBedrock.Handlers
             foreach (Package package in GetInstalledMinecraftPackages(type))
             {
                 if (await TryLaunchPackageEntriesAsync(package, type))
+                {
+                    return true;
+                }
+
+                if (TryLaunchInstalledPackageExecutables(package))
                 {
                     return true;
                 }
@@ -596,7 +764,7 @@ namespace XylarBedrock.Handlers
                 Trace.WriteLine($"AppDiagnosticInfo launch fallback failed: {ex}");
             }
 
-            return false;
+            return TryLaunchDetectedMinecraftDirectories(type);
         }
 
         private async Task<bool> TryLaunchPackageEntriesAsync(Package package, VersionType type)
@@ -616,6 +784,40 @@ namespace XylarBedrock.Handlers
             catch (Exception ex)
             {
                 Trace.WriteLine($"AppListEntry launch failed for package '{package.Id.FullName}': {ex}");
+            }
+
+            return false;
+        }
+
+        private bool TryLaunchInstalledPackageExecutables(Package package)
+        {
+            foreach (string executablePath in GetInstalledExecutablePaths(package))
+            {
+                if (!IsLaunchableMinecraftExecutable(executablePath))
+                {
+                    continue;
+                }
+
+                if (TryLaunchExecutablePath(executablePath, Path.GetDirectoryName(executablePath)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool TryLaunchDetectedMinecraftDirectories(VersionType type)
+        {
+            foreach (string directory in GetInstalledMinecraftDirectories(type))
+            {
+                foreach (string executablePath in GetExecutablePathsForLaunch(directory))
+                {
+                    if (TryLaunchExecutablePath(executablePath, directory))
+                    {
+                        return true;
+                    }
+                }
             }
 
             return false;
@@ -680,7 +882,7 @@ namespace XylarBedrock.Handlers
                         MainDataModel.Default.ProgressBarState.SetGameRunningStatus(false);
                         ShowLauncherMessage(
                             App.DisplayName,
-                            "Minecraft for Windows did not finish opening in time. Make sure the official Microsoft Store release is installed, then try Play again.",
+                            "The selected Minecraft version did not finish opening in time. Press PLAY again after the installation completes.",
                             MessageBoxImage.Warning);
                     }
                 }
@@ -819,6 +1021,19 @@ namespace XylarBedrock.Handlers
                 yield break;
             }
 
+            foreach (string executablePath in GetExecutablePathsFromManifest(installPath))
+            {
+                yield return executablePath;
+            }
+        }
+
+        private static IEnumerable<string> GetExecutablePathsFromManifest(string installPath)
+        {
+            if (string.IsNullOrWhiteSpace(installPath))
+            {
+                yield break;
+            }
+
             string manifestPath = Path.Combine(installPath, "AppxManifest.xml");
             if (!File.Exists(manifestPath))
             {
@@ -852,6 +1067,30 @@ namespace XylarBedrock.Handlers
             }
         }
 
+        private static IEnumerable<string> GetExecutablePathsForLaunch(string installPath)
+        {
+            HashSet<string> executablePaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (string executablePath in GetExecutablePathsFromManifest(installPath))
+            {
+                if (IsLaunchableMinecraftExecutable(executablePath))
+                {
+                    executablePaths.Add(executablePath);
+                }
+            }
+
+            foreach (string fileName in new[] { "Minecraft.Windows.exe", "Minecraft.WindowsBeta.exe" })
+            {
+                string candidatePath = Path.Combine(installPath, fileName);
+                if (File.Exists(candidatePath) && IsLaunchableMinecraftExecutable(candidatePath))
+                {
+                    executablePaths.Add(candidatePath);
+                }
+            }
+
+            return executablePaths;
+        }
+
         private static IEnumerable<AppListEntry> OrderPackageEntries(IEnumerable<AppListEntry> appEntries, VersionType type)
         {
             List<AppListEntry> entries = appEntries?.ToList() ?? new List<AppListEntry>();
@@ -867,10 +1106,12 @@ namespace XylarBedrock.Handlers
 
             if (preferredEntries.Count > 0)
             {
-                return preferredEntries;
+                return preferredEntries
+                    .Concat(entries.Where(appEntry => !preferredEntries.Contains(appEntry)))
+                    .ToList();
             }
 
-            return entries.Count == 1 ? entries : Enumerable.Empty<AppListEntry>();
+            return entries;
         }
 
         private static IEnumerable<AppDiagnosticInfo> OrderDiagnosticPackages(IEnumerable<AppDiagnosticInfo> diagnosticPackages, VersionType type)
@@ -888,10 +1129,12 @@ namespace XylarBedrock.Handlers
 
             if (preferredPackages.Count > 0)
             {
-                return preferredPackages;
+                return preferredPackages
+                    .Concat(packages.Where(package => !preferredPackages.Contains(package)))
+                    .ToList();
             }
 
-            return packages.Count == 1 ? packages : Enumerable.Empty<AppDiagnosticInfo>();
+            return packages;
         }
 
         private static string GetPreferredAppUserModelIdSuffix(VersionType type)
@@ -918,6 +1161,88 @@ namespace XylarBedrock.Handlers
             }
         }
 
+        private MCVersion GetDetectedMinecraftVersionForDllSelection()
+        {
+            return CreateDllSelectionVersion(GetOfficialStorePackageVersionString());
+        }
+
+        private static MCVersion CreateDllSelectionVersion(string versionName)
+        {
+            return string.IsNullOrWhiteSpace(versionName) ? null : new MCVersion(versionName);
+        }
+
+        private static string GetBundledModDllNameForVersion(MCVersion version)
+        {
+            return ShouldUseToolsDllForVersion(version)
+                ? Constants.BUNDLED_TOOLS_DLL_NAME
+                : Constants.BUNDLED_MOD_DLL_NAME;
+        }
+
+        private static bool ShouldUseToolsDllForVersion(MCVersion version)
+        {
+            string normalizedVersion = NormalizeDllSelectionVersion(version?.Name);
+            if (string.IsNullOrWhiteSpace(normalizedVersion) ||
+                !MinecraftVersion.TryParse(normalizedVersion, out MinecraftVersion selectedVersion))
+            {
+                return false;
+            }
+
+            MinecraftVersion toolsMinimumVersion = MinecraftVersion.Parse("1.21.130.4");
+            MinecraftVersion toolsMaximumVersion = MinecraftVersion.Parse("26.10");
+
+            return selectedVersion.CompareTo(toolsMinimumVersion) >= 0 &&
+                   selectedVersion.CompareTo(toolsMaximumVersion) <= 0;
+        }
+
+        private static string NormalizeDllSelectionVersion(string versionName)
+        {
+            if (string.IsNullOrWhiteSpace(versionName))
+            {
+                return string.Empty;
+            }
+
+            string normalizedVersion = versionName.Trim();
+            if (MinecraftVersion.TryParse(normalizedVersion, out MinecraftVersion parsedVersion) &&
+                parsedVersion.Major == 1 &&
+                (parsedVersion.Minor >= 26 || parsedVersion.Patch >= 1000))
+            {
+                normalizedVersion = parsedVersion.ToRealString();
+            }
+
+            return normalizedVersion;
+        }
+
+        private IEnumerable<string> GetInactiveInstalledModPaths(MCVersion version)
+        {
+            string activeModDllName = GetBundledModDllNameForVersion(version);
+
+            foreach (string bundledModDllName in new[] { Constants.BUNDLED_MOD_DLL_NAME, Constants.BUNDLED_TOOLS_DLL_NAME })
+            {
+                if (!string.Equals(bundledModDllName, activeModDllName, StringComparison.OrdinalIgnoreCase))
+                {
+                    yield return Path.Combine(GetModsDirectoryPath(), bundledModDllName);
+                }
+            }
+        }
+
+        private void RemoveInactiveInstalledModFiles(MCVersion version)
+        {
+            foreach (string inactiveModPath in GetInactiveInstalledModPaths(version))
+            {
+                try
+                {
+                    if (File.Exists(inactiveModPath))
+                    {
+                        File.Delete(inactiveModPath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"Could not remove inactive bundled DLL '{inactiveModPath}': {ex.Message}");
+                }
+            }
+        }
+
         private static bool CanReadFile(string filePath)
         {
             try
@@ -935,7 +1260,7 @@ namespace XylarBedrock.Handlers
         private static string GetBundledDllStatusText(BundledDllPackDiagnostics diagnostics)
         {
             if (!diagnostics.DllDirectoryExists) return "Missing dll folder";
-            if (!diagnostics.ModDllExists) return $"Missing {Constants.BUNDLED_MOD_DLL_NAME}";
+            if (!diagnostics.ModDllExists) return $"Missing {diagnostics.ModDllName}";
             if (!diagnostics.RuntimeDllExists) return $"Missing {Constants.EXTRA_DLL_NAME}";
             if (!diagnostics.ModDllReadable || !diagnostics.RuntimeDllReadable) return "DLL pack unreadable";
             return "DLL pack ready";
@@ -947,7 +1272,7 @@ namespace XylarBedrock.Handlers
             {
                 "XylarBedrock expects this release layout next to the launcher:",
                 $"  {Path.Combine(diagnostics.ExecutableDirectoryPath, "XylarBedrock.exe")}",
-                $"  {diagnostics.DllDirectoryPath}\\{Constants.BUNDLED_MOD_DLL_NAME}",
+                $"  {diagnostics.DllDirectoryPath}\\{diagnostics.ModDllName}",
                 $"  {diagnostics.DllDirectoryPath}\\{Constants.EXTRA_DLL_NAME}",
                 string.Empty
             };
@@ -999,7 +1324,7 @@ namespace XylarBedrock.Handlers
             });
         }
 
-        private async Task DownloadAndExtractPackage(MCVersion v)
+        private async Task<bool> DownloadAndExtractPackage(MCVersion v)
         {
             try
             {
@@ -1012,6 +1337,12 @@ namespace XylarBedrock.Handlers
                     Directory.CreateDirectory(subDirectory);
                 }
 
+                if (VersionDownloader.IsMsixvcPackage(v))
+                {
+                    await DownloadAndInstallStorePackage(v, subDirectory);
+                    return true;
+                }
+
                 string dlPath = "Minecraft-" + v.Name + ".Appx";
                 string bkpsPath = Path.Combine(subDirectory, dlPath);
                 string pkgPath = File.Exists(bkpsPath) ? bkpsPath : dlPath;
@@ -1020,6 +1351,7 @@ namespace XylarBedrock.Handlers
                 await ExtractPackage(v, dlPath, bkpsPath, pkgPath, CancelSource);
 
                 v.UpdateFolderSize();
+                return false;
             }
             catch (PackageManagerException e)
             {
@@ -1039,6 +1371,63 @@ namespace XylarBedrock.Handlers
             }
         }
 
+        private async Task DownloadAndInstallStorePackage(MCVersion v, string backupsDirectory)
+        {
+            string extension = VersionDownloader.GetPackageFileExtension(v);
+            string safeVersionName = string.Join("_", v.Name.Split(Path.GetInvalidFileNameChars()));
+            string packageFileName = $"Minecraft-{safeVersionName}{extension}";
+            string backupPath = Path.Combine(backupsDirectory, packageFileName);
+            string packagePath = backupPath;
+            bool usingBackup = File.Exists(backupPath);
+
+            if (!usingBackup)
+            {
+                packagePath = Path.Combine(Path.GetTempPath(), $"XylarBedrock-{Guid.NewGuid():N}{extension}");
+                await DownloadPackage(v, packagePath, CancelSource);
+            }
+
+            try
+            {
+                await RegisterStorePackage(packagePath);
+
+                if (!await WaitForStorePackageVersionAsync(v, TimeSpan.FromSeconds(20)))
+                {
+                    Trace.WriteLine("PackageManager completed, but the selected Minecraft version is not active. Trying Add-AppxPackage fallback.");
+                    await RegisterStorePackageWithPowerShell(packagePath);
+                }
+
+                if (!await WaitForStorePackageVersionAsync(v, TimeSpan.FromSeconds(30)))
+                {
+                    string currentVersion = GetOfficialStorePackageVersionString();
+                    throw new PackageRegistrationFailedException(
+                        $"Windows did not activate Minecraft {v.Name}. Active package is still {(string.IsNullOrWhiteSpace(currentVersion) ? "not detected" : currentVersion)}.",
+                        new InvalidOperationException($"Expected {v.Name}, active {currentVersion}."));
+                }
+
+                if (!usingBackup)
+                {
+                    if (Properties.LauncherSettings.Default.KeepAppx)
+                    {
+                        Directory.CreateDirectory(backupsDirectory);
+                        File.Move(packagePath, backupPath, true);
+                    }
+                    else
+                    {
+                        TryDeletePackageFile(packagePath);
+                    }
+                }
+            }
+            catch
+            {
+                if (!usingBackup)
+                {
+                    TryDeletePackageFile(packagePath);
+                }
+
+                throw;
+            }
+        }
+
         private async Task DownloadPackage(MCVersion v, string dlPath, CancellationTokenSource cancelSource)
         {
             try
@@ -1046,7 +1435,7 @@ namespace XylarBedrock.Handlers
                 if (v.IsBeta) await AuthenticateBetaUser();
                 MainDataModel.Default.ProgressBarState.SetProgressBarState(LauncherState.isDownloading);
                 Trace.WriteLine("Download starting");
-                await VersionDownloader.DownloadVersion(v.DisplayName, v.PackageID, 1, dlPath, (x, y) => ProgressWrapper(x, y), cancelSource.Token, v.Type);
+                await VersionDownloader.DownloadVersion(v, dlPath, (x, y) => ProgressWrapper(x, y), cancelSource.Token);
                 Trace.WriteLine("Download complete");
             }
             catch (PackageManagerException e)
@@ -1067,6 +1456,144 @@ namespace XylarBedrock.Handlers
             finally
             {
                 ResetTask();
+            }
+        }
+
+        private async Task RegisterStorePackage(string packagePath)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(packagePath) || !File.Exists(packagePath))
+                {
+                    throw new FileNotFoundException("Downloaded Minecraft package was not found.", packagePath);
+                }
+
+                Trace.WriteLine($"Installing Store package: {packagePath}");
+                MainDataModel.Default.ProgressBarState.SetProgressBarText("Installing Minecraft package...");
+                MainDataModel.Default.ProgressBarState.SetProgressBarState(LauncherState.isRegisteringPackage);
+
+                DeploymentOptions options =
+                    DeploymentOptions.ForceApplicationShutdown |
+                    DeploymentOptions.ForceTargetApplicationShutdown |
+                    DeploymentOptions.ForceUpdateFromAnyVersion;
+
+                await DeploymentProgressWrapper(PM.AddPackageAsync(new Uri(Path.GetFullPath(packagePath)), null, options));
+                Trace.WriteLine("Store package install done.");
+            }
+            catch (PackageManagerException e)
+            {
+                ResetTask();
+                throw;
+            }
+            catch (Exception e)
+            {
+                ResetTask();
+                throw new PackageRegistrationFailedException(e);
+            }
+            finally
+            {
+                ResetTask();
+            }
+        }
+
+        private async Task RegisterStorePackageWithPowerShell(string packagePath)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(packagePath) || !File.Exists(packagePath))
+                {
+                    throw new FileNotFoundException("Downloaded Minecraft package was not found.", packagePath);
+                }
+
+                Trace.WriteLine($"Installing Store package with Add-AppxPackage: {packagePath}");
+                MainDataModel.Default.ProgressBarState.SetProgressBarText("Finalizing Minecraft package...");
+                MainDataModel.Default.ProgressBarState.SetProgressBarState(LauncherState.isRegisteringPackage);
+
+                using Process process = new Process();
+                process.StartInfo.FileName = "powershell.exe";
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.ArgumentList.Add("-NoProfile");
+                process.StartInfo.ArgumentList.Add("-ExecutionPolicy");
+                process.StartInfo.ArgumentList.Add("Bypass");
+                process.StartInfo.ArgumentList.Add("-Command");
+                process.StartInfo.ArgumentList.Add("$ErrorActionPreference='Stop'; Add-AppxPackage -Path $args[0] -ForceApplicationShutdown -ForceTargetApplicationShutdown -ForceUpdateFromAnyVersion");
+                process.StartInfo.ArgumentList.Add(Path.GetFullPath(packagePath));
+
+                process.Start();
+                string output = await process.StandardOutput.ReadToEndAsync();
+                string error = await process.StandardError.ReadToEndAsync();
+                await process.WaitForExitAsync();
+
+                if (!string.IsNullOrWhiteSpace(output))
+                {
+                    Trace.WriteLine("Add-AppxPackage output: " + output);
+                }
+
+                if (process.ExitCode != 0)
+                {
+                    throw new InvalidOperationException(string.IsNullOrWhiteSpace(error)
+                        ? $"Add-AppxPackage failed with exit code {process.ExitCode}."
+                        : error);
+                }
+            }
+            catch (PackageManagerException)
+            {
+                ResetTask();
+                throw;
+            }
+            catch (Exception e)
+            {
+                ResetTask();
+                throw new PackageRegistrationFailedException(e);
+            }
+            finally
+            {
+                ResetTask();
+            }
+        }
+
+        private async Task<bool> WaitForStorePackageVersionAsync(MCVersion version, TimeSpan timeout)
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                if (DoesInstalledStorePackageMatch(version))
+                {
+                    return true;
+                }
+
+                await Task.Delay(1000);
+            }
+
+            return DoesInstalledStorePackageMatch(version);
+        }
+
+        private bool DoesInstalledStorePackageMatch(MCVersion version)
+        {
+            if (version == null)
+            {
+                return false;
+            }
+
+            return version.MatchesOfficialStoreRelease;
+        }
+
+        private static void TryDeletePackageFile(string packagePath)
+        {
+            try
+            {
+                if (File.Exists(packagePath))
+                {
+                    File.Delete(packagePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Could not delete temporary package '{packagePath}': {ex}");
             }
         }
 
@@ -1118,6 +1645,7 @@ namespace XylarBedrock.Handlers
                 await File.WriteAllTextAsync(v.IdentificationPath, v.PackageID);
                 string appxSignaturePath = Path.Combine(v.GameDirectory, "AppxSignature.p7x");
                 if (File.Exists(appxSignaturePath)) File.Delete(appxSignaturePath);
+                CopyBundledRuntimeToVersionDirectory(v.GameDirectory);
 
                 if (!File.Exists(bkpsPath))
                 {
@@ -1442,6 +1970,106 @@ namespace XylarBedrock.Handlers
             }
 
             return GetFileHash(sourcePath) == GetFileHash(installedPath);
+        }
+
+        private void CopyBundledRuntimeToVersionDirectory(string versionDirectory)
+        {
+            try
+            {
+                string runtimeDllSourcePath = GetBundledExtraDllSourcePath();
+                if (string.IsNullOrWhiteSpace(versionDirectory) ||
+                    !Directory.Exists(versionDirectory) ||
+                    !File.Exists(runtimeDllSourcePath))
+                {
+                    return;
+                }
+
+                string runtimeDllDestinationPath = Path.Combine(versionDirectory, Constants.EXTRA_DLL_NAME);
+                File.Copy(runtimeDllSourcePath, runtimeDllDestinationPath, true);
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Could not copy bundled runtime DLL to '{versionDirectory}': {ex}");
+            }
+        }
+
+        private bool ShouldUseInstalledStoreRelease(MCVersion version)
+        {
+            if (version == null || version.Type != VersionType.Release)
+            {
+                return false;
+            }
+
+            if (!IsOfficialStoreReleaseInstalled())
+            {
+                return false;
+            }
+
+            return string.Equals(version.UUID, Constants.LATEST_RELEASE_UUID, StringComparison.OrdinalIgnoreCase) ||
+                   version.MatchesOfficialStoreRelease;
+        }
+
+        private static void AddMinecraftDirectory(ISet<string> directories, string directoryPath)
+        {
+            if (string.IsNullOrWhiteSpace(directoryPath))
+            {
+                return;
+            }
+
+            try
+            {
+                string normalizedPath = Path.GetFullPath(directoryPath)
+                    .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+                if (Directory.Exists(normalizedPath))
+                {
+                    directories.Add(normalizedPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Could not normalize Minecraft directory '{directoryPath}': {ex.Message}");
+            }
+        }
+
+        private static bool IsLaunchableMinecraftExecutable(string executablePath)
+        {
+            string executableName = Path.GetFileNameWithoutExtension(executablePath);
+            if (string.IsNullOrWhiteSpace(executableName))
+            {
+                return false;
+            }
+
+            return !string.Equals(executableName, "GameLaunchHelper", StringComparison.OrdinalIgnoreCase) &&
+                   !string.Equals(executableName, "custominstallexec", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool TryLaunchExecutablePath(string executablePath, string workingDirectory)
+        {
+            if (string.IsNullOrWhiteSpace(executablePath) || !File.Exists(executablePath))
+            {
+                return false;
+            }
+
+            try
+            {
+                RememberLaunchMethod($"Direct executable {executablePath}");
+                using Process process = Process.Start(new ProcessStartInfo
+                {
+                    FileName = executablePath,
+                    WorkingDirectory = string.IsNullOrWhiteSpace(workingDirectory)
+                        ? Path.GetDirectoryName(executablePath)
+                        : workingDirectory,
+                    UseShellExecute = true
+                });
+
+                return process != null;
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Direct executable launch failed for '{executablePath}': {ex}");
+                return false;
+            }
         }
 
         private void CopyDllsToXboxGames()

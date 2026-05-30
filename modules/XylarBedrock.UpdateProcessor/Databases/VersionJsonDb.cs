@@ -1,15 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using XylarBedrock.UpdateProcessor.Classes;
-using Semver;
-using System.Runtime.InteropServices;
 using XylarBedrock.UpdateProcessor.Extensions;
 using XylarBedrock.UpdateProcessor.Interfaces;
-using XylarBedrock.UpdateProcessor.Handlers;
 using XylarBedrock.UpdateProcessor.Enums;
 
 namespace XylarBedrock.UpdateProcessor.Databases
@@ -18,16 +15,13 @@ namespace XylarBedrock.UpdateProcessor.Databases
     {
         public List<VersionInfoJson> list { get; private set; } = new List<VersionInfoJson>();
 
-
         private void SortVersions()
         {
             list.Sort();
             list.Reverse();
         }
 
-
         #region Read / Write
-
 
         public void ReadJson(string filePath, Dictionary<Guid, string> architectures = null)
         {
@@ -37,13 +31,12 @@ namespace XylarBedrock.UpdateProcessor.Databases
                 PraseJson(data, architectures);
             }
         }
+
         public void WriteJson(string filePath)
         {
-            SortVersions();
-            var valuesList = JArray.FromObject(list).Select(x => x.Values().ToList()).ToList();
-            string json = JsonConvert.SerializeObject(valuesList, Formatting.Indented);
-            File.WriteAllText(filePath, json);
+            Save(filePath);
         }
+
         public void PraseJson(string json, Dictionary<Guid, string> architectures)
         {
             JArray data = JArray.Parse(json);
@@ -55,19 +48,34 @@ namespace XylarBedrock.UpdateProcessor.Databases
                 string uuid = o[1].Value<string>();
                 int type = o[2].Value<int>();
                 string arch = o.Count() >= 4 ? o[3].Value<string>() : VersionDbExtensions.FallbackArch;
-                var v = new VersionInfoJson(name, uuid, (VersionType)type, arch);
+                int revisionNumber = o.Count() >= 5 ? o[4].Value<int>() : 1;
+                var v = new VersionInfoJson(name, uuid, (VersionType)type, arch, revisionNumber);
 
-                if (arch == VersionDbExtensions.FallbackArch && architectures != null)
+                if (arch == VersionDbExtensions.FallbackArch && architectures != null && architectures.ContainsKey(v.uuid))
                 {
-                    if (architectures.ContainsKey(v.uuid))
-                        v = new VersionInfoJson(name, uuid, (VersionType)type, architectures[v.uuid]);
+                    v = new VersionInfoJson(name, uuid, (VersionType)type, architectures[v.uuid], revisionNumber);
                 }
 
+                int sameVersionIndex = list.FindIndex(x =>
+                    x.version == v.version &&
+                    x.architecture == v.architecture &&
+                    x.type == v.type);
 
+                if (sameVersionIndex >= 0)
+                {
+                    if (list[sameVersionIndex].revisionNumber < v.revisionNumber)
+                    {
+                        list[sameVersionIndex] = v;
+                    }
+                    continue;
+                }
 
-
-                if (!list.Exists(x => x.uuid == v.uuid)) this.list.Add(v);
+                if (!list.Exists(x => x.GetIdentityKey() == v.GetIdentityKey()))
+                {
+                    list.Add(v);
+                }
             }
+
             SortVersions();
         }
 
@@ -83,23 +91,37 @@ namespace XylarBedrock.UpdateProcessor.Databases
             {
                 string version = MinecraftVersion.ConvertVersion(v.packageMoniker, type).ToString();
                 string arch = VersionDbExtensions.GetVersionArch(v.packageMoniker, type);
-                var info = new VersionInfoJson(version, v.updateId, type, arch);
+                var info = new VersionInfoJson(version, v.updateId, type, arch, v.revisionNumber);
 
-                if (!list.Exists(x => x.uuid == info.uuid)) list.Add(info);
+                int existingIndex = list.FindIndex(x => x.uuid == info.uuid && x.architecture == info.architecture);
+                if (existingIndex >= 0)
+                {
+                    if (list[existingIndex].revisionNumber < info.revisionNumber)
+                    {
+                        list[existingIndex] = info;
+                    }
+                    continue;
+                }
+
+                if (!list.Exists(x => x.version == info.version && x.architecture == info.architecture && x.type == info.type))
+                {
+                    list.Add(info);
+                }
             }
-
-
         }
 
         public void Save(string filePath)
         {
+            SortVersions();
+
             string outlist = string.Empty;
             foreach (var ver in list)
             {
-                string entry = $"[\"{ver.version}\", \"{ver.uuid}\", {(int)ver.type}, \"{ver.architecture}\"]";
+                string entry = $"[\"{ver.version}\", \"{ver.uuid}\", {(int)ver.type}, \"{ver.architecture}\", {ver.revisionNumber}]";
                 if (list.Count != list.IndexOf(ver) + 1) entry += ", " + Environment.NewLine;
                 outlist += entry;
             }
+
             string output = $"[{outlist}]";
             File.WriteAllText(filePath, output);
         }
@@ -114,9 +136,6 @@ namespace XylarBedrock.UpdateProcessor.Databases
             PraseJson(data, architectures);
         }
 
-
         #endregion
-
     }
 }
-

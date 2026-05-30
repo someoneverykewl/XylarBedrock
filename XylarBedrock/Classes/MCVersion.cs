@@ -11,6 +11,8 @@ using XylarBedrock.Classes;
 using XylarBedrock.UpdateProcessor.Enums;
 using XylarBedrock.UpdateProcessor.Extensions;
 using XylarBedrock.UpdateProcessor.Interfaces;
+using XylarBedrock.UpdateProcessor.Classes;
+using XylarBedrock.UpdateProcessor.Handlers;
 using XylarBedrock.ViewModels;
 using Newtonsoft.Json;
 using PropertyChanged;
@@ -22,13 +24,14 @@ namespace XylarBedrock.Classes
     [AddINotifyPropertyChangedInterface]
     public class MCVersion
     {
-        public MCVersion(string uuid, string pkgId, string name, VersionType type, string architecture)
+        public MCVersion(string uuid, string pkgId, string name, VersionType type, string architecture, int revisionNumber = 1)
         {
             this.UUID = uuid;
             this.PackageID = pkgId;
             this.Name = name;
             this.Type = type;
             this.Architecture = architecture;
+            this.RevisionNumber = revisionNumber;
             this.PackageType = this.Compare(Constants.GetMinimumGDKVersion()) >= 0 ? PackageType.GDK : PackageType.UWP;
         }
 
@@ -42,7 +45,10 @@ namespace XylarBedrock.Classes
         public string Name { get; set; }
         public string Architecture { get; set; }
         public string CustomName { get; set; }
+        public string DirectDownloadUrl { get; set; } = string.Empty;
+        public List<string> DirectDownloadUrls { get; set; } = new List<string>();
         public VersionType Type { get; set; }
+        public int RevisionNumber { get; set; } = 1;
         public PackageType PackageType { get; private set; }
         public bool IsBeta
         {
@@ -107,11 +113,141 @@ namespace XylarBedrock.Classes
         {
             get
             {
-                Depends.On(RequireSizeRecalculation);
-                if (Constants.Debugging.CalculateVersionSizes) Task.Run(GetInstallSize);
-                else RequireSizeRecalculation = false;
-                return StoredInstallationSize;
+                Depends.On(RequireSizeRecalculation, IsInstalled);
+
+                if (File.Exists(ManifestPath))
+                {
+                    if (Constants.Debugging.CalculateVersionSizes) Task.Run(GetInstallSize);
+                    else RequireSizeRecalculation = false;
+                    return StoredInstallationSize;
+                }
+
+                if (MatchesOfficialStoreRelease)
+                {
+                    return "Installed in Microsoft Store";
+                }
+
+                return CanBeDownloadedFromCatalog() ? "Ready to install" : "Not installed";
             }
+        }
+
+        public bool CanManageFromVersionsPage
+        {
+            get
+            {
+                Depends.On(IsInstalled, DirectDownloadUrl, DirectDownloadUrls, MatchesOfficialStoreRelease);
+                return IsInstalled ||
+                       MatchesOfficialStoreRelease ||
+                       !string.IsNullOrWhiteSpace(DirectDownloadUrl) ||
+                       (DirectDownloadUrls != null && DirectDownloadUrls.Count > 0);
+            }
+        }
+
+        public string PrimaryActionText
+        {
+            get
+            {
+                Depends.On(IsInstalled, MatchesOfficialStoreRelease);
+                if (MatchesOfficialStoreRelease)
+                {
+                    return "Play";
+                }
+
+                return "Install";
+            }
+        }
+
+        public bool MatchesOfficialStoreRelease
+        {
+            get
+            {
+                if (!IsRelease || IsCustom)
+                {
+                    return false;
+                }
+
+                var packageManager = MainDataModel.Default?.PackageManager;
+                if (packageManager == null || !packageManager.IsOfficialStoreReleaseInstalled())
+                {
+                    return false;
+                }
+
+                string officialStoreVersion = packageManager.GetOfficialStorePackageVersionString();
+                if (!MinecraftVersion.TryParse(officialStoreVersion, out MinecraftVersion installedVersion))
+                {
+                    return false;
+                }
+
+                if (!MinecraftVersion.TryParse(Name, out MinecraftVersion selectedVersion))
+                {
+                    return false;
+                }
+
+                if (installedVersion.CompareTo(selectedVersion) == 0)
+                {
+                    return true;
+                }
+
+                return DisplayVersionsMatch(officialStoreVersion, Name);
+            }
+        }
+
+        public static bool DisplayVersionsMatch(string installedVersion, string selectedVersion)
+        {
+            string installedDisplayVersion = NormalizeDisplayVersion(installedVersion);
+            string selectedDisplayVersion = NormalizeDisplayVersion(selectedVersion);
+
+            if (string.IsNullOrWhiteSpace(installedDisplayVersion) ||
+                string.IsNullOrWhiteSpace(selectedDisplayVersion))
+            {
+                return false;
+            }
+
+            return string.Equals(installedDisplayVersion, selectedDisplayVersion, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string NormalizeDisplayVersion(string version)
+        {
+            if (string.IsNullOrWhiteSpace(version))
+            {
+                return string.Empty;
+            }
+
+            string normalized = version.Trim();
+            if (MinecraftVersion.TryParse(normalized, out MinecraftVersion parsedVersion))
+            {
+                if (parsedVersion.Major == 1 &&
+                    (parsedVersion.Minor >= 26 || parsedVersion.Patch >= 1000))
+                {
+                    normalized = parsedVersion.ToRealString();
+                }
+            }
+
+            int minimumParts = normalized.StartsWith("1.", StringComparison.OrdinalIgnoreCase) ? 3 : 2;
+            List<string> parts = normalized.Split('.').ToList();
+            while (parts.Count > minimumParts &&
+                   string.Equals(parts.LastOrDefault(), "0", StringComparison.OrdinalIgnoreCase))
+            {
+                parts.RemoveAt(parts.Count - 1);
+            }
+
+            return string.Join(".", parts);
+        }
+
+        private bool CanBeDownloadedFromCatalog()
+        {
+            if (!string.IsNullOrWhiteSpace(DirectDownloadUrl) ||
+                (DirectDownloadUrls != null && DirectDownloadUrls.Count > 0))
+            {
+                return true;
+            }
+
+            if (IsInstalled || MatchesOfficialStoreRelease)
+            {
+                return true;
+            }
+
+            return MainDataModel.Default?.PackageManager?.VersionDownloader?.CanDownload(this) == true;
         }
         public string IconPath
         {
@@ -123,6 +259,40 @@ namespace XylarBedrock.Classes
                 else if (IsPreview) return Constants.PREVIEW_VERSION_ICONPATH;
                 else if (IsRelease) return Constants.RELEASE_VERSION_ICONPATH;
                 else return Constants.UNKNOWN_VERSION_ICONPATH;
+            }
+        }
+        public string VersionListIconPath
+        {
+            get
+            {
+                Depends.On(Name, IsRelease, IsCustom, IsBeta, IsPreview);
+                if (!IsRelease || IsCustom)
+                {
+                    return IconPath;
+                }
+
+                string[] releaseIcons =
+                {
+                    "Grass_Block.png",
+                    "Copper_Block.png",
+                    "Block_of_Diamond.png",
+                    "Deepslate_Diamond_Ore.png",
+                    "Observer.png",
+                    "Enchanting_Table.png",
+                    "Mangrove_Log.png",
+                    "Tuff.png",
+                    "Ancient_Debris.png",
+                    "Ender_Chest.png"
+                };
+
+                int stableHash = 0;
+                foreach (char character in Name ?? string.Empty)
+                {
+                    stableHash = unchecked((stableHash * 31) + character);
+                }
+
+                int index = Math.Abs(stableHash == int.MinValue ? 0 : stableHash) % releaseIcons.Length;
+                return Constants.INSTALLATIONS_PREFABED_ICONS_ROOT + releaseIcons[index];
             }
         }
         public string ManifestPath

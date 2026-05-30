@@ -31,6 +31,8 @@
             <controls:Toolbar_NewsButton x:Name="NewsButton" Click="NewsButton_Click"></controls:Toolbar_NewsButton>
             <controls:Toolbar_AddonsButton x:Name="AddonsButton" Click="AddonsButton_Click"></controls:Toolbar_AddonsButton>
             <controls:Toolbar_BedrockEditionButton x:Name="BedrockEditionButton" Click="BedrockEditionButton_Click"></controls:Toolbar_BedrockEditionButton>
+            <controls:Toolbar_VersionsButton x:Name="VersionsButton" Click="VersionsButton_Click"></controls:Toolbar_VersionsButton>
+            <controls:Toolbar_SkinsButton x:Name="SkinsButton" Click="SkinsButton_Click"></controls:Toolbar_SkinsButton>
         </StackPanel>
         <controls:Toolbar_SettingsButton x:Name="SettingsButton" Click="SettingsButton_Click"></controls:Toolbar_SettingsButton>
         <Grid Grid.Column="1">
@@ -40,7 +42,7 @@
             </Grid.RowDefinitions>
             <Grid Background="{DynamicResource Background.Tertiary}"></Grid>
             <Frame x:Name="MainWindowFrame" com:DisableNavigation.Disable="True" Focusable="False" VerticalAlignment="Stretch" NavigationUIVisibility="Hidden"/>
-            <Grid Grid.Row="1" x:Name="ProgressBarGrid" Background="{DynamicResource Background.Primary}" Visibility="{Binding ProgressBarState.Anim_Visibility}">
+            <Grid Grid.Row="1" x:Name="ProgressBarGrid" Background="{DynamicResource Background.Primary}" Visibility="{Binding ProgressBarState.MainProgressVisibility}">
                 <Grid Margin="10,8,10,22">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition></ColumnDefinition>

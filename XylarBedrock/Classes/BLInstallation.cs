@@ -13,6 +13,7 @@ using System.Diagnostics;
 using XylarBedrock.Enums;
 using PropertyChanged;
 using XylarBedrock.UpdateProcessor.Enums;
+using XylarBedrock.UpdateProcessor.Classes;
 
 namespace XylarBedrock.Classes
 {
@@ -80,6 +81,39 @@ namespace XylarBedrock.Classes
             }
         }
         [JsonIgnore]
+        public bool IsOfficialInstallation
+        {
+            get
+            {
+                Depends.On(InstallationUUID);
+                return string.Equals(InstallationUUID, Constants.LATEST_RELEASE_UUID, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+        [JsonIgnore]
+        public bool IsInstalledVersion
+        {
+            get
+            {
+                Depends.On(VersionUUID, VersioningMode, InstallationUUID);
+                if (Version?.IsInstalled == true)
+                {
+                    return true;
+                }
+
+                if (IsOfficialInstallation)
+                {
+                    return MainDataModel.Default.PackageManager.IsOfficialStoreReleaseInstalled();
+                }
+
+                if (Version?.MatchesOfficialStoreRelease == true)
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+        [JsonIgnore]
         public bool IsRelease
         {
             get
@@ -115,7 +149,21 @@ namespace XylarBedrock.Classes
             get
             {
                 Depends.On(VersionUUID, VersioningMode);
-                if (VersionUUID == Constants.LATEST_RELEASE_UUID && ReadOnly) return "Original Microsoft Store build";
+                if (VersionUUID == Constants.LATEST_RELEASE_UUID && ReadOnly)
+                {
+                    string officialStoreVersion = MainDataModel.Default.PackageManager.GetOfficialStorePackageVersionString();
+                    if (MinecraftVersion.TryParse(officialStoreVersion, out MinecraftVersion parsedOfficialVersion))
+                    {
+                        return parsedOfficialVersion.ToRealString();
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(Version?.Name))
+                    {
+                        return Version.Name;
+                    }
+
+                    return "Original Microsoft Store build";
+                }
                 string version = Version?.Name ?? "???";
                 //if (VersioningMode == VersioningMode.LatestPreview) return XylarBedrock.Localization.Language.LanguageManager.GetResource("VersionEntries_LatestPreview").ToString();
                 //else if (VersioningMode == VersioningMode.LatestBeta) return XylarBedrock.Localization.Language.LanguageManager.GetResource("VersionEntries_LatestBeta").ToString();

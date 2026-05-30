@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.IO;
+using System.IO.Compression;
 using System.Net;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
@@ -16,6 +17,9 @@ using System.Linq;
 using System.Threading;
 using XylarBedrock.Core;
 using System.Net.Http;
+using System.Text;
+using System.Text.RegularExpressions;
+using XylarBedrock.Pages.General;
 
 namespace XylarBedrock.Handlers
 {
@@ -72,6 +76,15 @@ namespace XylarBedrock.Handlers
             if (Properties.LauncherSettings.Default.UseBetaBuilds) return list[0].body;
             else if (list.Exists(x => !x.prerelease)) return list.First(x => x.prerelease == false).body;
             else return string.Empty;
+        }
+
+        public GithubReleaseInfo GetLatestRelease()
+        {
+            var list = Notes;
+            if (list.Count == 0) return null;
+
+            if (Properties.LauncherSettings.Default.UseBetaBuilds) return list[0];
+            return list.FirstOrDefault(x => !x.prerelease);
         }
 
         #endregion
@@ -147,12 +160,295 @@ namespace XylarBedrock.Handlers
             else JemExtensions.WebExtensions.LaunchWebLink(Constants.UPDATES_RELEASE_PAGE);
         }
 
+        public async Task ShowUpdatePromptAsync(GithubReleaseInfo releaseInfo = null)
+        {
+            releaseInfo ??= GetLatestRelease();
+            if (releaseInfo == null)
+            {
+                return;
+            }
+
+            bool shouldUpdate = false;
+            await Application.Current.Dispatcher.InvokeAsync(() =>
+            {
+                Window owner = Application.Current.MainWindow;
+                UpdatePromptWindow prompt = new UpdatePromptWindow(releaseInfo)
+                {
+                    Owner = owner
+                };
+
+                shouldUpdate = prompt.ShowDialog() == true;
+            });
+
+            if (shouldUpdate)
+            {
+                await InstallUpdateFromReleaseAsync(releaseInfo);
+            }
+        }
+
+        public Task ShowTestUpdatePromptAsync()
+        {
+            GithubReleaseInfo fakeRelease = new GithubReleaseInfo()
+            {
+                name = "XylarBedrock v0.0.0.6",
+                tag_name = "v0.0.0.6",
+                body = "Test update prompt. This is only a preview so you can see the new updater UI.",
+                html_url = Constants.UPDATES_RELEASE_PAGE,
+                published_at = DateTime.UtcNow,
+                prerelease = false,
+                isBeta = false,
+                assets = Array.Empty<GithubAsset>()
+            };
+
+            return ShowUpdatePromptAsync(fakeRelease);
+        }
+
+        private async Task InstallUpdateFromReleaseAsync(GithubReleaseInfo releaseInfo)
+        {
+            string applyScriptPath = null;
+
+            try
+            {
+                await MainViewModel.Default.ShowWaitingDialog(async () =>
+                {
+                    applyScriptPath = await PrepareUpdateApplyScriptAsync(releaseInfo);
+                });
+
+                if (string.IsNullOrWhiteSpace(applyScriptPath))
+                {
+                    throw new InvalidOperationException("The update helper could not be prepared.");
+                }
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "powershell.exe",
+                    Arguments = $"-NoProfile -ExecutionPolicy Bypass -File \"{applyScriptPath}\"",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden
+                });
+
+                Environment.Exit(0);
+            }
+            catch (Exception err)
+            {
+                Trace.WriteLine("Automatic update failed\nError:" + err);
+                await Application.Current.Dispatcher.InvokeAsync(() =>
+                {
+                    MessageBox.Show(
+                        "XylarBedrock could not install the update automatically. The GitHub release page will open so you can update manually.",
+                        App.DisplayName,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                });
+                UpdateButton_Click(this, new RoutedEventArgs());
+            }
+        }
+
+        private async Task<string> PrepareUpdateApplyScriptAsync(GithubReleaseInfo releaseInfo)
+        {
+            GithubAsset asset = FindInstallerAsset(releaseInfo);
+            string downloadUrl = GetAssetDownloadUrl(asset);
+
+            string updateRoot = Path.Combine(Path.GetTempPath(), "XylarBedrockUpdate", Guid.NewGuid().ToString("N"));
+            string downloadDirectory = Path.Combine(updateRoot, "download");
+            string extractDirectory = Path.Combine(updateRoot, "extract");
+            string payloadDirectory = Path.Combine(updateRoot, "payload");
+            string payloadDllDirectory = Path.Combine(payloadDirectory, Constants.BUNDLED_MODS_DIRECTORY_NAME);
+
+            Directory.CreateDirectory(downloadDirectory);
+            Directory.CreateDirectory(extractDirectory);
+            Directory.CreateDirectory(payloadDirectory);
+
+            string zipPath = Path.Combine(downloadDirectory, SanitizeFileName(asset.name ?? "XylarBedrock_Update.zip"));
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.UserAgent.TryParseAdd(@"XylarBedrock-Updater");
+                if (string.Equals(downloadUrl, asset.url, StringComparison.OrdinalIgnoreCase))
+                {
+                    client.DefaultRequestHeaders.Accept.TryParseAdd("application/octet-stream");
+                }
+
+                using (HttpResponseMessage response = await client.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead))
+                {
+                    response.EnsureSuccessStatusCode();
+                    using (Stream downloadStream = await response.Content.ReadAsStreamAsync())
+                    using (FileStream fileStream = File.Create(zipPath))
+                    {
+                        await downloadStream.CopyToAsync(fileStream);
+                    }
+                }
+            }
+
+            ZipFile.ExtractToDirectory(zipPath, extractDirectory, true);
+
+            string stagedExePath = Directory
+                .EnumerateFiles(extractDirectory, "XylarBedrock.exe", SearchOption.AllDirectories)
+                .FirstOrDefault();
+
+            string stagedDllDirectory = Directory
+                .EnumerateDirectories(extractDirectory, Constants.BUNDLED_MODS_DIRECTORY_NAME, SearchOption.AllDirectories)
+                .FirstOrDefault(IsCompleteDllDirectory);
+
+            if (string.IsNullOrWhiteSpace(stagedExePath) || !File.Exists(stagedExePath))
+            {
+                throw new InvalidOperationException("The release ZIP does not contain XylarBedrock.exe.");
+            }
+
+            if (string.IsNullOrWhiteSpace(stagedDllDirectory))
+            {
+                throw new InvalidOperationException($"The release ZIP does not contain a complete {Constants.BUNDLED_MODS_DIRECTORY_NAME} folder.");
+            }
+
+            File.Copy(stagedExePath, Path.Combine(payloadDirectory, "XylarBedrock.exe"), true);
+            CopyDirectory(stagedDllDirectory, payloadDllDirectory, true);
+
+            return CreateApplyUpdateScript(updateRoot, payloadDirectory);
+        }
+
+        private static GithubAsset FindInstallerAsset(GithubReleaseInfo releaseInfo)
+        {
+            GithubAsset[] assets = releaseInfo?.assets ?? Array.Empty<GithubAsset>();
+            List<GithubAsset> zipAssets = assets
+                .Where(asset => asset != null && !string.IsNullOrWhiteSpace(asset.name) && asset.name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            GithubAsset selectedAsset =
+                zipAssets.FirstOrDefault(asset => asset.name.Contains("win-x64", StringComparison.OrdinalIgnoreCase)) ??
+                zipAssets.FirstOrDefault(asset => asset.name.Contains("release", StringComparison.OrdinalIgnoreCase)) ??
+                zipAssets.FirstOrDefault();
+
+            if (selectedAsset == null)
+            {
+                throw new InvalidOperationException("This release does not include a XylarBedrock ZIP asset.");
+            }
+
+            return selectedAsset;
+        }
+
+        private static string GetAssetDownloadUrl(GithubAsset asset)
+        {
+            if (!string.IsNullOrWhiteSpace(asset.browser_download_url))
+            {
+                return asset.browser_download_url;
+            }
+
+            if (!string.IsNullOrWhiteSpace(asset.url))
+            {
+                return asset.url;
+            }
+
+            throw new InvalidOperationException("The selected update asset has no download URL.");
+        }
+
+        private static bool IsCompleteDllDirectory(string directoryPath)
+        {
+            return File.Exists(Path.Combine(directoryPath, Constants.BUNDLED_MOD_DLL_NAME)) &&
+                   File.Exists(Path.Combine(directoryPath, Constants.BUNDLED_TOOLS_DLL_NAME)) &&
+                   File.Exists(Path.Combine(directoryPath, Constants.EXTRA_DLL_NAME));
+        }
+
+        private static string CreateApplyUpdateScript(string updateRoot, string payloadDirectory)
+        {
+            string currentExePath = GetCurrentExecutablePath();
+            string installDirectory = Path.GetDirectoryName(currentExePath) ?? AppContext.BaseDirectory;
+            string payloadExePath = Path.Combine(payloadDirectory, "XylarBedrock.exe");
+            string payloadDllDirectory = Path.Combine(payloadDirectory, Constants.BUNDLED_MODS_DIRECTORY_NAME);
+            string targetDllDirectory = Path.Combine(installDirectory, Constants.BUNDLED_MODS_DIRECTORY_NAME);
+            string scriptPath = Path.Combine(updateRoot, "apply-update.ps1");
+            int currentProcessId = Process.GetCurrentProcess().Id;
+
+            StringBuilder script = new StringBuilder();
+            script.AppendLine("$ErrorActionPreference = 'Stop'");
+            script.AppendLine($"$pidToWait = {currentProcessId}");
+            script.AppendLine($"$payloadExe = {PowerShellLiteral(payloadExePath)}");
+            script.AppendLine($"$payloadDll = {PowerShellLiteral(payloadDllDirectory)}");
+            script.AppendLine($"$targetExe = {PowerShellLiteral(currentExePath)}");
+            script.AppendLine($"$targetDll = {PowerShellLiteral(targetDllDirectory)}");
+            script.AppendLine($"$updateRoot = {PowerShellLiteral(updateRoot)}");
+            script.AppendLine("try {");
+            script.AppendLine("    while (Get-Process -Id $pidToWait -ErrorAction SilentlyContinue) { Start-Sleep -Milliseconds 250 }");
+            script.AppendLine("    New-Item -ItemType Directory -Path $targetDll -Force | Out-Null");
+            script.AppendLine("    Copy-Item -LiteralPath $payloadExe -Destination $targetExe -Force");
+            script.AppendLine("    Copy-Item -Path (Join-Path $payloadDll '*') -Destination $targetDll -Force -Recurse");
+            script.AppendLine("    Start-Process -FilePath $targetExe -WorkingDirectory (Split-Path -Parent $targetExe)");
+            script.AppendLine("}");
+            script.AppendLine("catch {");
+            script.AppendLine("    Add-Type -AssemblyName System.Windows.Forms");
+            script.AppendLine("    [System.Windows.Forms.MessageBox]::Show('XylarBedrock could not finish the automatic update. Please extract the release ZIP manually or run the launcher from a writable folder.', 'XylarBedrock Updater', 'OK', 'Warning') | Out-Null");
+            script.AppendLine("    if (Test-Path -LiteralPath $targetExe) { Start-Process -FilePath $targetExe -WorkingDirectory (Split-Path -Parent $targetExe) }");
+            script.AppendLine("}");
+            script.AppendLine("finally {");
+            script.AppendLine("    Start-Sleep -Seconds 2");
+            script.AppendLine("    Remove-Item -LiteralPath $updateRoot -Recurse -Force -ErrorAction SilentlyContinue");
+            script.AppendLine("}");
+
+            File.WriteAllText(scriptPath, script.ToString(), new UTF8Encoding(false));
+            return scriptPath;
+        }
+
+        private static string GetCurrentExecutablePath()
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(Environment.ProcessPath))
+                {
+                    return Environment.ProcessPath;
+                }
+
+                string mainModulePath = Process.GetCurrentProcess().MainModule?.FileName;
+                if (!string.IsNullOrWhiteSpace(mainModulePath))
+                {
+                    return mainModulePath;
+                }
+            }
+            catch
+            {
+                // Fall back to the normal launcher name beside the executable base directory.
+            }
+
+            return Path.Combine(AppContext.BaseDirectory, "XylarBedrock.exe");
+        }
+
+        private static void CopyDirectory(string sourceDirectory, string destinationDirectory, bool overwrite)
+        {
+            Directory.CreateDirectory(destinationDirectory);
+
+            foreach (string filePath in Directory.EnumerateFiles(sourceDirectory))
+            {
+                string targetPath = Path.Combine(destinationDirectory, Path.GetFileName(filePath));
+                File.Copy(filePath, targetPath, overwrite);
+            }
+
+            foreach (string childDirectory in Directory.EnumerateDirectories(sourceDirectory))
+            {
+                string targetDirectory = Path.Combine(destinationDirectory, Path.GetFileName(childDirectory));
+                CopyDirectory(childDirectory, targetDirectory, overwrite);
+            }
+        }
+
+        private static string SanitizeFileName(string fileName)
+        {
+            foreach (char invalidChar in Path.GetInvalidFileNameChars())
+            {
+                fileName = fileName.Replace(invalidChar, '_');
+            }
+
+            return fileName;
+        }
+
+        private static string PowerShellLiteral(string value)
+        {
+            return "'" + value.Replace("'", "''") + "'";
+        }
+
         #endregion
 
         private bool CompareUpdate()
         {
             string OnlineTag = GetLatestTag();
-            string LocalTag = System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString();
+            string LocalTag = App.Version;
             System.Diagnostics.Trace.WriteLine("Current tag: " + LocalTag);
             System.Diagnostics.Trace.WriteLine("Latest tag: " + OnlineTag);
 
@@ -173,6 +469,9 @@ namespace XylarBedrock.Handlers
         }
         public bool IsVersionNewer(string localVersionStr, string remoteVersionStr)
         {
+            localVersionStr = NormalizeVersionText(localVersionStr);
+            remoteVersionStr = NormalizeVersionText(remoteVersionStr);
+
             int CheckGroup(string[] local, string[] remote, int index)
             {
                 var requiredLength = index + 1;
@@ -233,6 +532,22 @@ namespace XylarBedrock.Handlers
 
 
             return false;
+        }
+
+        private static string NormalizeVersionText(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return string.Empty;
+
+            Match match = Regex.Match(value, @"\d+(?:\.\d+){0,3}", RegexOptions.CultureInvariant);
+            if (!match.Success) return value.Trim();
+
+            List<string> parts = match.Value.Split('.').ToList();
+            while (parts.Count < 4)
+            {
+                parts.Add("0");
+            }
+
+            return string.Join(".", parts.Take(4));
         }
 
         private async Task<List<GithubReleaseInfo>> GetUpdateNotes(string url)

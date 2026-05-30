@@ -1,0 +1,3890 @@
+{
+    "skins": [
+        {
+            "localization_name": "A021- 1",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "A021-Skin.png",
+            "cape": "A021-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "A1cxe- (2) 2",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "A1cxe-Skin (2).png",
+            "cape": "A1cxe-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Advancial- 3",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Advancial-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Aeecii- (2) 4",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Aeecii-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "AngelSVK109- (2) 5",
+            "geometry": "geometry.ChineseMythology.DragonMotherGoddessLongmu",
+            "texture": "AngelSVK109-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Anymore- 7",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Anymore-Skin.png",
+            "cape": "Anymore-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Arwa_B4- 8",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Arwa_B4-Skin.png",
+            "cape": "Arwa_B4-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "AsteroidNqte- 9",
+            "geometry": "geometry.HolidaySkinPack2015.Tomte",
+            "texture": "AsteroidNqte-Skin.png",
+            "cape": "AsteroidNqte-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Audemars_P1- 10",
+            "geometry": "geometry.BeachPartySkinPack.ClassyBeachwear",
+            "texture": "Audemars_P1-Skin.png",
+            "cape": "Audemars_P1-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Avboka- (2) 11",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Avboka-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "AxaTwin- 12",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "AxaTwin-Skin.png",
+            "cape": "AxaTwin-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ayzuuw- (2) 13",
+            "geometry": "geometry.ChineseMythology.SouthernSymbolVermillionBird",
+            "texture": "ayzuuw-Skin (2).png",
+            "cape": "ayzuuw-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ayzuuw- (3) 14",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ayzuuw-Skin (3).png",
+            "cape": "ayzuuw-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "BastiGHG_Fan699- (2) 15",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "BastiGHG_Fan699-Skin (2).png",
+            "cape": "BastiGHG_Fan699-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "BastiGHG_Fan699- (3) 16",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "BastiGHG_Fan699-Skin (3).png",
+            "cape": "BastiGHG_Fan699-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "BastiGHG_Fan699- (4) 17",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "BastiGHG_Fan699-Skin (4).png",
+            "cape": "BastiGHG_Fan699-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "bcllq0- 18",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "bcllq0-Skin.png",
+            "cape": "bcllq0-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Bee- 19",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Bee-Skin.png",
+            "cape": "Bee-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "blindqdd- 20",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "blindqdd-Skin.png",
+            "cape": "blindqdd-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "BloomSP- (2) 21",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "BloomSP-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "blqres- (2) 22",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "blqres-Skin (2).png",
+            "cape": "blqres-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Bontrove- 23",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Bontrove-Skin.png",
+            "cape": "Bontrove-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "BSoDeathTV- (2) 24",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "BSoDeathTV-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "BU1LTDFRNT- 25",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "BU1LTDFRNT-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Bulletsreal- (3) 26",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Bulletsreal-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "c6m3- 27",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "c6m3-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "CatalinaLo3907- 28",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "CatalinaLo3907-Skin.png",
+            "cape": "CatalinaLo3907-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "cb6h- 29",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "cb6h-Skin.png",
+            "cape": "cb6h-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ccmincy- 30",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ccmincy-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ch4rlie222- 31",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ch4rlie222-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Cheatxng- (4) 32",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Cheatxng-Skin (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Cheatxng- (5) 33",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Cheatxng-Skin (5).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Chepuile- (3) 34",
+            "geometry": "geometry.BeachPartySkinPack.ClassyBeachwear",
+            "texture": "Chepuile-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Client_YT5708- 35",
+            "geometry": "geometry.MoanaCharacterPack.Kakamora2",
+            "geometry": "geometry.MoanaCharacterPack.Kakamora2",
+            "texture": "Client_YT5708-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "codependancy- 36",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "codependancy-Skin.png",
+            "cape": "codependancy-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "coercizione- (2) 37",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "coercizione-Skin (2).png",
+            "cape": "coercizione-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "coercizione- 38",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "coercizione-Skin.png",
+            "cape": "coercizione-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "cqltiee- (2) 39",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "cqltiee-Skin (2).png",
+            "cape": "cqltiee-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "cqltiee- (4) 40",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "cqltiee-Skin (4).png",
+            "cape": "cqltiee-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "cqltiee- 41",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "cqltiee-Skin.png",
+            "cape": "cqltiee-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "cqries- (2) 42",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "cqries-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "cqries- 43",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "cqries-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "CrossAtom4408- 44",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "CrossAtom4408-Skin.png",
+            "cape": "CrossAtom4408-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "curqed- 45",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "curqed-Skin.png",
+            "cape": "curqed-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "cxldsk- 46",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "cxldsk-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "cxozl- 47",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "cxozl-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "cyl1me- (2) 48",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "cyl1me-Skin (2).png",
+            "cape": "cyl1me-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "cyl1me- 49",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "cyl1me-Skin.png",
+            "cape": "cyl1me-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "cz0y- 50",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "cz0y-Skin.png",
+            "cape": "cz0y-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "D4P- (3) 51",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "D4P-Skin (3).png",
+            "cape": "D4P-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "D4P- (4) 52",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "D4P-Skin (4).png",
+            "cape": "D4P-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Dark_angel3260- 53",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Dark_angel3260-Skin.png",
+            "cape": "Dark_angel3260-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Deceptio0n- (2) 54",
+            "geometry": "geometry.BeachPartySkinPack.ClassyBeachwear",
+            "texture": "Deceptio0n-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Deceptio0nV2- 55",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Deceptio0nV2-Skin.png",
+            "cape": "Deceptio0nV2-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Dengafication- 56",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Dengafication-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Desoltion- 57",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Desoltion-Skin.png",
+            "cape": "Desoltion-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Detantion- 58",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Detantion-Skin.png",
+            "cape": "Detantion-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "dfayl- 60",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "dfayl-Skin.png",
+            "cape": "dfayl-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Diko_DaYn- (2) 61",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Diko_DaYn-Skin (2).png",
+            "cape": "Diko_DaYn-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Diko_DaYn- 62",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Diko_DaYn-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "dingusq- 63",
+            "geometry": "geometry.NorseMythology.Ratatoskr",
+            "texture": "dingusq-Skin.png",
+            "cape": "dingusq-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Directoring- (2) 64",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Directoring-Skin (2).png",
+            "cape": "Directoring-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Directoring- (3) 65",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Directoring-Skin (3).png",
+            "cape": "Directoring-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Directoring- 66",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Directoring-Skin.png",
+            "cape": "Directoring-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Directorinq- 67",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Directorinq-Skin.png",
+            "cape": "Directorinq-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "diztm- (2) 68",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "diztm-Skin (2).png",
+            "cape": "diztm-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "diztm- 69",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "diztm-Skin.png",
+            "cape": "diztm-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "dogdtqt- 70",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "dogdtqt-Skin.png",
+            "cape": "dogdtqt-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "dokqi- 71",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "dokqi-Skin.png",
+            "cape": "dokqi-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "DontRunHere- 72",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "DontRunHere-Skin.png",
+            "cape": "DontRunHere-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "dq2o- (3) 73",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "dq2o-Skin (3).png",
+            "cape": "dq2o-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "dq2o- 74",
+            "geometry": "geometry.MiniGameHeroes.MiniGameHeroesBatTumbler",
+            "texture": "dq2o-Skin.png",
+            "cape": "dq2o-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "dq3q- (4) 75",
+            "geometry": "geometry.NorseMythology.Ratatoskr",
+            "texture": "dq3q-Skin (4).png",
+            "cape": "dq3q-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "dqrk_1ce- 76",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "dqrk_1ce-Skin.png",
+            "cape": "dqrk_1ce-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Drru- 77",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Drru-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "E1mma- 78",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "E1mma-Skin.png",
+            "cape": "E1mma-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "e2gt- (2) 79",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "e2gt-Skin (2).png",
+            "cape": "e2gt-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "elirqa- (2) 80",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "elirqa-Skin (2).png",
+            "cape": "",
+            "type": "free"
+        },
+        {
+            "localization_name": "elirqa- 81",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "elirqa-Skin.png",
+            "cape": "elirqa-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "emiqsv- 82",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "emiqsv-Skin.png",
+            "cape": "emiqsv-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "estqblish- (5) 83",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "estqblish-Skin (5).png",
+            "cape": "estqblish-Cape (5).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "estqblish- 85",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "estqblish-Skin.png",
+            "cape": "estqblish-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Estritoh- 86",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Estritoh-Skin.png",
+            "cape": "Estritoh-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Estroqen- 87",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Estroqen-Skin.png",
+            "cape": "Estroqen-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Examinor- 88",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Examinor-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ey8b- 89",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ey8b-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "eyuq_l- 90",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "eyuq_l-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "F7ioY- 91",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "F7ioY-Skin.png",
+            "cape": "F7ioY-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "facxl- (2) 92",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "facxl-Skin (2).png",
+            "cape": "facxl-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "favvtye- 93",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "favvtye-Skin.png",
+            "cape": "favvtye-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Feardelans6075- 94",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Feardelans6075-Skin.png",
+            "cape": "Feardelans6075-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "feirqa- (2) 95",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "feirqa-Skin (2).png",
+            "cape": "feirqa-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "FELIX_HLLL- 96",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "FELIX_HLLL-Skin.png",
+            "cape": "FELIX_HLLL-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "fentanize- 97",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "fentanize-Skin.png",
+            "cape": "fentanize-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Fleet- (2) 98",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Fleet-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Fleet- 99",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Fleet-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "FlqGor- 100",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "FlqGor-Skin.png",
+            "cape": "FlqGor-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "forgottings- 101",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "forgottings-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "fowo0o- 102",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "fowo0o-Skin.png",
+            "cape": "fowo0o-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "FoxHD4856- 103",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "FoxHD4856-Skin.png",
+            "cape": "FoxHD4856-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "fqlcoon- 104",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "fqlcoon-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "fqrwy- (2) 105",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "fqrwy-Skin (2).png",
+            "cape": "fqrwy-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "fqrwy- 106",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "fqrwy-Skin.png",
+            "cape": "fqrwy-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "FV0T- (2) 107",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "FV0T-Skin (2).png",
+            "cape": "FV0T-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "FV0T- 108",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "FV0T-Skin.png",
+            "cape": "FV0T-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "fy9lh- 109",
+            "geometry": "geometry.NorseMythology.Ratatoskr",
+            "texture": "fy9lh-Skin.png",
+            "cape": "fy9lh-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "F_CORPSE- 110",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "F_CORPSE-Skin.png",
+            "cape": "F_CORPSE-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "G1rlyCookie3- 111",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "G1rlyCookie3-Skin.png",
+            "cape": "G1rlyCookie3-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "G82RQ- (2) 112",
+            "geometry": "geometry.ChineseMythology.PrincessIronFan",
+            "texture": "G82RQ-Skin (2).png",
+            "cape": "G82RQ-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "G82RQ- (4) 113",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "G82RQ-Skin (4).png",
+            "cape": "G82RQ-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "G82RQ- (5) 114",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "G82RQ-Skin (5).png",
+            "cape": "G82RQ-Cape (5).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "G82RQ- 115",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "G82RQ-Skin.png",
+            "cape": "G82RQ-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "GF7M- (10) 116",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "GF7M-Skin (10).png",
+            "cape": "",
+            "type": "free"
+        },
+        {
+            "localization_name": "GF7M- (11) 117",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "GF7M-Skin (11).png",
+            "cape": "",
+            "type": "free"
+        },
+        {
+            "localization_name": "GF7M- (4) 118",
+            "geometry": "geometry.StevenUniverse.Malachite",
+            "texture": "GF7M-Skin (4).png",
+            "cape": "GF7M-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "GF7M- (5) 119",
+            "geometry": "geometry.DuckTales.Dewey",
+            "texture": "GF7M-Skin (5).png",
+            "cape": "GF7M-Cape (5).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "GF7M- (6) 120",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "GF7M-Skin (6).png",
+            "cape": "GF7M-Cape (6).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "GF7M- (7) 121",
+            "geometry": "geometry.ChineseMythology.PrincessIronFan",
+            "texture": "GF7M-Skin (7).png",
+            "cape": "GF7M-Cape (7).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "GF7M- (8) 122",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "GF7M-Skin (8).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "GF7M- (9) 123",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "GF7M-Skin (9).png",
+           "type": "free"
+        },
+        {
+            "localization_name": "GF7M- 124",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "GF7M-Skin.png",
+            "cape": "GF7M-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Gfh- (2) 125",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Gfh-Skin (2).png",
+            "cape": "Gfh-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Gfh- 127",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Gfh-Skin.png",
+            "cape": "Gfh-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "gg_zzz8- 128",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "gg_zzz8-Skin.png",
+            "cape": "gg_zzz8-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "giupyXq67- (4) 129",
+            "geometry": "geometry.HolidaySkinPack2015.Tomte",
+            "texture": "giupyXq67-Skin (4).png",
+            "cape": "giupyXq67-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "giupyXq67- (8) 130",
+            "geometry": "geometry.HolidaySkinPack2015.Tomte",
+            "texture": "giupyXq67-Skin (8).png",
+            "cape": "giupyXq67-Cape (8).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Gohain_san- 131",
+            "geometry": "geometry.StevenUniverse.Peridot",
+            "texture": "Gohain_san-Skin.png",
+            "cape": "Gohain_san-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "GoofyMT- (2) 132",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "GoofyMT-Skin (2).png",
+            "cape": "GoofyMT-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Gregoroney- 133",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Gregoroney-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Grxfics- (2) 134",
+            "geometry": "geometry.PawsAndClaws.tuxedocat",
+            "texture": "Grxfics-Skin (2).png",
+            "cape": "Grxfics-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Grxfics- 135",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Grxfics-Skin.png",
+            "cape": "Grxfics-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "guts_fyp- 136",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "guts_fyp-Skin.png",
+            "cape": "guts_fyp-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "gywf- (2) 138",
+            "geometry": "geometry.ChineseMythology.SouthernSymbolVermillionBird",
+            "texture": "gywf-Skin (2).png",
+            "cape": "gywf-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "gywf- 139",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "gywf-Skin.png",
+            "cape": "gywf-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "H0nri- 140",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "H0nri-Skin.png",
+            "cape": "H0nri-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "hate_livin- 141",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "hate_livin-Skin.png",
+            "cape": "hate_livin-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "hhigru- 142",
+            "geometry": "geometry.NorseMythology.Ratatoskr",
+            "texture": "hhigru-Skin.png",
+            "cape": "hhigru-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Hitrxg_V2- 143",
+            "geometry": "geometry.BeachPartySkinPack.ClassyBeachwear",
+            "texture": "Hitrxg_V2-Skin.png",
+            "cape": "Hitrxg_V2-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Hlqs- 144",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Hlqs-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Hqge- 145",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Hqge-Skin.png",
+            "cape": "Hqge-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Hqkii- (2) 146",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Hqkii-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Hyaeena- 147",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Hyaeena-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Hytsq_pvps- 148",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Hytsq_pvps-Skin.png",
+            "cape": "Hytsq_pvps-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "I1d5- 149",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "I1d5-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "I5qc- 150",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "I5qc-Skin.png",
+            "cape": "I5qc-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "iCronx1- 151",
+            "geometry": "geometry.ChineseMythology.SouthernSymbolVermillionBird",
+            "texture": "iCronx1-Skin.png",
+            "cape": "iCronx1-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "iits_Totoro- 152",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "iits_Totoro-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ikwell- 153",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ikwell-Skin.png",
+            "cape": "ikwell-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ilovecarti8541- 154",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ilovecarti8541-Skin.png",
+            "cape": "ilovecarti8541-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "imbanbruh- 155",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "imbanbruh-Skin.png",
+            "cape": "imbanbruh-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Imfurt- 156",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Imfurt-Skin.png",
+            "cape": "Imfurt-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "IMJa0003- (2) 157",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "IMJa0003-Skin (2).png",
+            "cape": "IMJa0003-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ImJafett- 158",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ImJafett-Skin.png",
+            "cape": "ImJafett-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "IonicBaconn- 159",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "IonicBaconn-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "iqhun- 160",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "iqhun-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "it1h- 161",
+            "geometry": "geometry.NorseMythology.Ratatoskr",
+            "texture": "it1h-Skin.png",
+            "cape": "it1h-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ItsOn6580- 162",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ItsOn6580-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "itznormxn- (2) 163",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "itznormxn-Skin (2).png",
+            "cape": "itznormxn-Cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "itznormxn- 164",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "itznormxn-Skin.png",
+            "cape": "itznormxn-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ItzSqd0- 165",
+            "geometry": "geometry.BeachPartySkinPack.ClassyBeachwear",
+            "texture": "ItzSqd0-Skin.png",
+            "cape": "ItzSqd0-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Itz_M3rcellx- (2) 166",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Itz_M3rcellx-Skin (2).png",
+            "cape": "Itz_M3rcellx-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ITz_Ryan4254- 167",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ITz_Ryan4254-Skin.png",
+            "cape": "ITz_Ryan4254-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "I_0tpk_I- 168",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "I_0tpk_I-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "I_Acruux_I- (2) 169",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "I_Acruux_I-Skin (2).png",
+            "cape": "I_Acruux_I-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "I_BuFo_I- 171",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "I_BuFo_I-Skin.png",
+            "cape": "I_BuFo_I-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "i_fear_mommy- (2) 172",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "i_fear_mommy-Skin (2).png",
+            "cape": "i_fear_mommy-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "i_fear_mommy- (3) 173",
+            "geometry": "geometry.TheNightmareBeforeChristmas.JackSkellingtonSandyClaws",
+            "texture": "i_fear_mommy-Skin (3).png",
+            "cape": "i_fear_mommy-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "I_Fender_I- (3) 174",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "I_Fender_I-Skin (3).png",
+            "cape": "I_Fender_I-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "I_reach_on_U- 175",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "I_reach_on_U-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "I_xray_on_U- 176",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "I_xray_on_U-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "JasonBrutal- 178",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "JasonBrutal-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "jaxxmu_alt- 179",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "jaxxmu_alt-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Jdiy- 180",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Jdiy-Skin.png",
+            "cape": "Jdiy-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "JellySk8tes- (2) 181",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "JellySk8tes-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "JellySk8tes- (3) 182",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "JellySk8tes-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "jhynu- 183",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "jhynu-Skin.png",
+            "cape": "jhynu-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Jshipy- 184",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Jshipy-Skin.png",
+            "cape": "Jshipy-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Jxsslou- 185",
+            "geometry": "geometry.MoanaCharacterPack.Kakamora2",
+            "texture": "Jxsslou-Skin.png",
+            "cape": "Jxsslou-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "k1tjaa- 186",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "k1tjaa-Skin.png",
+            "cape": "k1tjaa-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "K9luuu- 187",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "K9luuu-Skin.png",
+            "cape": "K9luuu-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kal1eb- 188",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kal1eb-Skin.png",
+            "cape": "kal1eb-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kaltyk- 189",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kaltyk-Skin.png",
+            "cape": "kaltyk-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "KATIIEMAE- 190",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "KATIIEMAE-Skin.png",
+            "cape": "KATIIEMAE-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kcoru- (2) 191",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kcoru-Skin (2).png",
+            "cape": "kcoru-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kcoru- 192",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kcoru-Skin.png",
+            "cape": "kcoru-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kecxn- 193",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kecxn-Skin.png",
+            "cape": "kecxn-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Keqing5538- 194",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Keqing5538-Skin.png",
+            "cape": "Keqing5538-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kifve- (2) 195",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kifve-Skin (2).png",
+            "cape": "kifve-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kifve- (3) 196",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kifve-Skin (3).png",
+            "cape": "kifve-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kifve- (4) 197",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kifve-Skin (4).png",
+            "cape": "kifve-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kifve- 198",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kifve-Skin.png",
+            "cape": "kifve-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kimiitsu- (8) 199",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kimiitsu-Skin (8).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kioya- 200",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kioya-Skin.png",
+            "cape": "kioya-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Kiwms- (2) 201",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Kiwms-Skin (2).png",
+            "cape": "Kiwms-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "KL1B5520- (2) 202",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "KL1B5520-Skin (2).png",
+            "cape": "KL1B5520-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "KL1B5520- (3) 203",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "KL1B5520-Skin (3).png",
+            "cape": "KL1B5520-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "KL1B5520- (4) 204",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "KL1B5520-Skin (4).png",
+            "cape": "KL1B5520-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Klem- (2) 205",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Klem-Skin (2).png",
+            "cape": "Klem-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Klem- 206",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Klem-Skin.png",
+            "cape": "Klem-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Koileh- 207",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Koileh-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "komiakura- 208",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "komiakura-Skin.png",
+            "cape": "komiakura-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "koneprodrags- 209",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "koneprodrags-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kovmi- 210",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kovmi-Skin.png",
+            "cape": "kovmi-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "KURDmega- (7) 211",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "KURDmega-Skin (7).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kv9o- 212",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kv9o-Skin.png",
+            "cape": "kv9o-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Kyle_canario- 213",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Kyle_canario-Skin.png",
+            "cape": "Kyle_canario-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Kyriuso- (2) 214",
+            "geometry": "geometry.FINALFANTASYXVSkinPack.Cindy",
+            "texture": "Kyriuso-Skin (2).png",
+            "cape": "Kyriuso-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Kyriuso- (3) 215",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Kyriuso-Skin (3).png",
+            "cape": "Kyriuso-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Kyriuso- 216",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Kyriuso-Skin.png",
+            "cape": "Kyriuso-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "kziie- 217",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "kziie-Skin.png",
+            "cape": "kziie-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Kzyvo- 218",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Kzyvo-Skin.png",
+            "cape": "Kzyvo-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Lanvoxx- 219",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Lanvoxx-Skin.png",
+            "cape": "Lanvoxx-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "lascia_saya- (2) 220",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "lascia_saya-Skin (2).png",
+            "cape": "lascia_saya-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "lascia_saya- 221",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "lascia_saya-Skin.png",
+            "cape": "lascia_saya-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "LBo3442- 222",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "LBo3442-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Leowski6181- (4) 223",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Leowski6181-Skin (4).png",
+            "cape": "Leowski6181-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "liftc- 224",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "liftc-Skin.png",
+            "cape": "liftc-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "lovcrboy- 225",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "lovcrboy-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "lowkey_dry- 226",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "lowkey_dry-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Lucaderqw- 227",
+            "geometry": "geometry.DuckTales.Quackerjack",
+            "texture": "Lucaderqw-Skin.png",
+            "cape": "Lucaderqw-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Lv7ix- 228",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Lv7ix-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "LvckyPvPs- (3) 229",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "LvckyPvPs-Skin (3).png",
+            "cape": "LvckyPvPs-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "LvckyPvPs- (4) 230",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "LvckyPvPs-Skin (4).png",
+            "cape": "LvckyPvPs-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Lys6x- 231",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Lys6x-Skin.png",
+            "cape": "Lys6x-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "m4k5iu- (2) 232",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "m4k5iu-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "M5TRD- (2) 233",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "M5TRD-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "M5TRD- 234",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "M5TRD-Skin.png",
+            "cape": "M5TRD-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "MadlyCoder7803- 235",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "MadlyCoder7803-Skin.png",
+            "cape": "MadlyCoder7803-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "MamosSeco- (2) 236",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "MamosSeco-Skin (2).png",
+            "cape": "MamosSeco-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "MamosSeco- 237",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "MamosSeco-Skin.png",
+            "cape": "MamosSeco-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "MaxistCool197- (3) 238",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "MaxistCool197-Skin (3).png",
+            "cape": "MaxistCool197-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "MaxistCool197- 239",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "MaxistCool197-Skin.png",
+            "cape": "MaxistCool197-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "mcXssilent- (11) 240",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "mcXssilent-Skin (11).png",
+            "cape": "mcXssilent-Cape (11).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "mcXssilent- (12) 241",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "mcXssilent-Skin (12).png",
+            "cape": "mcXssilent-Cape (12).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "mcXssilent- (3) 242",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "mcXssilent-Skin (3).png",
+            "cape": "mcXssilent-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "mcXssilent- (6) 243",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "mcXssilent-Skin (6).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "mcXssilent- (7) 244",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "mcXssilent-Skin (7).png",
+            "cape": "mcXssilent-Cape (7).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "MegaFoxBound- 245",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "MegaFoxBound-Skin.png",
+            "cape": "MegaFoxBound-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "meomxsm- 246",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "meomxsm-Skin.png",
+            "cape": "meomxsm-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "MG2H_test1- 247",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "MG2H_test1-Skin.png",
+            "cape": "MG2H_test1-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "midonashi- 248",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "midonashi-Skin.png",
+            "cape": "midonashi-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Milesplayez- (2) 249",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Milesplayez-Skin (2).png",
+            "cape": "Milesplayez-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "millieerin- 250",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "millieerin-Skin.png",
+            "cape": "millieerin-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Milo8186- 251",
+            "geometry": "geometry.PawsAndClaws.tuxedocat",
+            "texture": "Milo8186-Skin.png",
+            "cape": "Milo8186-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "milo_owns_u- 252",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "milo_owns_u-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "MouetteRumeur4- 253",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "MouetteRumeur4-Skin.png",
+            "cape": "MouetteRumeur4-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "mqhnsx- (2) 254",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "mqhnsx-Skin (2).png",
+            "cape": "mqhnsx-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Mqloo- (3) 255",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Mqloo-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Mqriiia- (2) 256",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Mqriiia-Skin (2).png",
+            "cape": "Mqriiia-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Murphys_Law6772- 257",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Murphys_Law6772-Skin.png",
+            "cape": "Murphys_Law6772-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Murqcia- 258",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Murqcia-Skin.png",
+            "cape": "Murqcia-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "MuslimPvper- 259",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "MuslimPvper-Skin.png",
+            "cape": "MuslimPvper-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Muurd- 261",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Muurd-Skin.png",
+            "cape": "Muurd-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "mvcqe- 262",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "mvcqe-Skin.png",
+            "cape": "mvcqe-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "mvnth- (2) 263",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "mvnth-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "mvnth- 264",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "mvnth-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Mxum- (2) 265",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Mxum-Skin (2).png",
+            "cape": "Mxum-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Mxum- 266",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Mxum-Skin.png",
+            "cape": "Mxum-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ndxsv- (2) 267",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ndxsv-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ndxsv- 268",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ndxsv-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "NightmareKen540- 269",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "NightmareKen540-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "nottTim- (2) 270",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "nottTim-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "nottTim- 271",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "nottTim-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "noufis- 272",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "noufis-Skin.png",
+            "cape": "noufis-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "nour_a2t- 273",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "nour_a2t-Skin.png",
+            "cape": "nour_a2t-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "nuxsel- 274",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "nuxsel-Skin.png",
+            "cape": "nuxsel-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "nxce- 275",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "nxce-Skin.png",
+            "cape": "nxce-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "nxl1fe- (2) 276",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "nxl1fe-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "nyxleu- 277",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "nyxleu-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "O0_kayla- (3) 278",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "O0_kayla-Skin (3).png",
+            "cape": "O0_kayla-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "o7_Kloana- (2) 279",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "o7_Kloana-Skin (2).png",
+            "cape": "o7_Kloana-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "o7_Kloana- 280",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "o7_Kloana-Skin.png",
+            "cape": "o7_Kloana-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "OBaEYE1- 281",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "OBaEYE1-Skin.png",
+            "cape": "OBaEYE1-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ogLMZ- 282",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ogLMZ-Skin.png",
+            "cape": "ogLMZ-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "OHi09405- (2) 283",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "OHi09405-Skin (2).png",
+            "cape": "OHi09405-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "oh_u_so_hot- 284",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "oh_u_so_hot-Skin.png",
+            "cape": "oh_u_so_hot-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "oIDARKIo5464- 285",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "oIDARKIo5464-Skin.png",
+            "cape": "oIDARKIo5464-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Ok_dqrk- (3) 286",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Ok_dqrk-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Ok_dqrk- (4) 287",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Ok_dqrk-Skin (4).png",
+            "cape": "Ok_dqrk-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Ok_dqrk- (5) 288",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Ok_dqrk-Skin (5).png",
+            "cape": "Ok_dqrk-Cape (5).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Ok_dqrk- (7) 289",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Ok_dqrk-Skin (7).png",
+            "cape": "Ok_dqrk-Cape (7).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "OnlyF1re- 290",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "OnlyF1re-Skin.png",
+            "cape": "OnlyF1re-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Orion5923- 291",
+            "geometry": "geometry.BeachPartySkinPack.ClassyBeachwear",
+            "texture": "Orion5923-Skin.png",
+            "cape": "Orion5923-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "otqkuu- (3) 292",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "otqkuu-Skin (3).png",
+            "cape": "otqkuu-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "p0q- 293",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "p0q-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "PadmaQIB- 294",
+            "geometry": "geometry.FINALFANTASYXVSkinPack.Moogledoll",
+            "texture": "PadmaQIB-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Palux138FPV- 295",
+            "geometry": "geometry.BeachPartySkinPack.ClassyBeachwear",
+            "texture": "Palux138FPV-Skin.png",
+            "cape": "Palux138FPV-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pingwe- 296",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "pingwe-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "PinkPrincess2k4- (3) 297",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "PinkPrincess2k4-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_dioo- (2) 298",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "pov_dioo-Skin (2).png",
+            "cape": "pov_dioo-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_dioo- 299",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "pov_dioo-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_kuf- 300",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "pov_kuf-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_skill- (3) 301",
+            "geometry": "geometry.ChineseMythology.SouthernSymbolVermillionBird",
+            "texture": "pov_skill-Skin (3).png",
+            "cape": "pov_skill-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_skill- (5) 302",
+            "geometry": "geometry.HolidaySkinPack2015.Tomte",
+            "texture": "pov_skill-Skin (5).png",
+            "cape": "pov_skill-Cape (5).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_skill- (6) 303",
+            "geometry": "geometry.HolidaySkinPack2015.Tomte",
+            "texture": "pov_skill-Skin (6).png",
+            "cape": "pov_skill-Cape (6).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_skill- (7) 304",
+            "geometry": "geometry.HolidaySkinPack2015.Tomte",
+            "texture": "pov_skill-Skin (7).png",
+            "cape": "pov_skill-Cape (7).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_skill- (8) 305",
+            "geometry": "geometry.HolidaySkinPack2015.Tomte",
+            "texture": "pov_skill-Skin (8).png",
+            "cape": "pov_skill-Cape (8).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_skill_II- (2) 306",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "pov_skill_II-Skin (2).png",
+            "cape": "pov_skill_II-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_skill_II- 307",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "pov_skill_II-Skin.png",
+            "cape": "pov_skill_II-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_vnac- 308",
+            "geometry": "geometry.HolidaySkinPack2015.Tomte",
+            "texture": "pov_vnac-Skin.png",
+            "cape": "pov_vnac-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_Youb- 309",
+            "geometry": "geometry.HolidaySkinPack2015.Tomte",
+            "texture": "pov_Youb-Skin.png",
+            "cape": "pov_Youb-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_zone- (2) 310",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "pov_zone-Skin (2).png",
+            "cape": "pov_zone-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_zone- (3) 311",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "pov_zone-Skin (3).png",
+            "cape": "pov_zone-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_zone- (4) 312",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "pov_zone-Skin (4).png",
+            "cape": "pov_zone-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_zone- (6) 313",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "pov_zone-Skin (6).png",
+            "cape": "pov_zone-Cape (6).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pov_zone- (7) 314",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "pov_zone-Skin (7).png",
+            "cape": "pov_zone-Cape (7).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pqL_way- 315",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "pqL_way-Skin.png",
+            "cape": "pqL_way-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "pretry0gixl- 316",
+            "geometry": "geometry.MiniGameMasters.WolfTumbler",
+            "texture": "pretry0gixl-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "prinze_joker- 317",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "prinze_joker-Skin.png",
+            "cape": "prinze_joker-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ProofSpoon28789- 318",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ProofSpoon28789-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "prqnks- 319",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "prqnks-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "q2leniii2p- 320",
+            "geometry": "geometry.BeachPartySkinPack.ClassyBeachwear",
+            "texture": "q2leniii2p-Skin.png",
+            "cape": "q2leniii2p-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "q9tu- 321",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "q9tu-Skin.png",
+            "cape": "q9tu-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "qKur0mi- 322",
+            "geometry": "geometry.StevenUniverse.Peridot",
+            "texture": "qKur0mi-Skin.png",
+            "cape": "qKur0mi-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Qlyzon- (3) 323",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Qlyzon-Skin (3).png",
+            "cape": "Qlyzon-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Qlyzon- (4) 324",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Qlyzon-Skin (4).png",
+            "cape": "Qlyzon-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Qlyzon- 325",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Qlyzon-Skin.png",
+            "cape": "Qlyzon-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "qmiisz- 326",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "qmiisz-Skin.png",
+            "cape": "qmiisz-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Qom- 327",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Qom-Skin.png",
+            "cape": "Qom-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Quakrii- 328",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Quakrii-Skin.png",
+            "cape": "Quakrii-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Quwrlx- 329",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Quwrlx-Skin.png",
+            "cape": "Quwrlx-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "qVxillan- (4) 330",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "qVxillan-Skin (4).png",
+            "cape": "qVxillan-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "qvxillan0- (11) 331",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "qvxillan0-Skin (11).png",
+            "cape": "qvxillan0-Cape (11).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "qwhty- (2) 332",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "qwhty-Skin (2).png",
+            "cape": "qwhty-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "qwhty- (6) 333",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "qwhty-Skin (6).png",
+            "cape": "qwhty-Cape (6).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "qwhty- 334",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "qwhty-Skin.png",
+            "cape": "qwhty-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Qwycs- 335",
+            "geometry": "geometry.BeachPartySkinPack.ClassyBeachwear",
+            "texture": "Qwycs-Skin.png",
+            "cape": "Qwycs-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "qx6wll- 336",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "qx6wll-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "qxtrny- 337",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "qxtrny-Skin.png",
+            "cape": "qxtrny-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "qxuf2- (2) 338",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "qxuf2-Skin (2).png",
+            "cape": "qxuf2-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "qxuf2- 339",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "qxuf2-Skin.png",
+            "cape": "qxuf2-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Rezuu1272- 340",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Rezuu1272-Skin.png",
+            "cape": "Rezuu1272-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "riqkrii8793- (3) 341",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "riqkrii8793-Skin (3).png",
+            "cape": "riqkrii8793-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Rozern- 342",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Rozern-Skin.png",
+            "cape": "Rozern-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ru6enos- 343",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ru6enos-Skin.png",
+            "cape": "ru6enos-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "rufjs- (2) 344",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "rufjs-Skin (2).png",
+            "cape": "rufjs-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "rufjs- (3) 345",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "rufjs-Skin (3).png",
+            "cape": "rufjs-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "rufjs- 346",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "rufjs-Skin.png",
+            "cape": "rufjs-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Russian_Hive- 347",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Russian_Hive-Skin.png",
+            "cape": "Russian_Hive-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "RustaRoM9L- 348",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "RustaRoM9L-Skin.png",
+            "cape": "RustaRoM9L-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "RustedXxX- 349",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "RustedXxX-Skin.png",
+            "cape": "RustedXxX-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "s0ftieciel- 350",
+            "geometry": "geometry.PawsAndClaws.tuxedocat",
+            "texture": "s0ftieciel-Skin.png",
+            "cape": "s0ftieciel-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "S0vZenn- 351",
+            "geometry": "geometry.ChineseMythology.PrincessIronFan",
+            "texture": "S0vZenn-Skin.png",
+            "cape": "S0vZenn-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "s3n6x- 352",
+            "geometry": "geometry.PawsAndClaws.tuxedocat",
+            "texture": "s3n6x-Skin.png",
+            "cape": "s3n6x-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Sahin8531- 353",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Sahin8531-Skin.png",
+            "cape": "Sahin8531-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ScalyLand132502- (3) 354",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ScalyLand132502-Skin (3).png",
+            "cape": "ScalyLand132502-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Scaly_runz_u- 355",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Scaly_runz_u-Skin.png",
+            "cape": "Scaly_runz_u-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "scam_v1- 356",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "scam_v1-Skin.png",
+            "cape": "scam_v1-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Sevriion- 357",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Sevriion-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ShazzenXT7ds- 358",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ShazzenXT7ds-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Shy- 359",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Shy-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "signorJames- 360",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "signorJames-Skin.png",
+            "cape": "signorJames-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Silly4U- (5) 361",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Silly4U-Skin (5).png",
+            "cape": "Silly4U-Cape (5).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Skull8818- 362",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Skull8818-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "skyxsg- (2) 363",
+            "geometry": "geometry.NorseMythology.Ratatoskr",
+            "texture": "skyxsg-Skin (2).png",
+            "cape": "skyxsg-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Slapity- (2) 364",
+            "geometry": "geometry.BattleAndBeasts.Spartan",
+            "texture": "Slapity-Skin (2).png",
+            "cape": "Slapity-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "sofieqv- 365",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "sofieqv-Skin.png",
+            "cape": "sofieqv-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "softieciel- (11) 366",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "softieciel-Skin (11).png",
+            "cape": "softieciel-Cape (11).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "softieciel- (5) 367",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "softieciel-Skin (5).png",
+            "cape": "softieciel-Cape (5).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Solowiiing- 368",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Solowiiing-Skin.png",
+            "cape": "Solowiiing-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "SportyDeer34266- 369",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "SportyDeer34266-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Spuezy- (8) 370",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Spuezy-Skin (8).png",
+            "cape": "Spuezy-Cape (8).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Spuezy- 371",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Spuezy-Skin.png",
+            "cape": "Spuezy-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Sqhxrz- 372",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Sqhxrz-Skin.png",
+            "cape": "Sqhxrz-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Sqimba- (2) 373",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Sqimba-Skin (2).png",
+            "cape": "Sqimba-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "sqlaris- 374",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "sqlaris-Skin.png",
+            "cape": "sqlaris-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "sspirall- (2) 375",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "sspirall-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "sspirall- 376",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "sspirall-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "stas_eats_u- 377",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "stas_eats_u-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "sxmuxy- 378",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "sxmuxy-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "TechspIosion- (2) 379",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "TechspIosion-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "TeenyCafe227424- 380",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "TeenyCafe227424-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "th14f- 381",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "th14f-Skin.png",
+            "cape": "th14f-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "TheRealCobby- 382",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "TheRealCobby-Skin.png",
+            "cape": "TheRealCobby-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "TheReaperPvPs- 383",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "TheReaperPvPs-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "tilouchh- 384",
+            "geometry": "geometry.NorseMythology.Ratatoskr",
+            "texture": "tilouchh-Skin.png",
+            "cape": "tilouchh-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "tnatomatofan- (10) 385",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "tnatomatofan-Skin (10).png",
+            "cape": "tnatomatofan-Cape (10).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "tnatomatofan- (11) 386",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "tnatomatofan-Skin (11).png",
+            "cape": "tnatomatofan-Cape (11).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "tnatomatofan- (13) 387",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "tnatomatofan-Skin (13).png",
+            "cape": "tnatomatofan-Cape (13).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "tnatomatofan- (14) 388",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "tnatomatofan-Skin (14).png",
+            "cape": "tnatomatofan-Cape (14).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "tnatomatofan- (15) 389",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "tnatomatofan-Skin (15).png",
+            "cape": "tnatomatofan-Cape (15).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "tnatomatofan- (16) 390",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "tnatomatofan-Skin (16).png",
+            "cape": "",
+            "type": "free"
+        },
+        {
+            "localization_name": "Top_5_Eu- (2) 391",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Top_5_Eu-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Top_5_Eu- 392",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Top_5_Eu-Skin.png",
+            "cape": "Top_5_Eu-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "tqack- 393",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "tqack-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "tqFlow- 394",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "tqFlow-Skin.png",
+            "cape": "tqFlow-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "trexowqx- 395",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "trexowqx-Skin.png",
+            "cape": "",
+            "type": "free"
+        },
+        {
+            "localization_name": "try_hacking- 396",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "try_hacking-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ttatz- 397",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ttatz-Skin.png",
+            "cape": "ttatz-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "TwthAltosh14- 398",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "TwthAltosh14-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Tymk- (2) 399",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Tymk-Skin (2).png",
+            "cape": "Tymk-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Tymk- (3) 400",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Tymk-Skin (3).png",
+            "cape": "Tymk-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "u8zt- 401",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "u8zt-Skin.png",
+            "cape": "u8zt-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ufw- 402",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ufw-Skin.png",
+            "cape": "ufw-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "uItimal- 403",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "uItimal-Skin.png",
+            "cape": "uItimal-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Un1uckyx0- 404",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Un1uckyx0-Skin.png",
+            "cape": "Un1uckyx0-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Univocalre- (2) 405",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Univocalre-Skin (2).png",
+            "cape": "Univocalre-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Univocalre- (3) 406",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Univocalre-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Univocalre- 407",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Univocalre-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Uovd- (3) 408",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Uovd-Skin (3).png",
+            "cape": "Uovd-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Uovd- (4) 409",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Uovd-Skin (4).png",
+            "cape": "Uovd-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Uovd- 410",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Uovd-Skin.png",
+            "cape": "Uovd-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "UptownIsland708- 411",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "UptownIsland708-Skin.png",
+            "cape": "UptownIsland708-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Uroq- 412",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Uroq-Skin.png",
+            "cape": "Uroq-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "uvsea- (2) 413",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "uvsea-Skin (2).png",
+            "cape": "uvsea-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "uvsea- 414",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "uvsea-Skin.png",
+            "cape": "uvsea-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "u_ne3d_me- 415",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "u_ne3d_me-Skin.png",
+            "cape": "u_ne3d_me-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "v1mf- (3) 416",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "v1mf-Skin (3).png",
+            "cape": "v1mf-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "v1mf- 417",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "v1mf-Skin.png",
+            "cape": "v1mf-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "v1talyi- (2) 418",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "v1talyi-Skin (2).png",
+            "cape": "v1talyi-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "v1zuy- 419",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "v1zuy-Skin.png",
+            "cape": "v1zuy-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "v7jzz- 420",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "v7jzz-Skin.png",
+            "cape": "v7jzz-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "v9dx- 421",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "v9dx-Skin.png",
+            "cape": "v9dx-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "vaquatz63421- 422",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "vaquatz63421-Skin.png",
+            "cape": "vaquatz63421-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "vBadlands- (2) 423",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "vBadlands-Skin (2).png",
+            "cape": "vBadlands-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "vBadlands- (3) 424",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "vBadlands-Skin (3).png",
+            "cape": "vBadlands-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "VEJUZO- 425",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "VEJUZO-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "vesafe- 426",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "vesafe-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Vetuzo- (2) 427",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Vetuzo-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Vetuzo- (3) 428",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Vetuzo-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Vetuzo- (4) 429",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Vetuzo-Skin (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Vetuzo- (5) 430",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Vetuzo-Skin (5).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "vezpyy- 431",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "vezpyy-Skin.png",
+            "cape": "vezpyy-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Vhefuu- 432",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Vhefuu-Skin.png",
+            "cape": "Vhefuu-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Vhtnl- 433",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Vhtnl-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ViriditySign248- 434",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ViriditySign248-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "vjzsl- 435",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "vjzsl-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Vlez- (2) 436",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Vlez-Skin (2).png",
+            "cape": "Vlez-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Vlez- (4) 437",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Vlez-Skin (4).png",
+            "cape": "Vlez-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Vlez- (5) 438",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Vlez-Skin (5).png",
+            "cape": "Vlez-Cape (5).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Vlez- (6) 439",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Vlez-Skin (6).png",
+            "cape": "Vlez-Cape (6).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Vlez- (7) 440",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Vlez-Skin (7).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Vlez- 441",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Vlez-Skin.png",
+            "cape": "Vlez-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "vlhi- (2) 442",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "vlhi-Skin (2).png",
+            "cape": "vlhi-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Vofe- 443",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Vofe-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Volernz- 444",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Volernz-Skin.png",
+            "cape": "Volernz-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "vq- 446",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "vq-Skin.png",
+            "cape": "vq-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "vq3t- (2) 447",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "vq3t-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "vq3t- (3) 448",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "vq3t-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "vVemqn- 449",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "vVemqn-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "vxcx7- (2) 450",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "vxcx7-Skin (2).png",
+            "cape": "vxcx7-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "vzquu- (2) 451",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "vzquu-Skin (2).png",
+            "cape": "vzquu-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "V_6_I_R_U_S- 452",
+            "geometry": "geometry.NorseMythology.Mani",
+            "texture": "V_6_I_R_U_S-Skin.png",
+            "cape": "V_6_I_R_U_S-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "w52x- 453",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "w52x-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "way2deng- 454",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "way2deng-Skin.png",
+            "cape": "way2deng-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (10) 455",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (10).png",
+            "cape": "wCqst-Cape (10).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (17) 456",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (17).png",
+            "cape": "wCqst-Cape (17).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (19) 457",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (19).png",
+            "cape": "wCqst-Cape (19).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (2) 458",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (2).png",
+            "cape": "wCqst-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (25) 459",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (25).png",
+            "cape": "wCqst-Cape (25).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (27) 460",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (27).png",
+            "cape": "wCqst-Cape (27).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (28) 461",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (28).png",
+            "cape": "wCqst-Cape (28).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (29) 462",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (29).png",
+            "cape": "wCqst-Cape (29).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (39) 464",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (39).png",
+            "cape": "wCqst-Cape (39).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (41) 465",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (41).png",
+            "cape": "wCqst-Cape (41).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (42) 466",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (42).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (43) 467",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (43).png",
+            "cape": "wCqst-Cape (43).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (44) 468",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (44).png",
+            "cape": "wCqst-Cape (44).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (7) 469",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (7).png",
+            "cape": "wCqst-Cape (7).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wCqst- (8) 470",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wCqst-Skin (8).png",
+            "cape": "wCqst-Cape (8).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Wcund- 471",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Wcund-Skin.png",
+            "cape": "Wcund-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wdark_v1- 472",
+            "geometry": "geometry.HolidaySkinPack2015.Tomte",
+            "texture": "wdark_v1-Skin.png",
+            "cape": "wdark_v1-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wehzo- (3) 473",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wehzo-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wehzo- 474",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wehzo-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Wereerz- 475",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Wereerz-Skin.png",
+            "cape": "Wereerz-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Wertoqs- 476",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Wertoqs-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Wglfy- (2) 477",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Wglfy-Skin (2).png",
+            "cape": "Wglfy-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Wglfy- 478",
+            "geometry": "geometry.MarioBrothers.DiddyKong",
+            "texture": "Wglfy-Skin.png",
+            "cape": "Wglfy-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "WhaleThenPE- 479",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "WhaleThenPE-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Whxyzky- 480",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Whxyzky-Skin.png",
+            "cape": "Whxyzky-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wildshereTV- 481",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wildshereTV-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wk7a- (3) 482",
+            "geometry": "geometry.ChineseMythology.SouthernSymbolVermillionBird",
+            "texture": "wk7a-Skin (3).png",
+            "cape": "wk7a-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wk7a- (5) 483",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wk7a-Skin (5).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wo- (2) 484",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wo-Skin (2).png",
+            "cape": "wo-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wo- (3) 485",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wo-Skin (3).png",
+            "cape": "wo-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wo- (4) 486",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wo-Skin (4).png",
+            "cape": "wo-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wo- 487",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wo-Skin.png",
+            "cape": "wo-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Wolfking2003281- 488",
+            "geometry": "geometry.ChineseMythology.DragonMotherGoddessLongmu",
+            "texture": "Wolfking2003281-Skin.png",
+            "cape": "Wolfking2003281-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wombRqider- 489",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wombRqider-Skin.png",
+            "cape": "wombRqider-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wpl7x- 490",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wpl7x-Skin.png",
+            "cape": "wpl7x-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wq1fuu- 491",
+            "geometry": "geometry.ChineseMythology.Guanyin",
+            "texture": "wq1fuu-Skin (2).png",
+            "cape": "wq1fuu-cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wsec- (2) 492",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wsec-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wsec- 493",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wsec-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "wSkyTrix- 494",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "wSkyTrix-Skin.png",
+            "cape": "wSkyTrix-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "WxstedZez- (9) 495",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "WxstedZez-Skin (9).png",
+            "cape": "WxstedZez-Cape (9).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xbxu8284- (3) 496",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xbxu8284-Skin (3).png",
+            "cape": "xbxu8284-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xDonkxy- (2) 497",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xDonkxy-Skin (2).png",
+            "cape": "xDonkxy-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "XD_z_3lol- 498",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "XD_z_3lol-Skin.png",
+            "cape": "XD_z_3lol-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "XenqrL- (4) 499",
+            "geometry": "geometry.ChineseMythology.SouthernSymbolVermillionBird",
+            "texture": "XenqrL-Skin (4).png",
+            "cape": "XenqrL-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xGosha1x- 500",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xGosha1x-Skin.png",
+            "cape": "xGosha1x-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xItzBed- 501",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xItzBed-Skin.png",
+            "cape": "xItzBed-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "XkoordiNATE- (10) 502",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "XkoordiNATE-Skin (10).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "XkoordiNATE- (11) 503",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "XkoordiNATE-Skin (11).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "XkoordiNATE- (12) 504",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "XkoordiNATE-Skin (12).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "XkoordiNATE- (14) 505",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "XkoordiNATE-Skin (14).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "XkoordiNATE- (16) 506",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "XkoordiNATE-Skin (16).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "XkoordiNATE- (6) 507",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "XkoordiNATE-Skin (6).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "XkoordiNATE- (8) 508",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "XkoordiNATE-Skin (8).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "XkoordiNATE- (9) 509",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "XkoordiNATE-Skin (9).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "XKy4Xiz- 510",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "XKy4Xiz-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xKzsy- (2) 511",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xKzsy-Skin (2).png",
+            "cape": "xKzsy-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xKzsy- 512",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xKzsy-Skin.png",
+            "cape": "xKzsy-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xNeachii- (2) 513",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xNeachii-Skin (2).png",
+            "cape": "xNeachii-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xP0lqr- 514",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xP0lqr-Skin.png",
+            "cape": "xP0lqr-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xq0xz- (13) 515",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xq0xz-Skin (13).png",
+            "cape": "xq0xz-Cape (13).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xq0xz- (14) 516",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xq0xz-Skin (14).png",
+            "cape": "xq0xz-Cape (14).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xq0xz- (15) 517",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xq0xz-Skin (15).png",
+            "cape": "xq0xz-Cape (15).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xqowv- 518",
+            "geometry": "geometry.NorseMythology.Skadi",
+            "texture": "xqowv-Skin.png",
+            "cape": "xqowv-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Xrq0- (2) 519",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Xrq0-Skin (2).png",
+            "cape": "Xrq0-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Xrq0- 520",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Xrq0-Skin.png",
+            "cape": "Xrq0-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Xrq0i- (2) 521",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Xrq0i-Skin (2).png",
+            "cape": "Xrq0i-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Xrq0i- (3) 522",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Xrq0i-Skin (3).png",
+            "cape": "Xrq0i-cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Xrq0i- (4) 523",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Xrq0i-Skin (4).png",
+            "cape": "Xrq0i-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xSilvy28q- 524",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xSilvy28q-Skin.png",
+            "cape": "xSilvy28q-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xTosiff- (2) 525",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xTosiff-Skin (2).png",
+            "cape": "xTosiff-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xvAqsxAvx- (3) 526",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xvAqsxAvx-Skin (3).png",
+            "cape": "xvAqsxAvx-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "XVY_GG- 527",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "XVY_GG-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "XxgglouggxX- (2) 528",
+            "geometry": "geometry.MarioBrothers.Yoshi",
+            "texture": "XxgglouggxX-Skin (2).png",
+            "cape": "XxgglouggxX-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "xXvadyaXx- (3) 529",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "xXvadyaXx-Skin (3).png",
+            "cape": "xXvadyaXx-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Yak3ul- 530",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Yak3ul-Skin.png",
+            "cape": "Yak3ul-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ycfig- (2) 531",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ycfig-Skin (2).png",
+            "cape": "ycfig-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "yiixn- (3) 532",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "yiixn-Skin (3).png",
+            "cape": "yiixn-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "yiixn- 533",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "yiixn-Skin.png",
+            "cape": "yiixn-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Ymzie- 534",
+            "geometry": "geometry.PawsAndClaws.tuxedocat",
+            "texture": "Ymzie-Skin.png",
+            "cape": "Ymzie-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Yomqmx- 535",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Yomqmx-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "yosr- (3) 536",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "yosr-Skin (3).png",
+            "cape": "yosr-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "yosr- 537",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "yosr-Skin.png",
+            "cape": "yosr-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "yp9- 538",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "yp9-Skin.png",
+            "cape": "yp9-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Yu8ri- 539",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Yu8ri-Skin.png",
+            "cape": "Yu8ri-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Z2S- 540",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Z2S-Skin.png",
+            "cape": "Z2S-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "z4wUL- 541",
+            "geometry": "geometry.NorseMythology.Ratatoskr",
+            "texture": "z4wUL-Skin.png",
+            "cape": "z4wUL-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "z9zl- (2) 542",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "z9zl-Skin (2).png",
+            "cape": "z9zl-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "z9zl- (3) 543",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "z9zl-Skin (3).png",
+            "cape": "z9zl-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "z9zl- (4) 544",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "z9zl-Skin (4).png",
+            "cape": "z9zl-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "z9zl- (5) 545",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "z9zl-Skin (5).png",
+            "cape": "z9zl-Cape (5).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "z9zl- 546",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "z9zl-Skin.png",
+            "cape": "z9zl-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Za0kyS0ra- 547",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Za0kyS0ra-Skin.png",
+            "cape": "Za0kyS0ra-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ZAHRAAIQ2017- 548",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ZAHRAAIQ2017-Skin.png",
+            "cape": "ZAHRAAIQ2017-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zAkqshi- (2) 549",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zAkqshi-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zbi6- 550",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zbi6-Skin.png",
+            "cape": "zbi6-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zc4b- 551",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zc4b-Skin.png",
+            "cape": "zc4b-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zccqz- (2) 552",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zccqz-Skin (2).png",
+            "cape": "zccqz-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zccqz- 553",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zccqz-Skin.png",
+            "cape": "zccqz-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zcnex- (3) 554",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zcnex-Skin (3).png",
+            "cape": "zcnex-Cape (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Zelaim- 555",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Zelaim-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zEvqx7- (2) 556",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zEvqx7-Skin (2).png",
+            "cape": "zEvqx7-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "ziad_gamer5204- 557",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "ziad_gamer5204-Skin.png",
+            "cape": "ziad_gamer5204-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "mine lol- (2) 558",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "minelol.png",
+            "cape": "kifve-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zikvqx- 559",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zikvqx-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zKqbi- (3) 560",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zKqbi-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zlivani- (2) 561",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zlivani-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zLuk3yz- 562",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zLuk3yz-Skin.png",
+            "cape": "zLuk3yz-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zNoisy7- 563",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zNoisy7-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zNonuss- 564",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zNonuss-Skin.png",
+            "cape": "zNonuss-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zoeeoe- (2) 565",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zoeeoe-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zP0U- 566",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zP0U-Skin.png",
+            "cape": "zP0U-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zqh6iz- (2) 567",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zqh6iz-Skin (2).png",
+            "cape": "zqh6iz-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zqsrii8222- (4) 568",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zqsrii8222-Skin (4).png",
+            "cape": "zqsrii8222-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zqsrii8222- (6) 569",
+            "geometry": "geometry.ChineseMythology.SouthernSymbolVermillionBird",
+            "texture": "zqsrii8222-Skin (6).png",
+            "cape": "zqsrii8222-Cape (6).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zqsrii8222- 570",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zqsrii8222-Skin.png",
+            "cape": "zqsrii8222-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zqvrl- (4) 571",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zqvrl-Skin (4).png",
+            "cape": "zqvrl-Cape (4).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zTSpookyPvP- (2) 572",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zTSpookyPvP-Skin (2).png",
+            "cape": "zTSpookyPvP-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zVexoq- 573",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zVexoq-Skin.png",
+            "cape": "zVexoq-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zviia- (3) 574",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zviia-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zVo1dq- (6) 575",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zVo1dq-Skin (6).png",
+            "cape": "zVo1dq-Cape (6).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zWoytee- 576",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zWoytee-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zxllc- 577",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zxllc-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zYi9a- (2) 578",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zYi9a-Skin (2).png",
+            "cape": "zYi9a-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "Zyrc- 579",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "Zyrc-Skin.png",
+            "cape": "Zyrc-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zZvzia- (2) 580",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zZvzia-Skin (2).png",
+            "cape": "zZvzia-Cape (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zZvzia- (3) 581",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "zZvzia-Skin (3).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "zzzAutoGamer- 582",
+            "geometry": "geometry.MoanaCharacterPack.Kakamora2",
+            "texture": "zzzAutoGamer-Skin.png",
+            "cape": "zzzAutoGamer-cape.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "z_Shqrt- (2) 583",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "z_Shqrt-Skin (2).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "mcXssilent- 584",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "mcXssilent-Skin.png",
+            "type": "free"
+        },
+        {
+            "localization_name": "mcXssilent- (13) 585",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "mcXssilent-Skin (13).png",
+            "type": "free"
+        },
+        {
+            "localization_name": "mcXssilent- (8) 586",
+            "geometry": "geometry.humanoid.customSlim",
+            "texture": "mcXssilent-Skin (8).png",
+            "type": "free"
+        }
+    ],
+    "serialize_name": "600+ Skins By wouws",
+    "localization_name": "600+ Skins By wouws"
+}

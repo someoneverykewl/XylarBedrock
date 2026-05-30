@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -16,6 +15,7 @@ using XylarBedrock.Classes;
 using XylarBedrock.ViewModels;
 using System.Collections.ObjectModel;
 using XylarBedrock.UpdateProcessor.Extensions;
+using XylarBedrock.Handlers;
 
 namespace XylarBedrock.Pages.Preview.Installation
 {
@@ -46,6 +46,7 @@ namespace XylarBedrock.Pages.Preview.Installation
             IsEditMode = true;
 
             ViewModel.SelectedVersionUUID = i.VersionUUID;
+            UpdateSelectedVersionDisplayName();
             ViewModel.InstallationName = i.DisplayName;
             ViewModel.SelectedUUID = i.InstallationUUID;
 
@@ -90,42 +91,99 @@ namespace XylarBedrock.Pages.Preview.Installation
             ViewModels.MainViewModel.Default.SetOverlayFrame(null);
         }
 
-        private void Page_Loaded(object sender, RoutedEventArgs e)
+        private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            await EnsureChooserVersionsLoadedAsync();
 
+            EnsureVersionSelection();
+            RefreshVersions();
         }
 
-        private void CollectionViewSource_Filter(object sender, FilterEventArgs e)
+        private async Task EnsureChooserVersionsLoadedAsync()
         {
-            if (e.Item is MCVersion)
+            if (MainDataModel.Default.Versions.Count == 0)
             {
-                var version = (e.Item as MCVersion);
-                if (VersionDbExtensions.DoesVerionArchMatch(Constants.CurrentArchitecture, version.Architecture)) e.Accepted = true;
-                else if (ViewModel.SelectedVersionUUID == version.UUID) e.Accepted = true;
-                else e.Accepted = false;
+                await MainDataModel.Default.LoadVersions();
             }
-            else e.Accepted = false;
+
+            bool hasVisibleVersion = MainDataModel.Default.Versions.Any(version =>
+                VersionChooserPolicy.IsVisibleInChooser(version) &&
+                VersionDbExtensions.DoesVerionArchMatch(Constants.CurrentArchitecture, version.Architecture));
+
+            if (!hasVisibleVersion)
+            {
+                await MainDataModel.Default.LoadVersions(forceStoreCheck: true);
+            }
         }
 
         private void RefreshVersions()
         {
-            Dispatcher.Invoke(() =>
-            {
-                Handlers.FilterSortingHandler.Refresh(InstallationVersionSelect.ItemsSource);
-            });
+            UpdateSelectedVersionDisplayName();
         }
 
         private async void MoreVersionsButton_Click(object sender, RoutedEventArgs e)
         {
-            var window = new EditInstallationVersionSelectScreen();
+            await OpenVersionChooserAsync();
+        }
+
+        private async Task OpenVersionChooserAsync()
+        {
+            var window = new EditInstallationVersionSelectScreen(ViewModel.SelectedVersionUUID);
             ViewModels.MainViewModel.Default.SetDialogFrame(window);
             string result = await window.GetVersionUUID();
             if (!string.IsNullOrWhiteSpace(result))
             {
                 ViewModel.SelectedVersionUUID = result;
                 RefreshVersions();
-                InstallationVersionSelect.SelectedValue = result;
             }
+        }
+
+        private async void VersionChooserHost_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+            await OpenVersionChooserAsync();
+        }
+
+        private void EnsureVersionSelection()
+        {
+            if (!string.IsNullOrWhiteSpace(ViewModel.SelectedVersionUUID))
+            {
+                UpdateSelectedVersionDisplayName();
+                return;
+            }
+
+            MCVersion firstAvailableVersion = MainDataModel.Default.Versions
+                .FirstOrDefault(version =>
+                    VersionChooserPolicy.IsVisibleInChooser(version) &&
+                    VersionDbExtensions.DoesVerionArchMatch(Constants.CurrentArchitecture, version.Architecture));
+
+            if (firstAvailableVersion == null)
+            {
+                ViewModel.SelectedVersionUUID = Constants.LATEST_RELEASE_UUID;
+                UpdateSelectedVersionDisplayName();
+                return;
+            }
+
+            ViewModel.SelectedVersionUUID = firstAvailableVersion.UUID;
+            UpdateSelectedVersionDisplayName();
+        }
+
+        private void UpdateSelectedVersionDisplayName()
+        {
+            var version = GetVersion(ViewModel.SelectedVersionUUID);
+            if (version != null)
+            {
+                ViewModel.SelectedVersionDisplayName = version.DisplayName;
+                return;
+            }
+
+            if (ViewModel.SelectedVersionUUID == Constants.LATEST_RELEASE_UUID)
+            {
+                ViewModel.SelectedVersionDisplayName = "Minecraft for Windows";
+                return;
+            }
+
+            ViewModel.SelectedVersionDisplayName = "Choose a version";
         }
     }
 }

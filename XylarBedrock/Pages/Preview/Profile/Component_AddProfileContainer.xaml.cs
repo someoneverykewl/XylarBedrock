@@ -56,11 +56,57 @@ namespace XylarBedrock.Pages.Preview.Profile
         }
         public void ConfirmProfile()
         {
+            EnsureGeneratedProfileName();
             if (ViewModel.ProfileName.Length >= 1)
             {
                 if (isEditMode) UpdateProfile();
                 else CreateProfile();
             }
+        }
+
+        private void EnsureGeneratedProfileName()
+        {
+            string typedName = ProfileNameTextbox.Text?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(typedName) ||
+                typedName.Equals("Default Profile", StringComparison.OrdinalIgnoreCase))
+            {
+                typedName = GenerateRandomProfileName();
+            }
+
+            ViewModel.ProfileName = typedName;
+            ProfileNameTextbox.Text = typedName;
+
+            if (string.IsNullOrWhiteSpace(ViewModel.ProfileDirectory) ||
+                ViewModel.ProfileDirectory.Equals("Default Profile", StringComparison.OrdinalIgnoreCase))
+            {
+                ViewModel.ProfileDirectory = typedName;
+            }
+        }
+
+        private static string GenerateRandomProfileName()
+        {
+            string[] adjectives =
+            {
+                "Pixel", "Blocky", "Lucky", "Swift", "Golden", "Emerald", "Cosmic", "Tiny",
+                "Brave", "Silent", "Frost", "Sunny", "Shadow", "Crystal", "Turbo", "Magic",
+                "Royal", "Clever", "Wild", "Happy", "Neon", "Rapid", "Mystic", "Epic",
+                "Bouncy", "Copper", "Obsidian", "Cherry", "Mossy", "Lunar", "Solar", "Cloudy"
+            };
+
+            string[] nouns =
+            {
+                "Fox", "Cat", "Bee", "Panda", "Axolotl", "Wolf", "Ender", "Creeper",
+                "Miner", "Builder", "Rider", "Knight", "Ninja", "Dragon", "Llama", "Warden",
+                "Golem", "Steve", "Alex", "Piglin", "Strider", "Dolphin", "Turtle", "Falcon",
+                "Raccoon", "Pumpkin", "Totem", "Pickaxe", "Lantern", "Comet", "Rocket", "Sprout"
+            };
+
+            // 32 * 32 * 1024 = 1,048,576 possible names.
+            string adjective = adjectives[Random.Shared.Next(adjectives.Length)];
+            string noun = nouns[Random.Shared.Next(nouns.Length)];
+            int number = Random.Shared.Next(1024);
+
+            return $"{adjective}{noun}{number:0000}";
         }
 
         public void UpdateProfile()

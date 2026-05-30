@@ -46,7 +46,7 @@ namespace XylarBedrock.UpdateProcessor.Handlers
 
                     try
                     {
-                        var result = await net.getDownloadLink(updateInfo.updateId, 1, versionType);
+                        var result = await net.getDownloadLink(updateInfo.updateId, updateInfo.revisionNumber, versionType);
                         if (result != null) verified = true;
                     }
                     catch
@@ -58,11 +58,12 @@ namespace XylarBedrock.UpdateProcessor.Handlers
 
                     string mergedString = updateInfo.serverId + " " + updateInfo.updateId + " " + updateInfo.packageMoniker;
 
-                    if (knownVersions.Exists(x => x == updateInfo.updateId)) continue;
+                    string identityKey = updateInfo.GetIdentityKey();
+                    if (knownVersions.Exists(x => x == identityKey)) continue;
 
                     System.Diagnostics.Trace.WriteLine(string.Format("New UWP version: {0}", mergedString));
                     hasAnyNewVersions = true;
-                    knownVersions.Add(mergedString);
+                    knownVersions.Add(identityKey);
                     newUpdates.Add(updateInfo);
                 }
             }

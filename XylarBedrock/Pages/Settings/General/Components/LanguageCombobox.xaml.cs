@@ -18,13 +18,13 @@ namespace XylarBedrock.Pages.Settings.General.Components
             InitializeComponent();
         }
 
-        private void LanguageCombobox_DropDownClosed(object sender, EventArgs e)
+        private async void LanguageCombobox_DropDownClosed(object sender, EventArgs e)
         {
             var item = this.SelectedItem as XylarBedrock.Localization.Language.LanguageDefinition;
             if (item == null) return;
             XylarBedrock.Localization.Language.LanguageManager.SetLanguage(item.Locale);
             MainDataModel.Default.ProgressBarState.PlayButtonLanguageChanged = !MainDataModel.Default.ProgressBarState.PlayButtonLanguageChanged;
-            Program.OnApplicationRefresh();
+            await Program.OnApplicationRefresh();
         }
 
 

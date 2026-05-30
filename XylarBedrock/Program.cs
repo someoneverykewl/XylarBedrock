@@ -114,9 +114,16 @@ namespace XylarBedrock
             await SafeRunAsync("Bugrock of the week", RuntimeHandler.InitalizeBugRockOfTheWeek);
             await SafeRunAsync("Update check", async () =>
             {
+                if (StartupArgsHandler.IsUpdatePromptTestRequested)
+                {
+                    await MainDataModel.Updater.ShowTestUpdatePromptAsync();
+                    return;
+                }
+
                 if (await MainDataModel.Updater.CheckForUpdatesAsync(true))
                 {
                     MainViewModel.Default.UpdateButton.ShowUpdateButton();
+                    await MainDataModel.Updater.ShowUpdatePromptAsync();
                 }
             });
             Trace.WriteLine("Deferred startup work finished.");

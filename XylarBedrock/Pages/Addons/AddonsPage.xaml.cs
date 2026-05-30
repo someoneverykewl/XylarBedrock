@@ -31,8 +31,10 @@ namespace XylarBedrock.Pages.Addons
         private const int ShelfOneAnimatedRemoteCount = 10;
         private const int ShelfTwoVisibleCount = 8;
         private const double ShelfScrollPadding = 18;
+        private const int MaxEmptyCatalogRecoveryAttempts = 2;
         private static readonly TimeSpan ShelfAnimationDuration = TimeSpan.FromMilliseconds(260);
-        private static readonly TimeSpan AddonsOverlayDuration = TimeSpan.FromSeconds(2.5);
+        private static readonly TimeSpan AddonsEntryOverlayDuration = TimeSpan.FromSeconds(10);
+        private static readonly TimeSpan AddonsSearchOverlayDuration = TimeSpan.FromSeconds(4);
         private const int MaxDomWaitAttempts = 8;
         private static readonly string[] AllowedBrowserSchemes = { "http", "https", "about", "data", "file" };
         private const string CurseForgeExtractionScript = """
@@ -42,7 +44,9 @@ namespace XylarBedrock.Pages.Addons
   const pageText = document.body ? document.body.innerText : '';
   const isChallengePage = /just a moment|checking your browser|verify you are human/i.test(bodyText);
 
-  const titleAnchors = Array.from(document.querySelectorAll("a[href*='/minecraft-bedrock/addons/']"))
+  const projectSelector = "a[href*='/minecraft-bedrock/addons/']";
+  const projectCardSelector = "a[href*='/minecraft-bedrock/addons/']:not([href*='/download/'])";
+  const titleAnchors = Array.from(document.querySelectorAll(projectSelector))
     .filter(anchor => {
       const href = anchor.getAttribute('href') || '';
       const text = clean(anchor.textContent);
@@ -62,7 +66,7 @@ namespace XylarBedrock.Pages.Addons
 
     let container = titleAnchor;
     while (container && container !== document.body) {
-      const addonLinks = container.querySelectorAll("a[href*='/minecraft-bedrock/addons/']:not([href*='/download/'])").length;
+      const addonLinks = container.querySelectorAll(projectCardSelector).length;
       const hasDownload = !!container.querySelector("a[href*='/download/']");
       if (hasDownload && addonLinks <= 2) break;
       container = container.parentElement;
@@ -121,7 +125,8 @@ namespace XylarBedrock.Pages.Addons
       downloadsText,
       updatedText,
       fileSizeText,
-      gameVersionText
+      gameVersionText,
+      sourceLabel: 'CurseForge Bedrock Add-ons'
     });
   }
 
@@ -153,6 +158,53 @@ namespace XylarBedrock.Pages.Addons
 })()
 """;
 
+        private const string CurseForgeDownloadAssistScript = """
+(() => {
+  const clean = (value) => (value || '').replace(/\s+/g, ' ').trim();
+  const current = location.href;
+  const anchors = Array.from(document.querySelectorAll('a[href]'));
+
+  const directPackage = anchors.find(anchor => {
+    const href = anchor.href || '';
+    return /\.(mcpack|mcaddon)(\?|#|$)/i.test(href) ||
+      /edge\.forgecdn\.net|mediafilez\.forgecdn\.net|download\.curseforge\.com/i.test(href);
+  });
+
+  if (directPackage) {
+    directPackage.click();
+    return JSON.stringify({ clicked: true, url: directPackage.href, reason: 'direct-package' });
+  }
+
+  const downloadLink = anchors.find(anchor => {
+    const href = anchor.href || '';
+    const text = clean(anchor.textContent);
+    if (!href || href === current) return false;
+    return /\/download\/\d+|\/download\/file|\/files\/\d+\/download/i.test(href) ||
+      /download|continue|click here/i.test(text);
+  });
+
+  if (downloadLink) {
+    downloadLink.click();
+    return JSON.stringify({ clicked: true, url: downloadLink.href, reason: 'download-link' });
+  }
+
+  const buttons = Array.from(document.querySelectorAll('button,[role="button"]'));
+  const button = buttons.find(element => /download|continue|click here/i.test(clean(element.textContent)));
+  if (button) {
+    button.click();
+    return JSON.stringify({ clicked: true, url: '', reason: 'button' });
+  }
+
+  return JSON.stringify({
+    clicked: false,
+    url: '',
+    reason: /just a moment|checking your browser|verify you are human/i.test(document.body ? document.body.innerText : '')
+      ? 'challenge'
+      : 'waiting'
+  });
+})()
+""";
+
         private readonly HashSet<string> loadedAddonUris = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private readonly SemaphoreSlim fetchLock = new SemaphoreSlim(1, 1);
         private readonly SemaphoreSlim downloadLock = new SemaphoreSlim(1, 1);
@@ -180,6 +232,10 @@ namespace XylarBedrock.Pages.Addons
         private bool isAddonDownloadBusy;
         private bool isCatalogRefreshRunning;
         private bool isAddonsOverlayBusy;
+        private bool isEmptyCatalogRecoveryRunning;
+        private bool isDownloadAssistRunning;
+        private int emptyCatalogRecoveryAttempts;
+        private int downloadAssistSessionId;
         private int overlaySessionId;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -240,12 +296,18 @@ namespace XylarBedrock.Pages.Addons
         public string SelectedAddonAuthorText =>
             string.IsNullOrWhiteSpace(SelectedAddon?.Author)
                 ? T("AddonsPage_UnknownAuthor", "Unknown author")
-                : $"by {SelectedAddon.Author}";
+                : string.Format(CultureInfo.CurrentCulture, T("AddonsPage_ByAuthorFormat", "By {0}"), SelectedAddon.Author);
 
         public string SelectedAddonMetaText =>
-            string.IsNullOrWhiteSpace(SelectedAddon?.GameVersionText)
-                ? T("AddonsPage_DetailMetaFallback", "1 add-on pack")
-                : $"1 add-on pack - {SelectedAddon.GameVersionText}";
+            string.Format(
+                CultureInfo.CurrentCulture,
+                T("AddonsPage_DetailMetaFormat", "1 pack - {0} - {1}"),
+                string.IsNullOrWhiteSpace(SelectedAddon?.GameVersionText)
+                    ? T("AddonsPage_BedrockTag", "Bedrock")
+                    : SelectedAddon.GameVersionText,
+                string.IsNullOrWhiteSpace(SelectedAddon?.SourceLabel)
+                    ? T("AddonsPage_TrustedSourceFallback", "Trusted source")
+                    : SelectedAddon.SourceLabel);
 
         public string SelectedAddonActionText =>
             SelectedAddon?.IsCustom == true
@@ -300,7 +362,7 @@ namespace XylarBedrock.Pages.Addons
                     {
                         _ = ReloadRemoteAddonsAsync(showLoading: false, preserveCurrentResults: true);
                     }
-                });
+                }, AddonsEntryOverlayDuration);
             }
             catch (Exception ex)
             {
@@ -308,6 +370,7 @@ namespace XylarBedrock.Pages.Addons
                 NoResultsState.Visibility = Visibility.Visible;
                 NoResultsText.Text = T("AddonsPage_LoadFailed", "Couldn't load addons right now.");
                 SetLoadingState(false, string.Empty);
+                QueueEmptyCatalogRecovery("Addons page load failed.");
             }
         }
 
@@ -323,7 +386,7 @@ namespace XylarBedrock.Pages.Addons
             if (isAddonsOverlayBusy) return;
 
             ShowCatalogView();
-            await ShowAddonsOverlayAsync(() => ReloadRemoteAddonsAsync(showLoading: false));
+            await ShowAddonsOverlayAsync(() => ReloadRemoteAddonsAsync(showLoading: false), AddonsSearchOverlayDuration);
         }
 
         private async void ShowAllButton_Click(object sender, RoutedEventArgs e)
@@ -332,7 +395,7 @@ namespace XylarBedrock.Pages.Addons
 
             ShowCatalogView();
             SearchBox.Text = string.Empty;
-            await ShowAddonsOverlayAsync(() => ReloadRemoteAddonsAsync(showLoading: false));
+            await ShowAddonsOverlayAsync(() => ReloadRemoteAddonsAsync(showLoading: false), AddonsSearchOverlayDuration);
         }
 
         private async void SearchBox_KeyDown(object sender, KeyEventArgs e)
@@ -341,7 +404,7 @@ namespace XylarBedrock.Pages.Addons
 
             e.Handled = true;
             ShowCatalogView();
-            await ShowAddonsOverlayAsync(() => ReloadRemoteAddonsAsync(showLoading: false));
+            await ShowAddonsOverlayAsync(() => ReloadRemoteAddonsAsync(showLoading: false), AddonsSearchOverlayDuration);
         }
 
         private async void AddonCard_Click(object sender, RoutedEventArgs e)
@@ -352,7 +415,7 @@ namespace XylarBedrock.Pages.Addons
             {
                 OpenAddonDetails(addon);
                 return Task.CompletedTask;
-            });
+            }, AddonsSearchOverlayDuration);
         }
 
         private async void DownloadSelectedAddonButton_Click(object sender, RoutedEventArgs e)
@@ -408,6 +471,7 @@ namespace XylarBedrock.Pages.Addons
                 {
                     SetAddonDownloadState(true, string.Format(CultureInfo.CurrentCulture, T("AddonsPage_DownloadingFormat", "Downloading {0}..."), addon.Title));
                     string downloadedAddonPath = await DownloadAddonPackageAsync(addon);
+                    AddonsCatalogHandler.RememberDownloadedAddonPackage(addon, downloadedAddonPath);
                     SetAddonDownloadState(true, T("AddonsPage_OpeningAddon", "Opening addon in Minecraft..."));
                     await OpenAddonFileAsync(downloadedAddonPath);
                 }
@@ -506,16 +570,10 @@ namespace XylarBedrock.Pages.Addons
             }
         }
 
-        private async Task LoadRemoteAddonsPageAsync(int page, bool reset, bool showLoading = true)
+        private async Task LoadRemoteAddonsPageAsync(int page, bool reset, bool showLoading = true, bool allowEmptyRecovery = true)
         {
-            if (!await EnsureHiddenBrowserReadyAsync())
-            {
-                NoResultsState.Visibility = Visibility.Visible;
-                NoResultsText.Text = T("AddonsPage_NoResultsText", "Try another search or reload the list.");
-                return;
-            }
-
             await fetchLock.WaitAsync();
+            bool shouldRecoverEmptyCatalog = false;
 
             try
             {
@@ -530,9 +588,6 @@ namespace XylarBedrock.Pages.Addons
                     LoadMoreButton.IsEnabled = false;
                 }
 
-                string requestUrl = AddonsCatalogHandler.BuildCurseForgeSearchUrl(currentSearchText, page);
-                CurseForgePagePayload payload = await FetchAddonsPageAsync(requestUrl);
-
                 if (reset)
                 {
                     VisibleAddons.Clear();
@@ -540,51 +595,106 @@ namespace XylarBedrock.Pages.Addons
                     RebuildMarketplaceShelves();
                 }
 
-                foreach (CurseForgePageItem item in payload.Items ?? new List<CurseForgePageItem>())
+                string trustedTotalCountText = string.Empty;
+                int trustedCurrentPage = page;
+                int trustedMaxKnownPage = page;
+                AddonCatalogPage trustedPayload = await AddonsCatalogHandler.FetchTrustedCatalogAsync(currentSearchText, page);
+                if (trustedPayload.ProviderSucceeded)
                 {
-                    if (string.IsNullOrWhiteSpace(item.PageUri) || loadedAddonUris.Contains(item.PageUri)) continue;
-
-                    loadedAddonUris.Add(item.PageUri);
-                    VisibleAddons.Add(new AddonEntry()
+                    foreach (AddonEntry addon in trustedPayload.Items)
                     {
-                        Title = item.Title ?? string.Empty,
-                        Author = string.IsNullOrWhiteSpace(item.Author) ? T("AddonsPage_UnknownAuthor", "Unknown author") : item.Author,
-                        Description = item.Description ?? string.Empty,
-                        SourceLabel = string.Empty,
-                        ImagePath = item.ImagePath ?? string.Empty,
-                        InstallUri = item.InstallUri ?? string.Empty,
-                        PageUri = item.PageUri ?? string.Empty,
-                        DownloadsText = item.DownloadsText ?? string.Empty,
-                        UpdatedText = string.IsNullOrWhiteSpace(item.UpdatedText) ? T("AddonsPage_UnknownDate", "Unknown date") : item.UpdatedText,
-                        FileSizeText = item.FileSizeText ?? string.Empty,
-                        GameVersionText = string.IsNullOrWhiteSpace(item.GameVersionText) ? T("AddonsPage_BedrockTag", "Bedrock") : item.GameVersionText
-                    });
+                        AddVisibleAddon(addon);
+                    }
+
+                    trustedCurrentPage = Math.Max(page, trustedPayload.CurrentPage);
+                    trustedMaxKnownPage = Math.Max(trustedPayload.MaxKnownPage, trustedCurrentPage);
+                    trustedTotalCountText = trustedPayload.TotalCountText ?? string.Empty;
                 }
 
-                lastLoadedPage = Math.Max(lastLoadedPage, payload.CurrentPage);
-                maxKnownPage = Math.Max(payload.MaxKnownPage, lastLoadedPage);
-                totalCountText = payload.TotalCountText ?? string.Empty;
-
-                NoResultsState.Visibility = VisibleAddons.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
-                if (VisibleAddons.Count == 0)
+                if (!await EnsureHiddenBrowserReadyAsync())
                 {
-                    NoResultsText.Text = string.IsNullOrWhiteSpace(currentSearchText)
-                        ? T("AddonsPage_NoResultsText", "Try another search or reload the list.")
-                        : string.Format(CultureInfo.CurrentCulture, T("AddonsPage_NoSearchResults", "Nothing matched \"{0}\"."), currentSearchText);
+                    if (VisibleAddons.Count == 0 && !HasHomeFallbackAddon())
+                    {
+                        NoResultsState.Visibility = Visibility.Visible;
+                        NoResultsText.Text = T("AddonsPage_NoResultsText", "Try another search or reload the list.");
+                        shouldRecoverEmptyCatalog = true;
+                    }
+                    else if (VisibleAddons.Count == 0)
+                    {
+                        shouldRecoverEmptyCatalog = true;
+                    }
+                    else
+                    {
+                        lastLoadedPage = Math.Max(lastLoadedPage, trustedCurrentPage);
+                        maxKnownPage = Math.Max(trustedMaxKnownPage, lastLoadedPage);
+                        totalCountText = trustedTotalCountText;
+                        FinalizeCatalogPage();
+                        if (VisibleAddons.Count > 0)
+                        {
+                            AddonsCatalogHandler.SaveCachedRemoteAddons(VisibleAddons);
+                        }
+                    }
+
+                    return;
                 }
 
-                RebuildMarketplaceShelves();
-                UpdateCatalogLabels();
+                int payloadCurrentPage = 1;
+                int payloadMaxKnownPage = 1;
+                string payloadTotalCountText = string.Empty;
+
+                foreach (string requestUrl in AddonsCatalogHandler.BuildCurseForgeSearchUrls(currentSearchText, page))
+                {
+                    CurseForgePagePayload payload = await FetchAddonsPageAsync(requestUrl);
+                    payloadCurrentPage = Math.Max(payloadCurrentPage, payload.CurrentPage);
+                    payloadMaxKnownPage = Math.Max(payloadMaxKnownPage, payload.MaxKnownPage);
+
+                    if (string.IsNullOrWhiteSpace(payloadTotalCountText))
+                    {
+                        payloadTotalCountText = payload.TotalCountText ?? string.Empty;
+                    }
+
+                    foreach (CurseForgePageItem item in payload.Items ?? new List<CurseForgePageItem>())
+                    {
+                        AddVisibleAddon(new AddonEntry()
+                        {
+                            Title = item.Title ?? string.Empty,
+                            Author = string.IsNullOrWhiteSpace(item.Author) ? T("AddonsPage_UnknownAuthor", "Unknown author") : item.Author,
+                            Description = item.Description ?? string.Empty,
+                            SourceLabel = string.IsNullOrWhiteSpace(item.SourceLabel) ? "CurseForge" : item.SourceLabel,
+                            ImagePath = item.ImagePath ?? string.Empty,
+                            InstallUri = item.InstallUri ?? string.Empty,
+                            PageUri = item.PageUri ?? string.Empty,
+                            DownloadsText = item.DownloadsText ?? string.Empty,
+                            UpdatedText = string.IsNullOrWhiteSpace(item.UpdatedText) ? T("AddonsPage_UnknownDate", "Unknown date") : item.UpdatedText,
+                            FileSizeText = item.FileSizeText ?? string.Empty,
+                            GameVersionText = string.IsNullOrWhiteSpace(item.GameVersionText) ? T("AddonsPage_BedrockTag", "Bedrock") : item.GameVersionText
+                        });
+                    }
+                }
+
+                lastLoadedPage = Math.Max(lastLoadedPage, Math.Max(trustedCurrentPage, payloadCurrentPage));
+                maxKnownPage = Math.Max(Math.Max(trustedMaxKnownPage, payloadMaxKnownPage), lastLoadedPage);
+                totalCountText = string.IsNullOrWhiteSpace(payloadTotalCountText)
+                    ? trustedTotalCountText
+                    : payloadTotalCountText;
+
+                FinalizeCatalogPage();
                 AddonsCatalogHandler.SaveCachedRemoteAddons(VisibleAddons);
+                shouldRecoverEmptyCatalog = VisibleAddons.Count == 0;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
 
-                if (VisibleAddons.Count == 0)
+                if (VisibleAddons.Count == 0 && !HasHomeFallbackAddon())
                 {
                     NoResultsState.Visibility = Visibility.Visible;
                     NoResultsText.Text = T("AddonsPage_LoadFailed", "Couldn't load addons right now.");
+                    shouldRecoverEmptyCatalog = true;
+                }
+                else if (VisibleAddons.Count == 0)
+                {
+                    shouldRecoverEmptyCatalog = true;
                 }
                 else
                 {
@@ -596,6 +706,11 @@ namespace XylarBedrock.Pages.Addons
             {
                 SetLoadingState(false, string.Empty);
                 fetchLock.Release();
+
+                if (allowEmptyRecovery && shouldRecoverEmptyCatalog)
+                {
+                    QueueEmptyCatalogRecovery("No add-ons were detected after catalog load.");
+                }
             }
         }
 
@@ -642,6 +757,7 @@ namespace XylarBedrock.Pages.Addons
                 DownloadBrowser.CoreWebView2.NewWindowRequested += DownloadBrowser_NewWindowRequested;
                 DownloadBrowser.CoreWebView2.DownloadStarting += DownloadBrowser_DownloadStarting;
                 DownloadBrowser.CoreWebView2.NavigationStarting += HiddenBrowser_NavigationStarting;
+                DownloadBrowser.NavigationCompleted += DownloadBrowser_NavigationCompleted;
                 DownloadBrowser.CoreWebView2.LaunchingExternalUriScheme += HiddenBrowser_LaunchingExternalUriScheme;
                 downloadBrowserInitialized = true;
                 return true;
@@ -652,6 +768,14 @@ namespace XylarBedrock.Pages.Addons
                 Debug.WriteLine(ex);
                 return false;
             }
+        }
+
+        private void DownloadBrowser_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+            if (pendingDownloadTaskSource == null || !e.IsSuccess) return;
+
+            int assistSession = downloadAssistSessionId;
+            _ = AssistCurseForgeDownloadAsync(assistSession);
         }
 
         private async Task<CurseForgePagePayload> FetchAddonsPageAsync(string requestUrl)
@@ -798,12 +922,38 @@ namespace XylarBedrock.Pages.Addons
                 e.ResultFilePath = targetPath;
 
                 var operation = e.DownloadOperation;
+                EventHandler<object> progressChangedHandler = null;
                 EventHandler<object> stateChangedHandler = null;
+
+                void DetachDownloadHandlers()
+                {
+                    if (progressChangedHandler != null)
+                    {
+                        operation.BytesReceivedChanged -= progressChangedHandler;
+                    }
+
+                    if (stateChangedHandler != null)
+                    {
+                        operation.StateChanged -= stateChangedHandler;
+                    }
+                }
+
+                progressChangedHandler = (_, __) =>
+                {
+                    ulong? rawTotalBytes = operation.TotalBytesToReceive;
+                    long totalBytes = rawTotalBytes.HasValue && rawTotalBytes.Value <= (ulong)long.MaxValue
+                        ? Convert.ToInt64(rawTotalBytes.Value)
+                        : -1;
+                    UpdateAddonDownloadProgress(
+                        operation.BytesReceived,
+                        totalBytes > 0 ? totalBytes : (long?)null);
+                };
+
                 stateChangedHandler = async (_, __) =>
                 {
                     if (operation.State == CoreWebView2DownloadState.Completed)
                     {
-                        operation.StateChanged -= stateChangedHandler;
+                        DetachDownloadHandlers();
 
                         bool ready = await WaitUntilFileIsReadyAsync(targetPath);
                         if (ready)
@@ -818,18 +968,96 @@ namespace XylarBedrock.Pages.Addons
                     }
                     else if (operation.State == CoreWebView2DownloadState.Interrupted)
                     {
-                        operation.StateChanged -= stateChangedHandler;
+                        DetachDownloadHandlers();
                         pendingDownloadTaskSource.TrySetException(
                             new IOException($"Download interrupted: {operation.InterruptReason}"));
                     }
                 };
 
+                operation.BytesReceivedChanged += progressChangedHandler;
                 operation.StateChanged += stateChangedHandler;
+                progressChangedHandler.Invoke(operation, EventArgs.Empty);
             }
             finally
             {
                 deferral.Complete();
             }
+        }
+
+        private async Task AssistCurseForgeDownloadAsync(int assistSession)
+        {
+            if (isDownloadAssistRunning || pendingDownloadTaskSource == null)
+            {
+                return;
+            }
+
+            isDownloadAssistRunning = true;
+
+            try
+            {
+                for (int attempt = 0; attempt < 24; attempt++)
+                {
+                    if (pendingDownloadTaskSource == null || assistSession != downloadAssistSessionId)
+                    {
+                        return;
+                    }
+
+                    await Task.Delay(attempt == 0 ? 450 : 700);
+
+                    if (pendingDownloadTaskSource == null || DownloadBrowser?.CoreWebView2 == null)
+                    {
+                        return;
+                    }
+
+                    string rawResult = await DownloadBrowser.ExecuteScriptAsync(CurseForgeDownloadAssistScript);
+                    string json = JsonConvert.DeserializeObject<string>(rawResult) ?? "{}";
+                    CurseForgeDownloadAssistState state =
+                        JsonConvert.DeserializeObject<CurseForgeDownloadAssistState>(json) ?? new CurseForgeDownloadAssistState();
+
+                    if (!string.IsNullOrWhiteSpace(state.Url) &&
+                        Uri.TryCreate(state.Url, UriKind.Absolute, out Uri nextUri) &&
+                        IsSafeCurseForgeAssistUri(nextUri) &&
+                        !IsCurrentDownloadBrowserUri(nextUri))
+                    {
+                        DownloadBrowser.Source = nextUri;
+                    }
+
+                    if (state.Clicked)
+                    {
+                        await Task.Delay(900);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                isDownloadAssistRunning = false;
+            }
+        }
+
+        private bool IsCurrentDownloadBrowserUri(Uri uri)
+        {
+            try
+            {
+                string currentUri = DownloadBrowser?.Source?.AbsoluteUri ?? string.Empty;
+                return string.Equals(currentUri, uri.AbsoluteUri, StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool IsSafeCurseForgeAssistUri(Uri uri)
+        {
+            if (uri == null) return false;
+
+            return uri.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase) &&
+                   (uri.Host.EndsWith("curseforge.com", StringComparison.OrdinalIgnoreCase) ||
+                    uri.Host.EndsWith("forgecdn.net", StringComparison.OrdinalIgnoreCase));
         }
 
         private void UpdateCatalogLabels()
@@ -850,6 +1078,43 @@ namespace XylarBedrock.Pages.Addons
             LoadMoreButton.Visibility = lastLoadedPage < maxKnownPage && VisibleAddons.Count > 0
                 ? Visibility.Visible
                 : Visibility.Collapsed;
+        }
+
+        private void AddVisibleAddon(AddonEntry addon)
+        {
+            if (addon == null) return;
+
+            string identity = string.IsNullOrWhiteSpace(addon.PageUri) ? addon.InstallUri : addon.PageUri;
+            if (string.IsNullOrWhiteSpace(identity))
+            {
+                identity = addon.Title;
+            }
+
+            if (string.IsNullOrWhiteSpace(identity) || loadedAddonUris.Contains(identity)) return;
+
+            loadedAddonUris.Add(identity);
+            VisibleAddons.Add(addon);
+        }
+
+        private void FinalizeCatalogPage()
+        {
+            bool hasHomeFallbackAddon = HasHomeFallbackAddon();
+            bool hasCatalogContent = VisibleAddons.Count > 0 || hasHomeFallbackAddon;
+            NoResultsState.Visibility = hasCatalogContent ? Visibility.Collapsed : Visibility.Visible;
+            if (VisibleAddons.Count > 0)
+            {
+                emptyCatalogRecoveryAttempts = 0;
+            }
+
+            if (!hasCatalogContent)
+            {
+                NoResultsText.Text = string.IsNullOrWhiteSpace(currentSearchText)
+                    ? T("AddonsPage_NoResultsText", "Try another search or reload the list.")
+                    : string.Format(CultureInfo.CurrentCulture, T("AddonsPage_NoSearchResults", "Nothing matched \"{0}\"."), currentSearchText);
+            }
+
+            RebuildMarketplaceShelves();
+            UpdateCatalogLabels();
         }
 
         private void SetLoadingState(bool isLoading, string message)
@@ -878,29 +1143,157 @@ namespace XylarBedrock.Pages.Addons
                 PromoAddons.Add(addon);
             }
 
-            bool showBundledInShelf = bundledActionsAddon != null;
-            if (showBundledInShelf)
+            bool showBestSellersShelf = bundledActionsAddon != null && string.IsNullOrWhiteSpace(currentSearchText);
+            if (BestSellersTitle != null)
+            {
+                BestSellersTitle.Visibility = showBestSellersShelf ? Visibility.Visible : Visibility.Collapsed;
+            }
+
+            if (BestSellersShelfRoot != null)
+            {
+                BestSellersShelfRoot.Visibility = showBestSellersShelf ? Visibility.Visible : Visibility.Collapsed;
+            }
+
+            if (showBestSellersShelf)
             {
                 ShelfOneAddons.Add(bundledActionsAddon);
             }
 
             int bestSellerSkip = 1 + FeaturedMosaicCount + PromoAddonsCount;
-            int rowOneRemoteCount = showBundledInShelf ? ShelfOneAnimatedRemoteCount - 1 : ShelfOneAnimatedRemoteCount;
-            foreach (AddonEntry addon in remoteAddons.Skip(bestSellerSkip).Take(rowOneRemoteCount))
-            {
-                ShelfOneAddons.Add(addon);
-            }
-
-            int rowTwoStart = bestSellerSkip + rowOneRemoteCount;
-            foreach (AddonEntry addon in remoteAddons.Skip(rowTwoStart).Take(ShelfTwoVisibleCount))
+            foreach (AddonEntry addon in remoteAddons.Skip(bestSellerSkip))
             {
                 ShelfTwoAddons.Add(addon);
             }
 
-            NoResultsState.Visibility = remoteAddons.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            bool hasHomeFallbackAddon = HasHomeFallbackAddon();
+            NoResultsState.Visibility = remoteAddons.Count == 0 && !hasHomeFallbackAddon
+                ? Visibility.Visible
+                : Visibility.Collapsed;
 
             Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(UpdateShelfOneViewport));
             UpdateDetailCollections();
+        }
+
+        private bool HasHomeFallbackAddon()
+        {
+            return bundledActionsAddon != null && string.IsNullOrWhiteSpace(currentSearchText);
+        }
+
+        private void QueueEmptyCatalogRecovery(string reason)
+        {
+            if (isEmptyCatalogRecoveryRunning ||
+                emptyCatalogRecoveryAttempts >= MaxEmptyCatalogRecoveryAttempts ||
+                VisibleAddons.Count > 0)
+            {
+                return;
+            }
+
+            emptyCatalogRecoveryAttempts++;
+            _ = Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(async () =>
+            {
+                await RecoverEmptyCatalogAsync(reason);
+            }));
+        }
+
+        private async Task RecoverEmptyCatalogAsync(string reason)
+        {
+            if (isEmptyCatalogRecoveryRunning || VisibleAddons.Count > 0)
+            {
+                return;
+            }
+
+            isEmptyCatalogRecoveryRunning = true;
+
+            try
+            {
+                Debug.WriteLine($"Recovering empty add-ons catalog: {reason}");
+                SetLoadingState(true, T("AddonsPage_LoadingText", "Loading addons..."));
+                NoResultsState.Visibility = Visibility.Collapsed;
+
+                ResetCatalogBrowserForRecovery();
+                await Task.Delay(350);
+
+                if (LoadCachedCatalog() && VisibleAddons.Count > 0)
+                {
+                    return;
+                }
+
+                await ReloadCatalogFromScratchAsync(clearSearch: false);
+                if (VisibleAddons.Count > 0)
+                {
+                    return;
+                }
+
+                if (!string.IsNullOrWhiteSpace(currentSearchText) || !string.IsNullOrWhiteSpace(SearchBox.Text))
+                {
+                    SearchBox.Text = string.Empty;
+                    currentSearchText = string.Empty;
+                    ResetCatalogBrowserForRecovery();
+                    await ReloadCatalogFromScratchAsync(clearSearch: true);
+                    if (VisibleAddons.Count > 0)
+                    {
+                        return;
+                    }
+                }
+
+                RestoreBundledFallbackCatalog();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                RestoreBundledFallbackCatalog();
+            }
+            finally
+            {
+                isEmptyCatalogRecoveryRunning = false;
+                SetLoadingState(false, string.Empty);
+            }
+        }
+
+        private async Task ReloadCatalogFromScratchAsync(bool clearSearch)
+        {
+            currentSearchText = clearSearch ? string.Empty : (SearchBox.Text?.Trim() ?? string.Empty);
+            lastLoadedPage = 0;
+            maxKnownPage = 1;
+            totalCountText = string.Empty;
+            loadedAddonUris.Clear();
+            VisibleAddons.Clear();
+            RebuildMarketplaceShelves();
+            UpdateCatalogLabels();
+
+            await LoadRemoteAddonsPageAsync(1, reset: true, showLoading: false, allowEmptyRecovery: false);
+        }
+
+        private void ResetCatalogBrowserForRecovery()
+        {
+            hiddenBrowserFailed = false;
+
+            try
+            {
+                ScraperBrowser?.CoreWebView2?.Reload();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
+        private void RestoreBundledFallbackCatalog()
+        {
+            if (bundledActionsAddon == null)
+            {
+                return;
+            }
+
+            SearchBox.Text = string.Empty;
+            currentSearchText = string.Empty;
+            VisibleAddons.Clear();
+            loadedAddonUris.Clear();
+            AddVisibleAddon(bundledActionsAddon);
+            totalCountText = VisibleAddons.Count.ToString(CultureInfo.InvariantCulture);
+            lastLoadedPage = 1;
+            maxKnownPage = 1;
+            FinalizeCatalogPage();
         }
 
         private async Task<string> DownloadAddonPackageAsync(AddonEntry addon)
@@ -909,6 +1302,38 @@ namespace XylarBedrock.Pages.Addons
 
             try
             {
+                string cachedPackagePath = AddonsCatalogHandler.TryGetCachedDownloadedAddonPackage(addon);
+                if (!string.IsNullOrWhiteSpace(cachedPackagePath))
+                {
+                    SetAddonDownloadState(true, T("AddonsPage_UsingCachedAddon", "Using cached addon package..."));
+                    return cachedPackagePath;
+                }
+
+                string browserDownloadUri = addon.InstallUri;
+
+                try
+                {
+                    IProgress<AddonDownloadProgress> progress = new Progress<AddonDownloadProgress>(downloadProgress =>
+                    {
+                        UpdateAddonDownloadProgress(downloadProgress.BytesReceived, downloadProgress.TotalBytes);
+                    });
+
+                    return await AddonsCatalogHandler.DownloadRemotePackageAsync(addon, progress);
+                }
+                catch (AddonBrowserDownloadRequiredException ex)
+                {
+                    if (!string.IsNullOrWhiteSpace(ex.BrowserUri))
+                    {
+                        browserDownloadUri = ex.BrowserUri;
+                    }
+
+                    Debug.WriteLine($"Addon download needs WebView: {ex}");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Direct addon download failed, falling back to WebView: {ex}");
+                }
+
                 if (!await EnsureHiddenDownloadBrowserReadyAsync())
                 {
                     throw new InvalidOperationException(T("AddonsPage_DownloadEngineFailed", "The launcher download engine could not start on this PC."));
@@ -916,11 +1341,13 @@ namespace XylarBedrock.Pages.Addons
 
                 pendingDownloadTitle = string.IsNullOrWhiteSpace(addon.Title) ? "addon" : addon.Title;
                 pendingDownloadTaskSource = new TaskCompletionSource<string>(TaskCreationOptions.RunContinuationsAsynchronously);
+                int assistSession = Interlocked.Increment(ref downloadAssistSessionId);
 
-                SetLoadingState(true, string.Format(CultureInfo.CurrentCulture, T("AddonsPage_DownloadingFormat", "Downloading {0}..."), addon.Title));
-                DownloadBrowser.Source = new Uri(addon.InstallUri);
+                SetAddonDownloadState(true, string.Format(CultureInfo.CurrentCulture, T("AddonsPage_DownloadingFormat", "Downloading {0}..."), addon.Title));
+                DownloadBrowser.Source = new Uri(browserDownloadUri);
+                _ = AssistCurseForgeDownloadAsync(assistSession);
 
-                using CancellationTokenSource timeoutSource = new CancellationTokenSource(TimeSpan.FromSeconds(90));
+                using CancellationTokenSource timeoutSource = new CancellationTokenSource(TimeSpan.FromMinutes(4));
                 using CancellationTokenRegistration timeoutRegistration = timeoutSource.Token.Register(() =>
                 {
                     pendingDownloadTaskSource.TrySetException(
@@ -933,7 +1360,6 @@ namespace XylarBedrock.Pages.Addons
             {
                 pendingDownloadTitle = string.Empty;
                 pendingDownloadTaskSource = null;
-                SetLoadingState(false, string.Empty);
                 downloadLock.Release();
             }
         }
@@ -1117,7 +1543,7 @@ namespace XylarBedrock.Pages.Addons
             OverlaySpinnerRotate.BeginAnimation(System.Windows.Media.RotateTransform.AngleProperty, rotationAnimation);
         }
 
-        private async Task ShowAddonsOverlayAsync(Func<Task> work)
+        private async Task ShowAddonsOverlayAsync(Func<Task> work, TimeSpan minimumDuration)
         {
             if (work == null) return;
 
@@ -1125,7 +1551,7 @@ namespace XylarBedrock.Pages.Addons
             isAddonsOverlayBusy = true;
             SetAddonsOverlayVisible(true);
 
-            Task waitTask = Task.Delay(AddonsOverlayDuration);
+            Task waitTask = Task.Delay(minimumDuration);
             Exception capturedException = null;
 
             try
@@ -1221,6 +1647,10 @@ namespace XylarBedrock.Pages.Addons
             if (DownloadLoadingBar != null)
             {
                 DownloadLoadingBar.Visibility = isBusy ? Visibility.Visible : Visibility.Collapsed;
+                DownloadLoadingBar.Minimum = 0;
+                DownloadLoadingBar.Maximum = 100;
+                DownloadLoadingBar.Value = 0;
+                DownloadLoadingBar.IsIndeterminate = isBusy;
             }
 
             if (DownloadStatusText != null)
@@ -1230,6 +1660,66 @@ namespace XylarBedrock.Pages.Addons
                     ? Visibility.Visible
                     : Visibility.Collapsed;
             }
+        }
+
+        private void UpdateAddonDownloadProgress(long bytesReceived, long? totalBytes)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    UpdateAddonDownloadProgress(bytesReceived, totalBytes)));
+                return;
+            }
+
+            if (!isAddonDownloadBusy) return;
+
+            if (DownloadLoadingBar != null)
+            {
+                if (totalBytes.HasValue && totalBytes.Value > 0)
+                {
+                    double percent = Math.Max(0, Math.Min(100, bytesReceived * 100d / totalBytes.Value));
+                    DownloadLoadingBar.IsIndeterminate = false;
+                    DownloadLoadingBar.Value = percent;
+                }
+                else
+                {
+                    DownloadLoadingBar.IsIndeterminate = true;
+                }
+            }
+
+            if (DownloadStatusText != null && bytesReceived > 0)
+            {
+                string progressText = totalBytes.HasValue && totalBytes.Value > 0
+                    ? string.Format(
+                        CultureInfo.CurrentCulture,
+                        T("AddonsPage_DownloadProgressFormat", "Downloading... {0} / {1}"),
+                        FormatDownloadBytes(bytesReceived),
+                        FormatDownloadBytes(totalBytes.Value))
+                    : string.Format(
+                        CultureInfo.CurrentCulture,
+                        T("AddonsPage_DownloadReceivedFormat", "Downloading... {0} received"),
+                        FormatDownloadBytes(bytesReceived));
+
+                DownloadStatusText.Text = progressText;
+                DownloadStatusText.Visibility = Visibility.Visible;
+            }
+        }
+
+        private static string FormatDownloadBytes(long bytes)
+        {
+            string[] units = { "B", "KB", "MB", "GB" };
+            double value = Math.Max(0, bytes);
+            int unitIndex = 0;
+
+            while (value >= 1024 && unitIndex < units.Length - 1)
+            {
+                value /= 1024;
+                unitIndex++;
+            }
+
+            return unitIndex == 0
+                ? string.Format(CultureInfo.InvariantCulture, "{0:0} {1}", value, units[unitIndex])
+                : string.Format(CultureInfo.InvariantCulture, "{0:0.0} {1}", value, units[unitIndex]);
         }
 
         private void UpdateDetailCollections()
@@ -1417,6 +1907,21 @@ namespace XylarBedrock.Pages.Addons
 
             [JsonProperty("gameVersionText")]
             public string GameVersionText { get; set; } = string.Empty;
+
+            [JsonProperty("sourceLabel")]
+            public string SourceLabel { get; set; } = string.Empty;
+        }
+
+        private sealed class CurseForgeDownloadAssistState
+        {
+            [JsonProperty("clicked")]
+            public bool Clicked { get; set; }
+
+            [JsonProperty("url")]
+            public string Url { get; set; } = string.Empty;
+
+            [JsonProperty("reason")]
+            public string Reason { get; set; } = string.Empty;
         }
     }
 }

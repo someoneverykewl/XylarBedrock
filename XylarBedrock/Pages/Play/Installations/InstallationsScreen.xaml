@@ -22,42 +22,31 @@
                               Filter="CollectionViewSource_Filter"/>
     </Page.Resources>
 
-    <Grid Margin="0" Background="#FF303030" Style="{DynamicResource DisabledStyle}">
+    <Grid Margin="0" Background="{DynamicResource Background.Primary}" Style="{DynamicResource DisabledStyle}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="84"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Border Margin="18,18,18,12"
-                Padding="18"
-                CornerRadius="16"
-                Background="#1E252B"
-                BorderBrush="#33414D"
-                BorderThickness="1">
-            <StackPanel>
-                <TextBlock Text="Minecraft for Windows"
-                           Foreground="White"
-                           FontSize="24"
-                           FontWeight="Bold"
-                           FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"/>
-                <TextBlock Margin="0,8,0,0"
-                           Foreground="#B7C8D6"
-                           FontSize="13"
-                           TextWrapping="Wrap"
-                           FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
-                           Text="Only the original Minecraft for Windows app is supported here."/>
-                <TextBlock Margin="0,6,0,0"
-                           Foreground="#B7C8D6"
-                           FontSize="13"
-                           TextWrapping="Wrap"
-                           FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
-                           Text="Install it from Microsoft Store first, even with the free trial, then launch it from this page."/>
-            </StackPanel>
+        <Border Grid.Row="0"
+                Background="{DynamicResource Background.Primary}"
+                BorderBrush="{DynamicResource Seperator.Background}"
+                BorderThickness="0,0,0,1">
+            <Grid>
+                <Label Content="VERSIONS"
+                       Margin="12,24,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Foreground="{DynamicResource PrimaryText.Foreground}"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       FontFamily="/XylarBedrock;component/Resources/fonts/#Minecraft Ten"/>
+            </Grid>
         </Border>
 
-        <Grid HorizontalAlignment="Stretch" Grid.Row="1" Background="{DynamicResource ListBox.Static.Background}">
+        <Grid HorizontalAlignment="Stretch" Grid.Row="1" Background="{DynamicResource Background.Tertiary}">
             <ListView x:Name="InstallationsList"
-                      Margin="18,0,18,18"
+                      Margin="18,18,18,18"
                       ItemsSource="{Binding Source={StaticResource InstallationsSource4}, IsAsync=True}"
                       SourceUpdated="InstallationsList_SourceUpdated"
                       SelectionMode="Single"

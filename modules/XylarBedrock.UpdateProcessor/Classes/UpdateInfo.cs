@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+using System;
+using System.Xml.Linq;
 
 using Xml = XylarBedrock.UpdateProcessor.Extensions.NetworkExtensions;
 
@@ -9,6 +10,12 @@ namespace XylarBedrock.UpdateProcessor.Classes
         public string serverId;
         public string updateId;
         public string packageMoniker;
+        public int revisionNumber = 1;
+
+        public string GetIdentityKey()
+        {
+            return $"{updateId}|{revisionNumber}";
+        }
 
         public void addXmlInfo(string val)
         {
@@ -20,6 +27,8 @@ namespace XylarBedrock.UpdateProcessor.Classes
             if (identity == null) return;
             var attr = Xml.first_attribute(identity, "UpdateID");
             if (attr != null) updateId = attr.Value;
+            attr = Xml.first_attribute(identity, "RevisionNumber");
+            if (attr != null && int.TryParse(attr.Value, out int parsedRevision)) revisionNumber = parsedRevision;
 
             var applicability = Xml.first_node(xmlDocument.Root, "ApplicabilityRules");
             var metadata = applicability != null ? Xml.first_node(applicability, "Metadata") : null;
@@ -37,9 +46,6 @@ namespace XylarBedrock.UpdateProcessor.Classes
                     }
                 }
             }
-
-
         }
     }
 }
-

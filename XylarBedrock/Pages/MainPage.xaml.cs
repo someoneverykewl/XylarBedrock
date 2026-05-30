@@ -31,6 +31,8 @@ using XylarBedrock.Pages.Play;
 using XylarBedrock.Pages.News;
 using XylarBedrock.Pages.Addons;
 using XylarBedrock.Pages.Preview;
+using XylarBedrock.Pages.Skins;
+using XylarBedrock.Pages.Settings.Versions;
 using XylarBedrock.Handlers;
 using XylarBedrock.UI.Pages.Common;
 using XylarBedrock.UI.Components;
@@ -44,6 +46,8 @@ namespace XylarBedrock.Pages
         private SettingsTabs settingsScreenPage;
         private NewsScreenTabs newsScreenPage;
         private AddonsPage addonsPage;
+        private VersionsPage versionsPage;
+        private SkinsPage skinsPage;
 
         private Navigator Navigator { get; set; } = new Navigator(true);
 
@@ -66,6 +70,8 @@ namespace XylarBedrock.Pages
                 NewsButton.Button,
                 AddonsButton.Button,
                 BedrockEditionButton.Button,
+                VersionsButton.Button,
+                SkinsButton.Button,
                 SettingsButton.Button,
             };
 
@@ -96,6 +102,8 @@ namespace XylarBedrock.Pages
                 if (senderName == BedrockEditionButton.Name) NavigateToGamePage();
                 else if (senderName == NewsButton.Name) NavigateToNewsPage();
                 else if (senderName == AddonsButton.Name) NavigateToAddonsPage();
+                else if (senderName == VersionsButton.Name) NavigateToVersionsPage();
+                else if (senderName == SkinsButton.Name) NavigateToSkinsPage();
                 else if (senderName == SettingsButton.Name) NavigateToSettings();
             });
 
@@ -140,12 +148,34 @@ namespace XylarBedrock.Pages
         {
             this.Dispatcher.Invoke(() =>
             {
-                Navigator.UpdatePageIndex(4);
+                Navigator.UpdatePageIndex(5);
                 SettingsButton.Button.IsChecked = true;
                 SettingsTabs page = GetSettingsPage();
                 Navigator.Navigate(MainWindowFrame, page);
             });
 
+        }
+
+        public void NavigateToVersionsPage()
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                Navigator.UpdatePageIndex(4);
+                VersionsButton.Button.IsChecked = true;
+                VersionsPage page = GetVersionsPage();
+                Navigator.Navigate(MainWindowFrame, page);
+            });
+        }
+
+        public void NavigateToSkinsPage()
+        {
+            this.Dispatcher.Invoke(() =>
+            {
+                Navigator.UpdatePageIndex(6);
+                SkinsButton.Button.IsChecked = true;
+                SkinsPage page = GetSkinsPage();
+                Navigator.Navigate(MainWindowFrame, page);
+            });
         }
 
         private void BedrockEditionButton_Click(object sender, EventArgs e)
@@ -164,6 +194,16 @@ namespace XylarBedrock.Pages
         }
 
         private void SettingsButton_Click(object sender, EventArgs e)
+        {
+            if (sender != null && sender is Toolbar_ButtonBase) ButtonManager_Base((sender as Toolbar_ButtonBase).Name);
+        }
+
+        private void VersionsButton_Click(object sender, EventArgs e)
+        {
+            if (sender != null && sender is Toolbar_ButtonBase) ButtonManager_Base((sender as Toolbar_ButtonBase).Name);
+        }
+
+        private void SkinsButton_Click(object sender, EventArgs e)
         {
             if (sender != null && sender is Toolbar_ButtonBase) ButtonManager_Base((sender as Toolbar_ButtonBase).Name);
         }
@@ -201,6 +241,18 @@ namespace XylarBedrock.Pages
         {
             addonsPage ??= new AddonsPage();
             return addonsPage;
+        }
+
+        private VersionsPage GetVersionsPage()
+        {
+            versionsPage ??= new VersionsPage();
+            return versionsPage;
+        }
+
+        private SkinsPage GetSkinsPage()
+        {
+            skinsPage ??= new SkinsPage();
+            return skinsPage;
         }
 
     }

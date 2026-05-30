@@ -59,7 +59,7 @@
                                     BorderBrush="#FFF6D04F"
                                     BorderThickness="0,0,0,0"
                                     Padding="12,6,12,6">
-                                <TextBlock Text="Add-On"
+                                <TextBlock Text="{DynamicResource AddonsPage_AddOnLabel}"
                                            Style="{StaticResource AddonRibbonText}"/>
                             </Border>
                         </Grid>
@@ -80,7 +80,7 @@
                                        FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"/>
                             <TextBlock Grid.Row="1"
                                        Margin="10,4,10,0"
-                                       Text="{Binding Author, StringFormat=By {0}}"
+                                       Text="{Binding AuthorDisplayText}"
                                        Foreground="#FFD8D8D8"
                                        FontSize="12"
                                        TextTrimming="CharacterEllipsis"
@@ -117,7 +117,7 @@
                                     Width="164"
                                     Background="#CC171717"
                                     Padding="12,6,12,6">
-                                <TextBlock Text="Add-On"
+                                <TextBlock Text="{DynamicResource AddonsPage_AddOnLabel}"
                                            Style="{StaticResource AddonRibbonText}"/>
                             </Border>
                         </Grid>
@@ -136,7 +136,7 @@
                                        FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"/>
                             <TextBlock Grid.Row="1"
                                        Margin="10,4,10,0"
-                                       Text="{Binding Author, StringFormat=By {0}}"
+                                       Text="{Binding AuthorDisplayText}"
                                        Foreground="#FFD8D8D8"
                                        FontSize="12"
                                        TextTrimming="CharacterEllipsis"
@@ -175,7 +175,7 @@
                                     BorderBrush="#FFF6D04F"
                                     BorderThickness="0,0,0,0"
                                     Padding="12,6,12,6">
-                                <TextBlock Text="Add-On"
+                                <TextBlock Text="{DynamicResource AddonsPage_AddOnLabel}"
                                            Style="{StaticResource AddonRibbonText}"/>
                             </Border>
                         </Grid>
@@ -195,7 +195,7 @@
                                        FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"/>
                             <TextBlock Grid.Row="1"
                                        Margin="10,4,10,0"
-                                       Text="{Binding Author, StringFormat=By {0}}"
+                                       Text="{Binding AuthorDisplayText}"
                                        Foreground="#FFD8D8D8"
                                        FontSize="12"
                                        TextTrimming="CharacterEllipsis"
@@ -357,7 +357,7 @@
                                                 BorderBrush="#FFF6D04F"
                                                 BorderThickness="2"
                                                 Padding="16,8,16,8">
-                                            <TextBlock Text="Add-On"
+                                            <TextBlock Text="{DynamicResource AddonsPage_AddOnLabel}"
                                                        Foreground="#FFF6D04F"
                                                        FontSize="21"
                                                        FontFamily="/XylarBedrock;component/Resources/fonts/#Minecraft Ten"/>
@@ -451,11 +451,13 @@
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
 
-                            <TextBlock Text="Best sellers"
+                            <TextBlock x:Name="BestSellersTitle"
+                                       Text="{DynamicResource AddonsPage_BestSellersTitle}"
                                        Style="{StaticResource SectionTitleText}"
                                        Margin="0,0,0,6"/>
 
-                            <Grid Margin="0,0,0,14">
+                            <Grid x:Name="BestSellersShelfRoot"
+                                  Margin="0,0,0,14">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="52"/>
                                     <ColumnDefinition Width="*"/>
@@ -502,7 +504,7 @@
                                         Content="&#x203A;"/>
                             </Grid>
 
-                            <TextBlock Text="More from the launcher"
+                            <TextBlock Text="{DynamicResource AddonsPage_MoreFromLauncherTitle}"
                                        Style="{StaticResource SectionTitleText}"
                                        Margin="0,0,0,6"/>
 
@@ -590,7 +592,7 @@
                                                 BorderBrush="#FFF6D04F"
                                                 BorderThickness="2"
                                                 Padding="16,8,16,8">
-                                            <TextBlock Text="Add-On"
+                                            <TextBlock Text="{DynamicResource AddonsPage_AddOnLabel}"
                                                        Foreground="#FFF6D04F"
                                                        FontSize="21"
                                                        FontFamily="/XylarBedrock;component/Resources/fonts/#Minecraft Ten"/>
@@ -633,9 +635,9 @@
                                                    FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"/>
                                         <Button Grid.Row="3"
                                                 x:Name="DownloadAddonButton"
-                                                Margin="0,14,0,0"
-                                                Width="174"
-                                                Height="40"
+                                                Margin="0,18,0,0"
+                                                Width="184"
+                                                Height="42"
                                                 HorizontalAlignment="Left"
                                                 Click="DownloadSelectedAddonButton_Click"
                                                 Background="#FFE3C94A"
@@ -643,23 +645,25 @@
                                                 BorderThickness="2">
                                             <TextBlock Text="{Binding SelectedAddonActionText}"
                                                        Foreground="#FF1E1E1E"
-                                                       FontSize="15"
+                                                       FontSize="15.6"
                                                        FontFamily="/XylarBedrock;component/Resources/fonts/#Minecraft Ten"/>
                                         </Button>
                                         <ProgressBar Grid.Row="4"
                                                      x:Name="DownloadLoadingBar"
-                                                     Margin="0,12,0,0"
-                                                     Width="174"
-                                                     Height="6"
+                                                     Margin="0,26,0,0"
+                                                     Width="184"
+                                                     Height="9"
                                                      HorizontalAlignment="Left"
+                                                     Foreground="#FF65E66E"
+                                                     Background="#CC101010"
                                                      IsIndeterminate="True"
                                                      Visibility="Collapsed"/>
                                         <TextBlock Grid.Row="4"
                                                    x:Name="DownloadStatusText"
-                                                   Margin="0,22,0,0"
-                                                   Foreground="#FFE0E0E0"
-                                                   FontSize="11"
-                                                   FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
+                                                   Margin="0,40,0,0"
+                                                   Foreground="#FFF7D95B"
+                                                   FontSize="11.5"
+                                                   FontFamily="/XylarBedrock;component/Resources/fonts/#Minecraft Ten"
                                                    Visibility="Collapsed"/>
                                     </Grid>
                                 </Grid>
@@ -679,7 +683,7 @@
                                 </Grid>
                             </Border>
 
-                            <TextBlock Text="Related items"
+                            <TextBlock Text="{DynamicResource AddonsPage_RelatedItemsTitle}"
                                        Style="{StaticResource SectionTitleText}"
                                        Margin="0,0,0,8"/>
                             <ScrollViewer x:Name="RelatedScrollViewer"
@@ -696,7 +700,7 @@
                                 </ItemsControl>
                             </ScrollViewer>
 
-                            <TextBlock Text="More from the same creator"
+                            <TextBlock Text="{DynamicResource AddonsPage_MoreFromCreatorTitle}"
                                        Style="{StaticResource SectionTitleText}"
                                        Margin="0,0,0,8"/>
                             <ScrollViewer x:Name="CreatorScrollViewer"

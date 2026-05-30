@@ -4,14 +4,14 @@ setlocal
 set "PROJECT_DIR=%~dp0..\.."
 pushd "%PROJECT_DIR%"
 
-set "PUBLISH_DIR=bin\Publish\net8.0-windows10.0.17763.0\win-x86\publish"
-set "STAGE_DIR=obj\release-stage\XylarBedrock"
+set "PUBLISH_DIR=bin\Publish\net8.0-windows10.0.17763.0\win-x64\publish"
+set "STAGE_DIR=obj\release-stage\XylarBedrock-win-x64"
 set "ZIP_DIR=releases"
-set "ZIP_NAME=XylarBedrock-v0.0.0.3-win-x86.zip"
+set "ZIP_NAME=XylarBedrock-v0.0.0.5-win-x64.zip"
 
 dotnet publish ".\XylarBedrock.csproj" ^
 --configuration Publish ^
---runtime win-x86 ^
+--runtime win-x64 ^
 --self-contained true ^
 --output "%PUBLISH_DIR%"
 
@@ -35,6 +35,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command ^
   "New-Item -ItemType Directory -Path $zipDir -Force | Out-Null;" ^
   "Copy-Item (Join-Path $publishDir 'XylarBedrock.exe') $stageDir -Force;" ^
   "Copy-Item (Join-Path $sourceDllDir 'XylarBedrock.dll') (Join-Path $dllDir 'XylarBedrock.dll') -Force;" ^
+  "Copy-Item (Join-Path $sourceDllDir 'XylarTools.dll') (Join-Path $dllDir 'XylarTools.dll') -Force;" ^
   "Copy-Item (Join-Path $sourceDllDir 'vcruntime140_1.dll') (Join-Path $dllDir 'vcruntime140_1.dll') -Force;" ^
   "Remove-Item $zipPath -Force -ErrorAction SilentlyContinue;" ^
   "Compress-Archive -Path (Join-Path $stageDir '*') -DestinationPath $zipPath -Force;"

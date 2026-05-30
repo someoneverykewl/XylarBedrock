@@ -20,6 +20,20 @@ namespace XylarBedrock.Classes
 
         public bool IsRemote => !string.IsNullOrWhiteSpace(InstallUri);
         public bool IsLocal => !string.IsNullOrWhiteSpace(LocalPackagePath);
+        public string AuthorDisplayText
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(Author))
+                {
+                    return LanguageManager.GetResource("AddonsPage_UnknownAuthor") as string ?? "Unknown author";
+                }
+
+                string format = LanguageManager.GetResource("AddonsPage_ByAuthorFormat") as string ?? "By {0}";
+                return string.Format(format, Author);
+            }
+        }
+
         public string InstallButtonText
         {
             get

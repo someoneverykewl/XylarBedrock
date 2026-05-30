@@ -11,36 +11,46 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using XylarBedrock.Classes.Launcher;
+using XylarBedrock.UpdateProcessor.Extensions;
+using XylarBedrock.UpdateProcessor.Enums;
+using System.Collections.Generic;
+using XylarBedrock.Handlers;
 
 namespace XylarBedrock.Pages.Play.Home
 {
     public partial class PlayScreenPage : Page
     {
-        private bool isLauncherFullyLoaded = false;
         private Window ownerWindow;
+        private bool isSyncingPlayableVersionSelection;
 
         public PlayScreenPage()
         {
             InitializeComponent();
             Loaded += PlayScreenPage_Loaded;
             Unloaded += PlayScreenPage_Unloaded;
-            InstallationsList.SelectionChanged += CheckVersionAvailability;
             ((INotifyPropertyChanged)MainDataModel.Default.ProgressBarState).PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(MainDataModel.Default.ProgressBarState.AllowPlaying) ||
                     e.PropertyName == nameof(MainDataModel.Default.ProgressBarState.IsGameRunning) ||
-                    e.PropertyName == nameof(MainDataModel.Default.ProgressBarState.PlayButtonLanguageChanged))
+                    e.PropertyName == nameof(MainDataModel.Default.ProgressBarState.PlayButtonLanguageChanged) ||
+                    e.PropertyName == nameof(MainDataModel.Default.ProgressBarState.Show) ||
+                    e.PropertyName == nameof(MainDataModel.Default.ProgressBarState.CurrentState) ||
+                    e.PropertyName == nameof(MainDataModel.Default.ProgressBarState.Description) ||
+                    e.PropertyName == nameof(MainDataModel.Default.ProgressBarState.Information))
                 {
                     Application.Current.Dispatcher.Invoke(() =>
                     {
                         CheckVersionAvailability(s, e);
+                        UpdateLaunchStatus();
                     });
                 }
             };
         }
 
-        private void PlayScreenPage_Loaded(object sender, RoutedEventArgs e)
+        private async void PlayScreenPage_Loaded(object sender, RoutedEventArgs e)
         {
+            EnsureLauncherConfigReady();
+
             ownerWindow = Window.GetWindow(this);
             if (ownerWindow != null)
             {
@@ -48,7 +58,10 @@ namespace XylarBedrock.Pages.Play.Home
                 ownerWindow.Activated += OwnerWindow_Activated;
             }
 
+            await EnsurePlayableVersionsLoadedAsync();
+            RefreshPlayableVersionSelector();
             CheckVersionAvailability(sender, e);
+            UpdateLaunchStatus();
         }
 
         private void PlayScreenPage_Unloaded(object sender, RoutedEventArgs e)
@@ -62,14 +75,100 @@ namespace XylarBedrock.Pages.Play.Home
 
         private void OwnerWindow_Activated(object sender, EventArgs e)
         {
+            EnsureLauncherConfigReady();
+            RefreshPlayableVersionSelector();
             CheckVersionAvailability(sender, e);
+        }
+
+        private async System.Threading.Tasks.Task EnsurePlayableVersionsLoadedAsync()
+        {
+            if (MainDataModel.Default.Versions.Count == 0)
+            {
+                await MainDataModel.Default.LoadVersions(forceStoreCheck: true);
+                return;
+            }
+
+            if (!GetPlayableVersions().Any())
+            {
+                await MainDataModel.Default.LoadVersions(forceStoreCheck: true);
+            }
+        }
+
+        private IEnumerable<MCVersion> GetPlayableVersions()
+        {
+            if (!MainDataModel.Default.PackageManager.IsOfficialStoreReleaseInstalled())
+            {
+                return Enumerable.Empty<MCVersion>();
+            }
+
+            List<MCVersion> installedStoreMatches = MainDataModel.Default.Versions.Where(version =>
+                !version.IsCustom &&
+                !string.Equals(version.UUID, Constants.LATEST_RELEASE_UUID, StringComparison.OrdinalIgnoreCase) &&
+                VersionDbExtensions.DoesVerionArchMatch(Constants.CurrentArchitecture, version.Architecture) &&
+                version.MatchesOfficialStoreRelease)
+                .ToList();
+
+            if (installedStoreMatches.Count != 0)
+            {
+                return installedStoreMatches;
+            }
+
+            MCVersion officialStoreFallback = GetOfficialStorePlayableVersion();
+            return officialStoreFallback == null
+                ? Enumerable.Empty<MCVersion>()
+                : new[] { officialStoreFallback };
+        }
+
+        private void RefreshPlayableVersionSelector()
+        {
+            EnsureLauncherConfigReady();
+
+            var versions = GetPlayableVersions().ToList();
+            PlayVersionsList.ItemsSource = versions;
+
+            BLInstallation selectedInstallation = ResolveSelectedInstallation();
+            string selectedVersionUuid = selectedInstallation?.VersionUUID ?? string.Empty;
+            MCVersion selectedVersion = versions.FirstOrDefault(version =>
+                string.Equals(version.UUID, selectedVersionUuid, StringComparison.OrdinalIgnoreCase));
+
+            if (selectedVersion == null)
+            {
+                selectedVersion = versions.FirstOrDefault(version => version.MatchesOfficialStoreRelease)
+                                  ?? versions.FirstOrDefault();
+            }
+
+            isSyncingPlayableVersionSelection = true;
+            try
+            {
+                PlayVersionsList.SelectedItem = selectedVersion;
+            }
+            finally
+            {
+                isSyncingPlayableVersionSelection = false;
+            }
+        }
+
+        private void PlayVersionsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (isSyncingPlayableVersionSelection)
+            {
+                return;
+            }
+
+            if (PlayVersionsList.SelectedItem is MCVersion selectedVersion)
+            {
+                MainDataModel.Default.Config.SelectInstallationForVersion(selectedVersion);
+                CheckVersionAvailability(sender, e);
+            }
         }
 
         private void CheckVersionAvailability(object _, EventArgs __)
         {
+            EnsureLauncherConfigReady();
+
             BLInstallation selectedInstallation = ResolveSelectedInstallation();
-            bool isOfficialStoreInstalled = MainDataModel.Default.PackageManager.IsOfficialStoreReleaseInstalled();
-            BundledDllPackDiagnostics bundledDllPack = MainDataModel.Default.PackageManager.GetBundledDllPackDiagnostics();
+            MCVersion playableVersion = ResolvePlayableVersion(selectedInstallation);
+            BundledDllPackDiagnostics bundledDllPack = MainDataModel.Default.PackageManager.GetBundledDllPackDiagnostics(playableVersion);
 
             if (MainDataModel.Default.PackageManager.isGameRunning)
             {
@@ -77,60 +176,54 @@ namespace XylarBedrock.Pages.Play.Home
                 ApplyButtonDetails(null);
                 ApplyPlayButtonStyle(MainDataModel.Default.ProgressBarState.PlayButtonString, Brushes.White, 26);
             }
-            else if (!isOfficialStoreInstalled)
-            {
-                MainPlayButton.IsEnabled = MainDataModel.Default.ProgressBarState.AllowPlaying;
-                ApplyButtonDetails("Minecraft for Windows was not found. Install the original Microsoft Store release first.");
-                ApplyStoreButtonStyle("Download Minecraft First.", Brushes.LightGray, 18);
-            }
             else if (!bundledDllPack.IsReady)
             {
                 MainPlayButton.IsEnabled = false;
                 ApplyButtonDetails(bundledDllPack.DetailsText);
                 ApplyStoreButtonStyle(GetBundledDllButtonText(bundledDllPack), Brushes.LightGray, 18);
             }
-            else if (!MainDataModel.Default.PackageManager.IsBundledModInstalled())
+            else if (!MainDataModel.Default.PackageManager.IsBundledModInstalled(playableVersion))
             {
                 MainPlayButton.IsEnabled = MainDataModel.Default.ProgressBarState.AllowPlaying;
                 ApplyButtonDetails("The bundled mod pack is ready. Click GET MODS to copy it into your Minecraft profile.");
                 ApplyModsButtonStyle("GET MODS", Brushes.White, 22);
             }
-            else if (!isLauncherFullyLoaded)
-            {
-                MainPlayButton.IsEnabled = MainDataModel.Default.ProgressBarState.AllowPlaying;
-                ApplyButtonDetails(null);
-                ApplyPlayButtonStyle("Play", Brushes.White, 26);
-                isLauncherFullyLoaded = true;
-            }
-            else if (selectedInstallation is not null &&
-                     selectedInstallation.Version is null &&
-                     !(selectedInstallation.ReadOnly && selectedInstallation.VersioningMode == VersioningMode.LatestRelease))
-            {
-                MainPlayButton.IsEnabled = false;
-                ApplyButtonDetails("The selected installation is incomplete. Recreate it or switch back to the official Microsoft Store release.");
-                ApplyStoreButtonStyle("Download Minecraft First.", Brushes.LightGray, 18);
-            }
-            else if (selectedInstallation is not null && !IsSupportedStoreInstallation(selectedInstallation))
-            {
-                MainPlayButton.IsEnabled = false;
-                ApplyButtonDetails("Play now supports only the official Minecraft for Windows release from Microsoft Store.");
-                ApplyStoreButtonStyle("Store Release Only", Brushes.LightGray, 18);
-            }
             else if (selectedInstallation is null)
             {
                 MainPlayButton.IsEnabled = false;
-                ApplyButtonDetails("No valid Minecraft installation is selected right now. Reopen the launcher once or pick the official Store release.");
+                ApplyButtonDetails("No valid Minecraft installation is selected right now. Reopen the launcher once or pick another version.");
                 ApplyStoreButtonStyle("Select Installation", Brushes.LightGray, 18);
+            }
+            else if (playableVersion is null)
+            {
+                MainPlayButton.IsEnabled = false;
+                ApplyButtonDetails("The selected Minecraft version is not ready yet. Reopen the launcher once if this keeps happening.");
+                ApplyStoreButtonStyle("Select Installation", Brushes.LightGray, 18);
+            }
+            else if (!selectedInstallation.IsInstalledVersion)
+            {
+                MainPlayButton.IsEnabled = MainDataModel.Default.ProgressBarState.AllowPlaying;
+                ApplyButtonDetails("Install the selected Minecraft version once. After that this button will switch to PLAY.");
+                ApplyInstallButtonStyle("INSTALL NOW", Brushes.White, 22);
             }
             else
             {
                 MainPlayButton.IsEnabled = MainDataModel.Default.ProgressBarState.AllowPlaying;
                 ApplyButtonDetails(null);
-                ApplyPlayButtonStyle("Play", Brushes.White, 26);
+                ApplyPlayButtonStyle("PLAY", Brushes.White, 26);
             }
         }
 
         private void ApplyPlayButtonStyle(string text, Brush foreground, double fontSize)
+        {
+            MainPlayButton.Style = (Style)FindResource("BigGreenButton");
+            MainPlayButton.Width = 250;
+            PlayButtonText.Text = text;
+            PlayButtonText.Foreground = foreground;
+            PlayButtonText.FontSize = fontSize;
+        }
+
+        private void ApplyInstallButtonStyle(string text, Brush foreground, double fontSize)
         {
             MainPlayButton.Style = (Style)FindResource("BigGreenButton");
             MainPlayButton.Width = 250;
@@ -163,44 +256,85 @@ namespace XylarBedrock.Pages.Play.Home
             MainPlayButton.ToolTip = string.IsNullOrWhiteSpace(details) ? null : details;
         }
 
+        private void UpdateLaunchStatus()
+        {
+            LauncherState currentState = MainDataModel.Default.ProgressBarState.CurrentState;
+            bool showLaunchStatus = MainDataModel.Default.ProgressBarState.Show &&
+                                    currentState == LauncherState.isLaunching;
+
+            LaunchStatusPanel.Visibility = showLaunchStatus ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+            LaunchStatusBar.IsIndeterminate = true;
+            LaunchStatusText.Text = "Opening the game...";
+        }
+
         private BLInstallation ResolveSelectedInstallation()
         {
-            BLInstallation selectedInstallation = InstallationsList.SelectedItem as BLInstallation;
-            if (IsSupportedStoreInstallation(selectedInstallation))
+            EnsureLauncherConfigReady();
+
+            if (PlayVersionsList.SelectedItem is MCVersion selectedVersion)
             {
-                return selectedInstallation;
+                BLInstallation selectedFromVersion = MainDataModel.Default.Config.SelectInstallationForVersion(selectedVersion);
+                if (selectedFromVersion != null)
+                {
+                    return selectedFromVersion;
+                }
             }
 
-            selectedInstallation = MainDataModel.Default.Config.CurrentInstallations?
-                .FirstOrDefault(IsSupportedStoreInstallation);
+            MCVersion activeVersion = GetPlayableVersions().FirstOrDefault() ?? GetOfficialStorePlayableVersion();
+            return activeVersion == null ? null : MainDataModel.Default.Config.SelectInstallationForVersion(activeVersion);
+        }
 
-            if (selectedInstallation == null)
+        private MCVersion ResolvePlayableVersion(BLInstallation installation)
+        {
+            if (installation == null)
             {
-                selectedInstallation = MainDataModel.Default.Config.CurrentInstallation;
+                return null;
             }
 
-            if (selectedInstallation != null && !ReferenceEquals(InstallationsList.SelectedItem, selectedInstallation))
+            if (installation.Version != null)
             {
-                InstallationsList.SelectedItem = selectedInstallation;
+                return installation.Version;
             }
 
-            return selectedInstallation;
+            if (installation.IsOfficialInstallation && MainDataModel.Default.PackageManager.IsOfficialStoreReleaseInstalled())
+            {
+                return GetOfficialStorePlayableVersion();
+            }
+
+            return null;
+        }
+
+        private MCVersion GetOfficialStorePlayableVersion()
+        {
+            if (!MainDataModel.Default.PackageManager.IsOfficialStoreReleaseInstalled())
+            {
+                return null;
+            }
+
+            return MainDataModel.Default.PackageManager.VersionDownloader.GetVersion(
+                VersioningMode.LatestRelease,
+                Constants.LATEST_RELEASE_UUID);
+        }
+
+        private void EnsureLauncherConfigReady()
+        {
+            if (MainDataModel.Default.Config?.CurrentProfile != null &&
+                MainDataModel.Default.Config?.CurrentInstallations != null &&
+                MainDataModel.Default.Config.CurrentInstallations.Count != 0)
+            {
+                return;
+            }
+
+            MainDataModel.Default.LoadConfig();
         }
 
         private static string GetBundledDllButtonText(BundledDllPackDiagnostics diagnostics)
         {
             if (!diagnostics.DllDirectoryExists) return "Missing dll Folder.";
-            if (!diagnostics.ModDllExists) return $"Missing {Constants.BUNDLED_MOD_DLL_NAME}";
+            if (!diagnostics.ModDllExists) return $"Missing {diagnostics.ModDllName}";
             if (!diagnostics.RuntimeDllExists) return $"Missing {Constants.EXTRA_DLL_NAME}";
             if (!diagnostics.ModDllReadable || !diagnostics.RuntimeDllReadable) return "DLL Pack Unreadable";
             return "Missing DLL Pack";
-        }
-
-        private static bool IsSupportedStoreInstallation(BLInstallation installation)
-        {
-            return installation != null &&
-                   installation.ReadOnly &&
-                   installation.VersioningMode == VersioningMode.LatestRelease;
         }
 
         private string GetLatestImage()
@@ -276,13 +410,9 @@ namespace XylarBedrock.Pages.Play.Home
             {
                 MainDataModel.Default.KillGame();
             }
-            else if (!MainDataModel.Default.PackageManager.IsOfficialStoreReleaseInstalled())
+            else if (!MainDataModel.Default.PackageManager.IsBundledModInstalled(ResolvePlayableVersion(ResolveSelectedInstallation())))
             {
-                await MainDataModel.Default.PackageManager.OpenOfficialStorePage();
-            }
-            else if (!MainDataModel.Default.PackageManager.IsBundledModInstalled())
-            {
-                bool installed = await MainDataModel.Default.PackageManager.InstallBundledModAsync();
+                bool installed = await MainDataModel.Default.PackageManager.InstallBundledModAsync(ResolvePlayableVersion(ResolveSelectedInstallation()));
                 if (installed)
                 {
                     CheckVersionAvailability(sender, e);
@@ -301,9 +431,38 @@ namespace XylarBedrock.Pages.Play.Home
                     return;
                 }
 
+                MCVersion playableVersion = ResolvePlayableVersion(i);
+                if (playableVersion == null)
+                {
+                    MessageBox.Show(
+                        "The selected Minecraft version is not ready yet. Reopen the launcher once, then try again.",
+                        App.DisplayName,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                    return;
+                }
+
                 bool keepLauncherOpen = Properties.LauncherSettings.Default.KeepLauncherOpen;
+
+                if (!i.IsInstalledVersion)
+                {
+                    bool installed = await MainDataModel.Default.Install(
+                        MainDataModel.Default.Config.CurrentProfile,
+                        i,
+                        launchAfterInstall: true,
+                        keepLauncherOpen: keepLauncherOpen,
+                        launchEditor: false);
+                    if (installed)
+                    {
+                        CheckVersionAvailability(sender, e);
+                    }
+
+                    return;
+                }
+
                 MainDataModel.Default.Play(MainDataModel.Default.Config.CurrentProfile, i, keepLauncherOpen, false);
             }
         }
+
     }
 }

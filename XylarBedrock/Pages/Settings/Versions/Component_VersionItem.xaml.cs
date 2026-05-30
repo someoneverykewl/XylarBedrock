@@ -81,6 +81,26 @@ namespace XylarBedrock.Pages.Settings.Versions
         {
             Button button = sender as Button;
             var version = button.DataContext as MCVersion;
+            if (version == null)
+            {
+                return;
+            }
+
+            if (version.MatchesOfficialStoreRelease)
+            {
+                BLInstallation installation = MainDataModel.Default.Config.SelectInstallationForVersion(version);
+                if (installation != null)
+                {
+                    MainDataModel.Default.Play(
+                        MainDataModel.Default.Config.CurrentProfile,
+                        installation,
+                        Properties.LauncherSettings.Default.KeepLauncherOpen,
+                        false);
+                }
+
+                return;
+            }
+
             MainDataModel.Default.RepairVersion(version);
         }
 

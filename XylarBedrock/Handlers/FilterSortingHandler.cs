@@ -54,17 +54,20 @@ namespace XylarBedrock.Handlers
             BLInstallation v = obj as BLInstallation;
             if (v == null) return false;
             else if (!v.IsRelease) return false;
+            else if (!v.IsInstalledVersion) return false;
             else if (!v.DisplayName_Full.Contains(InstallationsSearchFilter, StringComparison.OrdinalIgnoreCase)) return false;
             else return true;
         }
         public static bool Filter_VersionList(object obj)
         {
-            MCVersion v = (obj as MCVersion);
-            if (v != null && v.IsInstalled)
-            {
-                return v.IsRelease;
-            }
-            else return false;
+            MCVersion v = obj as MCVersion;
+            if (v == null) return false;
+            if (!v.IsRelease) return false;
+            if (string.Equals(v.UUID, Constants.LATEST_RELEASE_UUID, StringComparison.OrdinalIgnoreCase)) return false;
+            if (v.IsInstalled) return true;
+            if (v.MatchesOfficialStoreRelease) return true;
+            if (!string.IsNullOrWhiteSpace(v.DirectDownloadUrl)) return true;
+            return v.DirectDownloadUrls != null && v.DirectDownloadUrls.Count > 0;
 
         }
 

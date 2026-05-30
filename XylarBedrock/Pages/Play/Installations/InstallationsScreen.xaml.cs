@@ -6,16 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using XylarBedrock.Enums;
 using XylarBedrock.Handlers;
-using XylarBedrock.Pages.Preview;
-using XylarBedrock.Pages.Preview.Installation;
 using XylarBedrock.ViewModels;
 
 namespace XylarBedrock.Pages.Play.Installations
@@ -32,7 +23,10 @@ namespace XylarBedrock.Pages.Play.Installations
         {
             this.Dispatcher.Invoke(() =>
             {
-                if (InstallationsList != null) FilterSortingHandler.Sort_InstallationList(InstallationsList.ItemsSource);
+                if (InstallationsList?.ItemsSource != null)
+                {
+                    CollectionViewSource.GetDefaultView(InstallationsList.ItemsSource)?.Refresh();
+                }
             });
         }
         private void PageHost_Loaded(object sender, RoutedEventArgs e)

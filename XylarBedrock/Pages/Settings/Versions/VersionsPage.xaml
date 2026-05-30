@@ -3,7 +3,6 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:p="clr-namespace:XylarBedrock.Properties"
       xmlns:classes="clr-namespace:XylarBedrock.Classes"
       xmlns:viewModels="clr-namespace:XylarBedrock.ViewModels"
       xmlns:converters="clr-namespace:JemExtensions.WPF.Converters;assembly=JemExtensions"
@@ -16,43 +15,116 @@
         <converters:InvertableBooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"></converters:InverseBooleanConverter>
         <CollectionViewSource x:Key="VersionsSource" Source="{Binding Path=Versions}" Filter="CollectionViewSource_Filter"></CollectionViewSource>
-        <Style TargetType="{x:Type CheckBox}" x:Key="Checkbox" BasedOn="{StaticResource {x:Type CheckBox}}">
-            <Setter Property="Foreground" Value="#FFCCCCCC"/>
-            <Setter Property="FontFamily" Value="/XylarBedrock;component/Resources/fonts/#Noto Sans"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Left"/>
-            <Setter Property="Margin" Value="5,0,0,0"/>
-            <Setter Property="IsEnabled" Value="{Binding Source={x:Static viewModels:MainDataModel.Default}, Path=ProgressBarState.AllowEditing, Mode=OneWay}"/>
-        </Style>
     </Page.Resources>
-    <Grid Margin="0" Background="#FF303030" Style="{DynamicResource DisabledStyle}" IsEnabled="{Binding Source={x:Static viewModels:MainDataModel.Default}, Path=ProgressBarState.AllowEditing, Mode=OneWay}">
+    <Grid x:Name="VersionsRoot"
+          Margin="0"
+          Background="#181818"
+          Style="{DynamicResource DisabledStyle}"
+          IsEnabled="{Binding Source={x:Static viewModels:MainDataModel.Default}, Path=ProgressBarState.AllowEditing, Mode=OneWay}"
+          ClipToBounds="True"
+          PreviewMouseWheel="VersionsRoot_PreviewMouseWheel">
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="270"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-        <Border BorderThickness="0,0,0,1" BorderBrush="{DynamicResource Seperator.Background}">
-            <Grid Background="#FF303030" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-                <Grid Margin="10,0">
-                    <StackPanel>
-                        <Label Foreground="{DynamicResource PrimaryText.Foreground}" Content="{DynamicResource GeneralSubtitles_Versions}" Margin="0,10,0,0" FontWeight="Bold" FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans" VerticalAlignment="Top" Background="{x:Null}"/>
-                        <StackPanel HorizontalAlignment="Left" Height="35" VerticalAlignment="Top" Width="828" Orientation="Horizontal" Margin="0,-10,0,0">
-                            <CheckBox Click="RefreshVersionsList" IsChecked="{Binding ShowReleases, Mode=TwoWay, Source={x:Static p:LauncherSettings.Default}, UpdateSourceTrigger=PropertyChanged}" Content="{DynamicResource ResourceKey=GeneralText_Releases}" Style="{StaticResource Checkbox}"></CheckBox>
-                            <CheckBox Click="RefreshVersionsList" IsChecked="{Binding ShowBetas, Mode=TwoWay, Source={x:Static p:LauncherSettings.Default}, UpdateSourceTrigger=PropertyChanged}" Content="{DynamicResource ResourceKey=GeneralText_Betas}" Style="{StaticResource Checkbox}"></CheckBox>
-                            <CheckBox Click="RefreshVersionsList" IsChecked="{Binding ShowPreviews, Mode=TwoWay, Source={x:Static p:LauncherSettings.Default}, UpdateSourceTrigger=PropertyChanged}" Content="{DynamicResource ResourceKey=GeneralText_Previews}" Style="{StaticResource Checkbox}"></CheckBox>
+
+        <Grid Grid.Row="0" ClipToBounds="True">
+            <Grid.Background>
+                <ImageBrush ImageSource="/XylarBedrock;component/resources/images/bg/play_screen/1.21.130_mounts_of_mayhem.png"
+                            Stretch="UniformToFill"
+                            AlignmentX="Center"
+                            AlignmentY="Center"
+                            RenderOptions.BitmapScalingMode="Fant"/>
+            </Grid.Background>
+            <Rectangle Fill="#3F000000"/>
+            <Border HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Padding="36,12,36,18"
+                    Background="#44000000">
+                <StackPanel HorizontalAlignment="Center">
+                    <Image Source="/XylarBedrock;component/Resources/images/icons/versions_icon.png"
+                           Width="66"
+                           Height="66"
+                           Stretch="Uniform"
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <TextBlock Text="{DynamicResource VersionsPage_Title}"
+                               Margin="0,10,0,0"
+                               FontFamily="/XylarBedrock;component/Resources/fonts/#Minecraft Ten"
+                               FontSize="34"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               TextOptions.TextFormattingMode="Display"/>
+                    <TextBlock Text="{DynamicResource VersionsPage_BetaDescription}"
+                               Margin="0,8,0,0"
+                               MaxWidth="820"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
+                               Foreground="#F1F1F1"
+                               FontSize="13"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="1"
+                Background="#F2262626"
+                BorderBrush="#3E3E3E"
+                BorderThickness="1,1,0,0">
+            <Grid Margin="18,14,18,18">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Image Source="/XylarBedrock;component/Resources/images/icons/bedrock_grass_icon.png"
+                                   Width="32"
+                                   Height="32"
+                                   Stretch="Uniform"
+                                   RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <StackPanel Margin="12,0,0,0">
+                                <TextBlock Text="{DynamicResource VersionsPage_MinecraftForWindowsTitle}"
+                                           Foreground="White"
+                                           FontWeight="Bold"
+                                           FontSize="16"
+                                           FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"/>
+                                <TextBlock Text="{DynamicResource VersionsPage_DownloadableStoreVersions}"
+                                           Foreground="#BDBDBD"
+                                           FontSize="12"
+                                           FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"/>
+                            </StackPanel>
                         </StackPanel>
-                    </StackPanel>
-                </Grid>
+                        <Button Grid.Column="1"
+                                x:Name="RefreshButton"
+                                IsEnabled="{Binding IsVersionsUpdating, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanConverter}}"
+                                Click="RefreshButton_Click"
+                                Content="{DynamicResource GeneralText_Refresh}"
+                                Style="{DynamicResource DialogButton}"/>
+                    </Grid>
+                    <Border Grid.Row="1"
+                            Background="#B81C1C1C"
+                            BorderBrush="#444444"
+                            BorderThickness="1">
+                        <ListView x:Name="VersionsList"
+                                  Margin="8"
+                                  Background="Transparent"
+                                  BorderThickness="0"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                  ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                  ScrollViewer.CanContentScroll="False"
+                                  ScrollViewer.PanningMode="VerticalOnly"
+                                  VirtualizingPanel.ScrollUnit="Pixel"
+                                  ItemsSource="{Binding Source={StaticResource VersionsSource}, IsAsync=True}"
+                                  SelectionMode="Single"
+                                  HorizontalContentAlignment="Stretch"
+                                  ItemTemplate="{StaticResource VersionItemTemplate}"/>
+                    </Border>
             </Grid>
         </Border>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,10">
-            <Button FontSize="14" HorizontalAlignment="Right" x:Name="RefreshButton" IsEnabled="{Binding IsVersionsUpdating, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanConverter}}" Click="RefreshButton_Click" Content="{DynamicResource GeneralText_Refresh}" Style="{DynamicResource LinkButton}"></Button>
-            <Button FontSize="14" HorizontalAlignment="Right" x:Name="AddButton" IsEnabled="{Binding IsVersionsUpdating, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanConverter}}" Click="AddButton_Click" Content="{DynamicResource VersionsPage_InstallVersion}" Style="{DynamicResource LinkButton}"/>
-        </StackPanel>
-        <ListView x:Name="VersionsList" ItemsSource="{Binding Source={StaticResource VersionsSource}, IsAsync=True}" SelectionMode="Single" Grid.Row="1" HorizontalContentAlignment="Center" ItemTemplate="{StaticResource VersionItemTemplate}"/>
     </Grid>
 </Page>
 

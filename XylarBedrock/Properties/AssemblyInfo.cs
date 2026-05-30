@@ -3,11 +3,11 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using System.Windows;
 
-[assembly: AssemblyTitle("XylarBedrock v0.0.0.4")]
+[assembly: AssemblyTitle("XylarBedrock v0.0.0.5")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Xylar Inc. and Mrmariix")]
-[assembly: AssemblyProduct("XylarBedrock v0.0.0.4")]
+[assembly: AssemblyProduct("XylarBedrock v0.0.0.5")]
 [assembly: AssemblyCopyright("Copyright (c) Xylar Inc. and Mrmariix")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -16,8 +16,8 @@ using System.Windows;
 
 [assembly: ThemeInfo(ResourceDictionaryLocation.None, ResourceDictionaryLocation.SourceAssembly)]
 
-[assembly: AssemblyVersion("0.0.0.4")]
-[assembly: AssemblyFileVersion("0.0.0.4")]
-[assembly: AssemblyInformationalVersion("0.0.0.4")]
+[assembly: AssemblyVersion("0.0.0.5")]
+[assembly: AssemblyFileVersion("0.0.0.5")]
+[assembly: AssemblyInformationalVersion("0.0.0.5")]
 
 [assembly: NeutralResourcesLanguage("en-US")]

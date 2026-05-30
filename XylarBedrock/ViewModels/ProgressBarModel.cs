@@ -97,6 +97,14 @@ namespace XylarBedrock.ViewModels
         public Visibility Anim_MiniVisibility { get; set; } = Visibility.Collapsed;
         public Visibility Anim_Visibility { get; set; } = Visibility.Collapsed;
         public Visibility Anim_TextVisibility { get; set; } = Visibility.Collapsed;
+        public Visibility MainProgressVisibility
+        {
+            get
+            {
+                Depends.On(Anim_Visibility, CurrentState);
+                return CurrentState == LauncherState.isLaunching ? Visibility.Collapsed : Anim_Visibility;
+            }
+        }
         private async void GetProgressBarAnim()
         {
             await Application.Current.Dispatcher.InvokeAsync(() =>
