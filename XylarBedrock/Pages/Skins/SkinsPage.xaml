@@ -34,9 +34,9 @@
         </Style>
 
         <Style x:Key="SkinCardStyle" TargetType="{x:Type Border}">
-            <Setter Property="Width" Value="118"/>
-            <Setter Property="Height" Value="166"/>
-            <Setter Property="Margin" Value="6"/>
+            <Setter Property="Width" Value="64"/>
+            <Setter Property="Height" Value="92"/>
+            <Setter Property="Margin" Value="4"/>
             <Setter Property="Background" Value="#E3171717"/>
             <Setter Property="BorderBrush" Value="#4F4A3B"/>
             <Setter Property="BorderThickness" Value="1"/>
@@ -197,7 +197,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <Border HorizontalAlignment="Center"
@@ -242,147 +241,176 @@
                                    FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
                                    FontSize="12"
                                    Foreground="#FFE9C86A"/>
-                        <TextBlock x:Name="SkinCounterText"
-                                   Margin="0,5,0,0"
-                                   FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
-                                   FontSize="12"
-                                   Foreground="#D8D8D8"/>
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <Border Grid.Row="1"
-                    Margin="0,16,0,12"
-                    Padding="14"
-                    CornerRadius="8"
-                    BorderBrush="#4E4E4E"
-                    BorderThickness="1">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#CC1E1E1E" Offset="0"/>
-                        <GradientStop Color="#E6111111" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-                <Grid>
-                    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                                  HorizontalScrollBarVisibility="Disabled"
-                                  CanContentScroll="False"
-                                  PanningMode="VerticalOnly">
-                        <ItemsControl x:Name="SkinsItems"
-                                      ItemsSource="{Binding VisibleSkins}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel HorizontalAlignment="Center"
-                                               VerticalAlignment="Top"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Style="{StaticResource SkinTileButtonStyle}"
-                                            Click="SkinCard_Click"
-                                            Tag="{Binding}">
-                                        <Border Style="{StaticResource SkinCardStyle}">
-                                            <Grid ClipToBounds="True">
-                                                <Rectangle RadiusX="3"
-                                                           RadiusY="3">
-                                                    <Rectangle.Fill>
-                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                            <GradientStop Color="#442B2519" Offset="0"/>
-                                                            <GradientStop Color="#22000000" Offset="1"/>
-                                                        </LinearGradientBrush>
-                                                    </Rectangle.Fill>
-                                                </Rectangle>
-                                                <Rectangle Height="38"
-                                                           VerticalAlignment="Top"
-                                                           Opacity="0.22">
-                                                    <Rectangle.Fill>
-                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                            <GradientStop Color="#FFFFFFFF" Offset="0"/>
-                                                            <GradientStop Color="#00FFFFFF" Offset="0.72"/>
-                                                        </LinearGradientBrush>
-                                                    </Rectangle.Fill>
-                                                </Rectangle>
-                                                <Ellipse Width="70"
-                                                         Height="14"
-                                                         Fill="#75000000"
-                                                         HorizontalAlignment="Center"
-                                                         VerticalAlignment="Bottom"
-                                                         Margin="0,0,0,13"/>
-                                                <Image Source="{Binding PreviewImage}"
-                                                       Width="108"
-                                                       Height="150"
-                                                       Stretch="Uniform"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"
-                                                       Margin="0,-4,0,0"
-                                                       UseLayoutRounding="True"
-                                                       SnapsToDevicePixels="True"
-                                                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
-                                            </Grid>
-                                        </Border>
+            <Grid Grid.Row="1"
+                  Margin="0,18,0,0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              CanContentScroll="False"
+                              PanningMode="VerticalOnly">
+                    <StackPanel>
+                        <Border Padding="22"
+                                CornerRadius="10"
+                                BorderBrush="#645B34"
+                                BorderThickness="1.5">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#E11C1C1C" Offset="0"/>
+                                    <GradientStop Color="#EC272312" Offset="0.48"/>
+                                    <GradientStop Color="#E112120F" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="26" ShadowDepth="7" Direction="270" Opacity="0.46"/>
+                            </Border.Effect>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="320"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="{DynamicResource SkinsPage_FavesTitle}"
+                                               FontFamily="/XylarBedrock;component/Resources/fonts/#Minecraft Ten"
+                                               FontSize="34"
+                                               Foreground="White"
+                                               TextOptions.TextFormattingMode="Display"/>
+                                    <TextBlock Text="{DynamicResource SkinsPage_MostPopular}"
+                                               Margin="0,2,0,0"
+                                               FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               Foreground="#FFFFD83D"/>
+                                    <TextBlock x:Name="SkinCounterText"
+                                               Margin="0,16,0,0"
+                                               FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
+                                               FontSize="13"
+                                               Foreground="#E7E7E7"
+                                               TextWrapping="Wrap"/>
+                                    <TextBlock Text="{DynamicResource SkinsPage_CollectionDescription}"
+                                               Margin="0,10,22,0"
+                                               FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
+                                               FontSize="12.5"
+                                               Foreground="#CFCFCF"
+                                               TextWrapping="Wrap"/>
+
+                                    <Button x:Name="DownloadButton"
+                                            Width="238"
+                                            Height="52"
+                                            Margin="0,24,0,0"
+                                            Padding="0"
+                                            IsEnabled="False"
+                                            HorizontalAlignment="Left"
+                                            Style="{DynamicResource BigGreenButton}"
+                                            Click="DownloadButton_Click">
+                                        <TextBlock Text="{DynamicResource SkinsPage_DownloadsButton}"
+                                                   FontSize="23"
+                                                   Style="{DynamicResource BigGreenButton_Text}"/>
                                     </Button>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
 
-                    <TextBlock x:Name="EmptySkinsText"
-                               Text="{DynamicResource SkinsPage_NoSkinsFound}"
-                               Visibility="Collapsed"
-                               Foreground="White"
-                               FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
-                               FontSize="18"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center"/>
-                </Grid>
-            </Border>
+                                    <Border Margin="0,12,22,0"
+                                            Padding="12,6"
+                                            Background="#99111111"
+                                            BorderBrush="#3DFFFFFF"
+                                            BorderThickness="1"
+                                            CornerRadius="12">
+                                        <TextBlock x:Name="DownloadStatusText"
+                                                   Text="{DynamicResource SkinsPage_AllSkinsHelp}"
+                                                   FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
+                                                   FontSize="12"
+                                                   Foreground="#EAEAEA"
+                                                   TextWrapping="Wrap"/>
+                                    </Border>
+                                </StackPanel>
 
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="1"
+                                        MinHeight="338"
+                                        Padding="12"
+                                        Background="#98141414"
+                                        BorderBrush="#33FFFFFF"
+                                        BorderThickness="1"
+                                        CornerRadius="8">
+                                    <Grid>
+                                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                                      HorizontalScrollBarVisibility="Disabled"
+                                                      CanContentScroll="False"
+                                                      PanningMode="VerticalOnly">
+                                            <ItemsControl x:Name="SkinsItems"
+                                                          ItemsSource="{Binding VisibleSkins}">
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <WrapPanel HorizontalAlignment="Left"
+                                                                   VerticalAlignment="Top"/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border Style="{StaticResource SkinCardStyle}">
+                                                            <Grid ClipToBounds="True">
+                                                                <Rectangle RadiusX="3"
+                                                                           RadiusY="3">
+                                                                    <Rectangle.Fill>
+                                                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                                            <GradientStop Color="#442B2519" Offset="0"/>
+                                                                            <GradientStop Color="#22000000" Offset="1"/>
+                                                                        </LinearGradientBrush>
+                                                                    </Rectangle.Fill>
+                                                                </Rectangle>
+                                                                <Ellipse Width="40"
+                                                                         Height="8"
+                                                                         Fill="#75000000"
+                                                                         HorizontalAlignment="Center"
+                                                                         VerticalAlignment="Bottom"
+                                                                         Margin="0,0,0,6"/>
+                                                                <Image Source="{Binding PreviewImage}"
+                                                                       Width="56"
+                                                                       Height="82"
+                                                                       Stretch="Uniform"
+                                                                       HorizontalAlignment="Center"
+                                                                       VerticalAlignment="Center"
+                                                                       Margin="0,-2,0,0"
+                                                                       UseLayoutRounding="True"
+                                                                       SnapsToDevicePixels="True"
+                                                                       RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
 
-                <Button x:Name="BackButton"
-                        Content="{DynamicResource SkinsPage_BackButton}"
-                        Style="{StaticResource SkinNavButton}"
-                        HorizontalAlignment="Left"
-                        Click="BackButton_Click"/>
+                                        <TextBlock x:Name="EmptySkinsText"
+                                                   Text="{DynamicResource SkinsPage_NoSkinsFound}"
+                                                   Visibility="Collapsed"
+                                                   Foreground="White"
+                                                   FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
+                                                   FontSize="18"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Border>
 
-                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
-                    <Border Margin="0,0,0,7"
-                            Padding="14,5"
-                            Background="#99111111"
-                            BorderBrush="#3DFFFFFF"
-                            BorderThickness="1"
-                            CornerRadius="12">
-                        <TextBlock x:Name="DownloadStatusText"
-                                   Text="{DynamicResource SkinsPage_SelectSkinHelp}"
-                                   FontFamily="/XylarBedrock;component/Resources/fonts/#Noto Sans"
-                                   FontSize="12"
-                                   Foreground="#EAEAEA"
-                                   HorizontalAlignment="Center"/>
-                    </Border>
-                    <Button x:Name="DownloadButton"
-                            Width="238"
-                            Height="52"
-                            Padding="0"
-                            IsEnabled="False"
-                            Style="{DynamicResource BigGreenButton}"
-                            Click="DownloadButton_Click">
-                        <TextBlock Text="{DynamicResource SkinsPage_DownloadButton}"
-                                   FontSize="23"
-                                   Style="{DynamicResource BigGreenButton_Text}"/>
-                    </Button>
-                </StackPanel>
-
-                <Button Grid.Column="2"
-                        x:Name="NextButton"
-                        Content="{DynamicResource SkinsPage_NextButton}"
-                        Style="{StaticResource SkinNavButton}"
-                        HorizontalAlignment="Right"
-                        Click="NextButton_Click"/>
+                        <Border Margin="0,16,0,0"
+                                Padding="20,16"
+                                CornerRadius="8"
+                                Background="#D0161616"
+                                BorderBrush="#3B3B3B"
+                                BorderThickness="1">
+                            <TextBlock Text="{DynamicResource SkinsPage_OtherComingSoon}"
+                                       FontFamily="/XylarBedrock;component/Resources/fonts/#Minecraft Ten"
+                                       FontSize="23"
+                                       Foreground="#BFBFBF"
+                                       HorizontalAlignment="Center"
+                                       TextOptions.TextFormattingMode="Display"/>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
             </Grid>
         </Grid>
     </Grid>

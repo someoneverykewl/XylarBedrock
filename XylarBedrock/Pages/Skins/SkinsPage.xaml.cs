@@ -22,11 +22,8 @@ namespace XylarBedrock.Pages.Skins
 {
     public partial class SkinsPage : Page, INotifyPropertyChanged
     {
-        private const int SkinsPerPage = 30;
         private readonly List<SkinEntry> allSkins = new List<SkinEntry>();
-        private int pageStartIndex;
         private bool hasLoadedSkins;
-        private SkinEntry selectedSkin;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -47,70 +44,44 @@ namespace XylarBedrock.Pages.Skins
 
             hasLoadedSkins = true;
             LoadSkins();
-            ShowCurrentPage();
-        }
-
-        private void BackButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (allSkins.Count == 0)
-            {
-                return;
-            }
-
-            int lastPageStart = ((allSkins.Count - 1) / SkinsPerPage) * SkinsPerPage;
-            pageStartIndex = pageStartIndex <= 0 ? lastPageStart : Math.Max(0, pageStartIndex - SkinsPerPage);
-            ShowCurrentPage();
-        }
-
-        private void NextButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (allSkins.Count == 0)
-            {
-                return;
-            }
-
-            pageStartIndex += SkinsPerPage;
-            if (pageStartIndex >= allSkins.Count)
-            {
-                pageStartIndex = 0;
-            }
-
-            ShowCurrentPage();
-        }
-
-        private void SkinCard_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button button && button.Tag is SkinEntry skin)
-            {
-                SelectSkin(skin);
-            }
+            ShowAllSkins();
         }
 
         private void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
-            if (selectedSkin == null)
+            if (allSkins.Count == 0)
             {
-                DownloadStatusText.Text = T("SkinsPage_SelectSkinFirst", "Select a skin first.");
+                DownloadStatusText.Text = T("SkinsPage_NoSkinsFoundShort", "No skins found.");
                 return;
             }
 
             try
             {
+                DownloadButton.IsEnabled = false;
+                DownloadStatusText.Text = T("SkinsPage_PreparingCollection", "Preparing Fave's Skins...");
+
                 string downloadsDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
                 string skinsDirectory = Path.Combine(downloadsDirectory, "XylarBedrock Skins");
                 Directory.CreateDirectory(skinsDirectory);
 
-                string packFileName = $"{Path.GetFileNameWithoutExtension(selectedSkin.FileName)}.mcpack";
+                string packFileName = "Faves-Skins.mcpack";
                 string destinationPath = GetUniqueDownloadPath(Path.Combine(skinsDirectory, packFileName));
-                CreateMinecraftSkinPack(selectedSkin, destinationPath);
+                int exportedCount = CreateMinecraftSkinPack(allSkins, destinationPath);
                 OpenDownloadedSkinPack(destinationPath);
 
-                DownloadStatusText.Text = T("SkinsPage_DownloadedStatus", "Downloaded and opened Minecraft-ready .mcpack.");
+                DownloadStatusText.Text = string.Format(
+                    System.Globalization.CultureInfo.CurrentCulture,
+                    T("SkinsPage_CollectionDownloadedStatus", "Downloaded and opened Fave's Skins with {0} skins."),
+                    exportedCount);
             }
             catch (Exception ex)
             {
                 Trace.WriteLine($"Skin download failed: {ex}");
                 DownloadStatusText.Text = T("SkinsPage_DownloadFailed", "Download failed. Try again.");
+            }
+            finally
+            {
+                DownloadButton.IsEnabled = allSkins.Count > 0;
             }
         }
 
@@ -155,15 +126,13 @@ namespace XylarBedrock.Pages.Skins
             }
         }
 
-        private void ShowCurrentPage()
+        private void ShowAllSkins()
         {
             VisibleSkins.Clear();
 
             if (allSkins.Count == 0)
             {
                 EmptySkinsText.Visibility = Visibility.Visible;
-                BackButton.IsEnabled = false;
-                NextButton.IsEnabled = false;
                 DownloadButton.IsEnabled = false;
                 SkinCounterText.Text = string.Empty;
                 DownloadStatusText.Text = T("SkinsPage_NoSkinsFoundShort", "No skins found.");
@@ -171,51 +140,21 @@ namespace XylarBedrock.Pages.Skins
             }
 
             EmptySkinsText.Visibility = Visibility.Collapsed;
-            BackButton.IsEnabled = allSkins.Count > SkinsPerPage;
-            NextButton.IsEnabled = allSkins.Count > SkinsPerPage;
 
-            pageStartIndex = Math.Max(0, Math.Min(pageStartIndex, allSkins.Count - 1));
-            int startIndex = (pageStartIndex / SkinsPerPage) * SkinsPerPage;
-            pageStartIndex = startIndex;
-
-            for (int i = 0; i < SkinsPerPage && startIndex + i < allSkins.Count; i++)
+            foreach (SkinEntry skin in allSkins)
             {
-                SkinEntry skin = allSkins[startIndex + i];
                 skin.EnsurePreview();
                 VisibleSkins.Add(skin);
             }
 
-            int displayStart = startIndex + 1;
-            int displayEnd = Math.Min(startIndex + VisibleSkins.Count, allSkins.Count);
-            SkinCounterText.Text = $"{displayStart}-{displayEnd} / {allSkins.Count}";
-
-            if (selectedSkin == null || !VisibleSkins.Contains(selectedSkin))
-            {
-                SelectSkin(VisibleSkins.FirstOrDefault());
-            }
+            DownloadButton.IsEnabled = true;
+            SkinCounterText.Text = string.Format(
+                System.Globalization.CultureInfo.CurrentCulture,
+                T("SkinsPage_CollectionCountFormat", "{0} skins included in one pack."),
+                allSkins.Count);
+            DownloadStatusText.Text = T("SkinsPage_AllSkinsHelp", "Click DOWNLOADS to import every skin together.");
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(VisibleSkins)));
-        }
-
-        private void SelectSkin(SkinEntry skin)
-        {
-            if (selectedSkin != null)
-            {
-                selectedSkin.IsSelected = false;
-            }
-
-            selectedSkin = skin;
-
-            if (selectedSkin == null)
-            {
-                DownloadButton.IsEnabled = false;
-                DownloadStatusText.Text = T("SkinsPage_SelectSkinHelp", "Select the skin u like and click the download button below!");
-                return;
-            }
-
-            selectedSkin.IsSelected = true;
-            DownloadButton.IsEnabled = true;
-            DownloadStatusText.Text = T("SkinsPage_SelectSkinHelp", "Select the skin u like and click the download button below!");
         }
 
         private static string T(string key, string fallback)
@@ -246,26 +185,56 @@ namespace XylarBedrock.Pages.Skins
             return destinationPath;
         }
 
-        private static void CreateMinecraftSkinPack(SkinEntry skin, string destinationPath)
+        private static int CreateMinecraftSkinPack(IEnumerable<SkinEntry> skins, string destinationPath)
         {
-            byte[] skinPngBytes;
-            using (Stream skinStream = skin.OpenRead())
+            const string packName = "Fave's Skins";
+            const string serializeName = "xylarbedrock_faves_skins";
+            List<SkinPackEntry> packEntries = new List<SkinPackEntry>();
+
+            foreach (SkinEntry skin in skins)
             {
-                skinPngBytes = BuildMinecraftReadySkinPng(skinStream);
+                try
+                {
+                    using (Stream skinStream = skin.OpenRead())
+                    {
+                        string displayName = Path.GetFileNameWithoutExtension(skin.FileName);
+                        string slug = Slugify(displayName);
+                        int index = packEntries.Count + 1;
+                        packEntries.Add(new SkinPackEntry
+                        {
+                            DisplayName = string.IsNullOrWhiteSpace(displayName) ? $"Skin {index}" : displayName,
+                            LocalizationName = $"skin_{index:000}_{slug}",
+                            TexturePath = $"skins/skin_{index:000}_{slug}.png",
+                            PngBytes = BuildMinecraftReadySkinPng(skinStream)
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"Skipping invalid skin '{skin.FileName}': {ex}");
+                }
             }
 
-            string displayName = Path.GetFileNameWithoutExtension(skin.FileName);
-            string serializeName = $"xylarbedrock_{Slugify(displayName)}";
-            string skinName = "selected_skin";
+            if (packEntries.Count == 0)
+            {
+                throw new InvalidDataException("No valid Minecraft skins were found for the pack.");
+            }
 
             using (ZipArchive archive = ZipFile.Open(destinationPath, ZipArchiveMode.Create))
             {
-                WriteTextEntry(archive, "manifest.json", BuildSkinPackManifest(displayName));
-                WriteTextEntry(archive, "skins.json", BuildSkinPackJson(serializeName, skinName));
-                WriteTextEntry(archive, "texts/en_US.lang", BuildSkinPackLang(serializeName, skinName, displayName));
-                WriteBytesEntry(archive, "skin.png", skinPngBytes);
-                WriteBytesEntry(archive, "pack_icon.png", skinPngBytes);
+                WriteTextEntry(archive, "manifest.json", BuildSkinPackManifest(packName));
+                WriteTextEntry(archive, "skins.json", BuildSkinPackJson(serializeName, packEntries));
+                WriteTextEntry(archive, "texts/en_US.lang", BuildSkinPackLang(serializeName, packName, packEntries));
+
+                foreach (SkinPackEntry entry in packEntries)
+                {
+                    WriteBytesEntry(archive, entry.TexturePath, entry.PngBytes);
+                }
+
+                WriteBytesEntry(archive, "pack_icon.png", packEntries[0].PngBytes);
             }
+
+            return packEntries.Count;
         }
 
         private static void OpenDownloadedSkinPack(string destinationPath)
@@ -294,8 +263,8 @@ namespace XylarBedrock.Pages.Skins
             return "{\n" +
                    "  \"format_version\": 1,\n" +
                    "  \"header\": {\n" +
-                   $"    \"name\": \"{JsonEscape($"XylarBedrock Skin - {displayName}")}\",\n" +
-                   "    \"description\": \"Exported by XylarBedrock\",\n" +
+                   $"    \"name\": \"{JsonEscape(displayName)}\",\n" +
+                   "    \"description\": \"Skins by xFaveXEditz, packed by XylarBedrock\",\n" +
                    $"    \"uuid\": \"{Guid.NewGuid()}\",\n" +
                    "    \"version\": [1, 0, 0]\n" +
                    "  },\n" +
@@ -309,26 +278,42 @@ namespace XylarBedrock.Pages.Skins
                    "}\n";
         }
 
-        private static string BuildSkinPackJson(string serializeName, string skinName)
+        private static string BuildSkinPackJson(string serializeName, IReadOnlyList<SkinPackEntry> entries)
         {
-            return "{\n" +
-                   $"  \"serialize_name\": \"{JsonEscape(serializeName)}\",\n" +
-                   $"  \"localization_name\": \"{JsonEscape(serializeName)}\",\n" +
-                   "  \"skins\": [\n" +
-                   "    {\n" +
-                   $"      \"localization_name\": \"{JsonEscape(skinName)}\",\n" +
-                   "      \"geometry\": \"geometry.humanoid.customSlim\",\n" +
-                   "      \"texture\": \"skin.png\",\n" +
-                   "      \"type\": \"free\"\n" +
-                   "    }\n" +
-                   "  ]\n" +
-                   "}\n";
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine("{");
+            builder.AppendLine($"  \"serialize_name\": \"{JsonEscape(serializeName)}\",");
+            builder.AppendLine($"  \"localization_name\": \"{JsonEscape(serializeName)}\",");
+            builder.AppendLine("  \"skins\": [");
+
+            for (int i = 0; i < entries.Count; i++)
+            {
+                SkinPackEntry entry = entries[i];
+                builder.AppendLine("    {");
+                builder.AppendLine($"      \"localization_name\": \"{JsonEscape(entry.LocalizationName)}\",");
+                builder.AppendLine("      \"geometry\": \"geometry.humanoid.customSlim\",");
+                builder.AppendLine($"      \"texture\": \"{JsonEscape(entry.TexturePath)}\",");
+                builder.AppendLine("      \"type\": \"free\"");
+                builder.Append("    }");
+                builder.AppendLine(i == entries.Count - 1 ? string.Empty : ",");
+            }
+
+            builder.AppendLine("  ]");
+            builder.AppendLine("}");
+            return builder.ToString();
         }
 
-        private static string BuildSkinPackLang(string serializeName, string skinName, string displayName)
+        private static string BuildSkinPackLang(string serializeName, string packName, IReadOnlyList<SkinPackEntry> entries)
         {
-            return $"skinpack.{serializeName}=XylarBedrock Skins\n" +
-                   $"skin.{serializeName}.{skinName}={displayName}\n";
+            StringBuilder builder = new StringBuilder();
+            builder.AppendLine($"skinpack.{serializeName}={packName}");
+
+            foreach (SkinPackEntry entry in entries)
+            {
+                builder.AppendLine($"skin.{serializeName}.{entry.LocalizationName}={entry.DisplayName}");
+            }
+
+            return builder.ToString();
         }
 
         private static byte[] BuildMinecraftReadySkinPng(Stream sourceStream)
@@ -525,8 +510,10 @@ namespace XylarBedrock.Pages.Skins
 
         private static bool ShouldSkipSkinFile(string path)
         {
+            string fileName = Path.GetFileNameWithoutExtension(path);
             return !IsSupportedSkinImage(path) ||
-                   Path.GetFileName(path).IndexOf("cape", StringComparison.OrdinalIgnoreCase) >= 0;
+                   Path.GetFileName(path).IndexOf("cape", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   fileName.IndexOf("asteroidnqte", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private static IEnumerable<string> GetEmbeddedSkinResourcePaths()
@@ -573,6 +560,17 @@ namespace XylarBedrock.Pages.Skins
         {
             string fileName = resourcePath?.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).LastOrDefault() ?? "skin.png";
             return Uri.UnescapeDataString(fileName);
+        }
+
+        private sealed class SkinPackEntry
+        {
+            public string DisplayName { get; set; }
+
+            public string LocalizationName { get; set; }
+
+            public string TexturePath { get; set; }
+
+            public byte[] PngBytes { get; set; }
         }
 
         public class SkinEntry : INotifyPropertyChanged
