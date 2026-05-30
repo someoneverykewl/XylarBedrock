@@ -5,9 +5,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -97,17 +100,16 @@ namespace XylarBedrock.Pages.Skins
                 string skinsDirectory = Path.Combine(downloadsDirectory, "XylarBedrock Skins");
                 Directory.CreateDirectory(skinsDirectory);
 
-                string destinationPath = GetUniqueDownloadPath(Path.Combine(skinsDirectory, selectedSkin.FileName));
-                using (Stream sourceStream = selectedSkin.OpenRead())
-                using (FileStream destinationStream = File.Create(destinationPath))
-                {
-                    sourceStream.CopyTo(destinationStream);
-                }
+                string packFileName = $"{Path.GetFileNameWithoutExtension(selectedSkin.FileName)}.mcpack";
+                string destinationPath = GetUniqueDownloadPath(Path.Combine(skinsDirectory, packFileName));
+                CreateMinecraftSkinPack(selectedSkin, destinationPath);
+                OpenDownloadedSkinPack(destinationPath);
 
-                DownloadStatusText.Text = T("SkinsPage_DownloadedStatus", "Downloaded to Downloads\\XylarBedrock Skins.");
+                DownloadStatusText.Text = T("SkinsPage_DownloadedStatus", "Downloaded and opened Minecraft-ready .mcpack.");
             }
-            catch
+            catch (Exception ex)
             {
+                Trace.WriteLine($"Skin download failed: {ex}");
                 DownloadStatusText.Text = T("SkinsPage_DownloadFailed", "Download failed. Try again.");
             }
         }
@@ -242,6 +244,191 @@ namespace XylarBedrock.Pages.Skins
             }
 
             return destinationPath;
+        }
+
+        private static void CreateMinecraftSkinPack(SkinEntry skin, string destinationPath)
+        {
+            byte[] skinPngBytes;
+            using (Stream skinStream = skin.OpenRead())
+            {
+                skinPngBytes = BuildMinecraftReadySkinPng(skinStream);
+            }
+
+            string displayName = Path.GetFileNameWithoutExtension(skin.FileName);
+            string serializeName = $"xylarbedrock_{Slugify(displayName)}";
+            string skinName = "selected_skin";
+
+            using (ZipArchive archive = ZipFile.Open(destinationPath, ZipArchiveMode.Create))
+            {
+                WriteTextEntry(archive, "manifest.json", BuildSkinPackManifest(displayName));
+                WriteTextEntry(archive, "skins.json", BuildSkinPackJson(serializeName, skinName));
+                WriteTextEntry(archive, "texts/en_US.lang", BuildSkinPackLang(serializeName, skinName, displayName));
+                WriteBytesEntry(archive, "skin.png", skinPngBytes);
+                WriteBytesEntry(archive, "pack_icon.png", skinPngBytes);
+            }
+        }
+
+        private static void OpenDownloadedSkinPack(string destinationPath)
+        {
+            if (!destinationPath.EndsWith(".mcpack", StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            try
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = destinationPath,
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                Trace.WriteLine($"Could not auto-open skin pack '{destinationPath}': {ex}");
+            }
+        }
+
+        private static string BuildSkinPackManifest(string displayName)
+        {
+            return "{\n" +
+                   "  \"format_version\": 1,\n" +
+                   "  \"header\": {\n" +
+                   $"    \"name\": \"{JsonEscape($"XylarBedrock Skin - {displayName}")}\",\n" +
+                   "    \"description\": \"Exported by XylarBedrock\",\n" +
+                   $"    \"uuid\": \"{Guid.NewGuid()}\",\n" +
+                   "    \"version\": [1, 0, 0]\n" +
+                   "  },\n" +
+                   "  \"modules\": [\n" +
+                   "    {\n" +
+                   "      \"type\": \"skin_pack\",\n" +
+                   $"      \"uuid\": \"{Guid.NewGuid()}\",\n" +
+                   "      \"version\": [1, 0, 0]\n" +
+                   "    }\n" +
+                   "  ]\n" +
+                   "}\n";
+        }
+
+        private static string BuildSkinPackJson(string serializeName, string skinName)
+        {
+            return "{\n" +
+                   $"  \"serialize_name\": \"{JsonEscape(serializeName)}\",\n" +
+                   $"  \"localization_name\": \"{JsonEscape(serializeName)}\",\n" +
+                   "  \"skins\": [\n" +
+                   "    {\n" +
+                   $"      \"localization_name\": \"{JsonEscape(skinName)}\",\n" +
+                   "      \"geometry\": \"geometry.humanoid.customSlim\",\n" +
+                   "      \"texture\": \"skin.png\",\n" +
+                   "      \"type\": \"free\"\n" +
+                   "    }\n" +
+                   "  ]\n" +
+                   "}\n";
+        }
+
+        private static string BuildSkinPackLang(string serializeName, string skinName, string displayName)
+        {
+            return $"skinpack.{serializeName}=XylarBedrock Skins\n" +
+                   $"skin.{serializeName}.{skinName}={displayName}\n";
+        }
+
+        private static byte[] BuildMinecraftReadySkinPng(Stream sourceStream)
+        {
+            BitmapDecoder decoder = BitmapDecoder.Create(
+                sourceStream,
+                BitmapCreateOptions.PreservePixelFormat,
+                BitmapCacheOption.OnLoad);
+
+            BitmapSource source = decoder.Frames[0];
+            int sourceWidth = source.PixelWidth;
+            int sourceHeight = source.PixelHeight;
+            bool isSquareSkin = sourceWidth == sourceHeight && sourceWidth % 64 == 0;
+            bool isClassicSkin = sourceWidth == sourceHeight * 2 && sourceWidth % 64 == 0;
+
+            if (!isSquareSkin && !isClassicSkin)
+            {
+                throw new InvalidDataException($"Unsupported Minecraft skin size: {sourceWidth}x{sourceHeight}.");
+            }
+
+            int targetWidth = 64;
+            int targetHeight = isClassicSkin ? 32 : 64;
+
+            BitmapSource bgraSource = source.Format == PixelFormats.Bgra32
+                ? source
+                : new FormatConvertedBitmap(source, PixelFormats.Bgra32, null, 0);
+
+            int sourceStride = sourceWidth * 4;
+            byte[] sourcePixels = new byte[sourceStride * sourceHeight];
+            bgraSource.CopyPixels(sourcePixels, sourceStride, 0);
+
+            byte[] targetPixels = ResizeNearestNeighbor(sourcePixels, sourceWidth, sourceHeight, targetWidth, targetHeight);
+            BitmapSource output = BitmapSource.Create(
+                targetWidth,
+                targetHeight,
+                96,
+                96,
+                PixelFormats.Bgra32,
+                null,
+                targetPixels,
+                targetWidth * 4);
+
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(output));
+
+            using (MemoryStream outputStream = new MemoryStream())
+            {
+                encoder.Save(outputStream);
+                return outputStream.ToArray();
+            }
+        }
+
+        private static byte[] ResizeNearestNeighbor(byte[] sourcePixels, int sourceWidth, int sourceHeight, int targetWidth, int targetHeight)
+        {
+            byte[] targetPixels = new byte[targetWidth * targetHeight * 4];
+
+            for (int y = 0; y < targetHeight; y++)
+            {
+                int sourceY = Math.Min(sourceHeight - 1, y * sourceHeight / targetHeight);
+                for (int x = 0; x < targetWidth; x++)
+                {
+                    int sourceX = Math.Min(sourceWidth - 1, x * sourceWidth / targetWidth);
+                    int sourceIndex = (sourceY * sourceWidth + sourceX) * 4;
+                    int targetIndex = (y * targetWidth + x) * 4;
+
+                    targetPixels[targetIndex] = sourcePixels[sourceIndex];
+                    targetPixels[targetIndex + 1] = sourcePixels[sourceIndex + 1];
+                    targetPixels[targetIndex + 2] = sourcePixels[sourceIndex + 2];
+                    targetPixels[targetIndex + 3] = sourcePixels[sourceIndex + 3];
+                }
+            }
+
+            return targetPixels;
+        }
+
+        private static void WriteTextEntry(ZipArchive archive, string entryName, string content)
+        {
+            WriteBytesEntry(archive, entryName, Encoding.UTF8.GetBytes(content));
+        }
+
+        private static void WriteBytesEntry(ZipArchive archive, string entryName, byte[] content)
+        {
+            ZipArchiveEntry entry = archive.CreateEntry(entryName, CompressionLevel.Optimal);
+            using (Stream entryStream = entry.Open())
+            {
+                entryStream.Write(content, 0, content.Length);
+            }
+        }
+
+        private static string Slugify(string value)
+        {
+            string slug = Regex.Replace(value.ToLowerInvariant(), @"[^a-z0-9]+", "_").Trim('_');
+            return string.IsNullOrWhiteSpace(slug) ? "skin" : slug;
+        }
+
+        private static string JsonEscape(string value)
+        {
+            return value?
+                .Replace("\\", "\\\\")
+                .Replace("\"", "\\\"") ?? string.Empty;
         }
 
         private static IEnumerable<string> GetSkinDirectories()
