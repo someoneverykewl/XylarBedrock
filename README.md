@@ -38,6 +38,7 @@ A simple launcher to start and manage Minecraft Bedrock on Windows.
 - Mrmariix  
 - SasyIsCool  
 - The_Red_Shadow
+- XFaveXEditz
 - and big thanks to the repo: https://github.com/BedrockLauncher/BedrockLauncher
 
 ---
